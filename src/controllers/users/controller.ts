@@ -8,10 +8,13 @@ import { LoginUserUseCase } from "./loginUser";
 export class CreateUserController {
     async handle(req: Request, res: Response) {
         
-        const { email, senha, nome, sobrenome, dataNascimento, username, telefone, celular } = req.body;
+        const { cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular } = req.body;
         const createUserUseCase = new CreateUserUseCase();
         
-        const result = await createUserUseCase.execute({ email, senha, nome, sobrenome, dataNascimento, username, telefone, celular });
+        const result = await createUserUseCase.execute({ cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular }) as any;
+        result.status= "success";
+        result.Resposta = "Usuário cadastrado com sucesso";
+
         return res.status(201).json(result);
     }
 }
@@ -34,7 +37,12 @@ export class LoginUserController {
         const { email, senha } = req.body;
         const loginUserUseCase = new LoginUserUseCase();
         
-        const result = await loginUserUseCase.execute({ email, senha });
+        // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
+        const result = await loginUserUseCase.execute({ email, senha }) as any;
+        result.status= "success";
+        result.Resposta = "Login efetuado com sucesso";
+        result.JWT = "token123";
+
         return res.status(201).json(result);
     }
 }

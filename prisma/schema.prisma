@@ -15,7 +15,7 @@ datasource db {
 
 
 model User {
-  id                String            @id @default(uuid())
+  cpf               String            @id @default("00000000000")
   username          String?           @unique
   email             String            @unique
   senha             String
@@ -25,7 +25,7 @@ model User {
   telefone          String?
   celular           String?
   cargo             String            @default("Jogador")
-  rank              String?
+  rank              String?           @default("Sem Rank")
 
   disponibilidade   Disponibilidade[] @relation("jogador")
   campeonatos       Campeonatos[]     @relation("criador")
@@ -41,7 +41,7 @@ model Disponibilidade {
   id_jogador  String      @unique
   diaHora     DateTime
 
-  jogador     User        @relation("jogador", fields: [id_jogador], references: [id])
+  jogador     User        @relation("jogador", fields: [id_jogador], references: [cpf])
 
   @@map("atividade")
 }
@@ -63,11 +63,13 @@ model Campeonatos {
   dataFim         DateTime
   status          String      @default("inscricao")
 
-  criador         User        @relation("criador", fields: [id_criador], references: [id])
+  criador         User        @relation("criador", fields: [id_criador], references: [cpf])
   inscricoes      Inscricao[] @relation("campeonato")
-  tabelas         Tabela[]    @relation("campeonato")
-  chaveamentos    Chaveamento[] @relation("campeonato")
-  partidas        Partida[]   @relation("campeonato")
+  chaveamentos    Partidas[]  @relation("campeonato")
+
+
+  // tabelas         Tabela[]    @relation("campeonato")
+  // partidas        Partida[]   @relation("campeonato")
 
   @@map("campeonatos")
 }
@@ -82,51 +84,21 @@ model Inscricao {
   dataInscricao   DateTime
 
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
-  jogador         User        @relation("jogador", fields: [id_jogador], references: [id])
-  tabelas         Tabela[]    @relation("inscricao")
-  partidaJog1     Partida[]   @relation("jogador1")
-  partidaJog2     Partida[]   @relation("jogador2")
+  jogador         User        @relation("jogador", fields: [id_jogador], references: [cpf])
+  chavJog1        Partidas[]  @relation("jogador1")
+  chavJog2        Partidas[]  @relation("jogador2")
+
+  // tabelas         Tabela[]    @relation("inscricao")
 
   @@map("inscricao")
 }
 
 
 
-model Tabela {
+model Partidas {
   id              Int         @id @default(autoincrement())
   id_campeonato   String      @unique
-  id_jogador      Int         @unique
-  posicao         Int         @default(0)
-  pontos          Int         @default(0)
-  vitorias        Int         @default(0)
-  derrotas        Int         @default(0)
-
-  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
-  inscricao       Inscricao   @relation("inscricao", fields: [id_jogador], references: [id])
-
-
-  @@map("tabela")
-}
-
-
-
-model Chaveamento {
-  id              Int         @id @default(autoincrement())
-  id_campeonato   String      @unique
-  id_partida      Int?         @unique
   chave           Int
-
-  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
-  partida         Partida?     @relation("chaveamento", fields: [id_partida], references: [id])
-
-  @@map("chaveamento")
-}
-
-
-
-model Partida {
-  id              Int         @id @default(autoincrement())
-  id_campeonato   String
   id_jogador1     Int         @unique
   id_jogador2     Int         @unique
   id_vencedor     Int?
@@ -135,9 +107,46 @@ model Partida {
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
   jogador1        Inscricao   @relation("jogador1", fields: [id_jogador1], references: [id])
   jogador2        Inscricao   @relation("jogador2", fields: [id_jogador2], references: [id])
-  chaveamento     Chaveamento? @relation("chaveamento")
+  
+  @@map("partidas")
+}
+
+
+
+
+
+// model Tabela {
+//   id              Int         @id @default(autoincrement())
+//   id_campeonato   String      @unique
+//   id_jogador      Int         @unique
+//   posicao         Int         @default(0)
+//   pontos          Int         @default(0)
+//   vitorias        Int         @default(0)
+//   derrotas        Int         @default(0)
+
+//   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+//   inscricao       Inscricao   @relation("inscricao", fields: [id_jogador], references: [id])
+
+
+//   @@map("tabela")
+// }
+
+
+
+// model Partida {
+//   id              Int         @id @default(autoincrement())
+//   id_campeonato   String
+//   id_jogador1     Int         @unique
+//   id_jogador2     Int         @unique
+//   id_vencedor     Int?
+//   dataPartida     DateTime?
+
+//   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+//   jogador1        Inscricao   @relation("jogador1", fields: [id_jogador1], references: [id])
+//   jogador2        Inscricao   @relation("jogador2", fields: [id_jogador2], references: [id])
+//   chaveamento     Chaveamento? @relation("chaveamento")
   
 
-  @@map("partida")
-}
+//   @@map("partida")
+// }
 

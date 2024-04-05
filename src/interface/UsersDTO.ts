@@ -1,5 +1,6 @@
 
 export interface CreateUserDTO {
+    cpf: string;
     email: string;
     senha: string;
     nome: string;

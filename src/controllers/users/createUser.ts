@@ -7,11 +7,12 @@ import { hashSenha } from "../../services/hashPassword";
 
 
 export class CreateUserUseCase{
-    async execute({email, senha, nome, sobrenome, dataNascimento, username, telefone, celular}: CreateUserDTO): Promise<User>{
+    async execute({cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular}: CreateUserDTO): Promise<User>{
         
         const userExiste = await prisma.user.findFirst({
             where: {
                 OR: [
+                    {cpf},
                     {email},
                     {username}
                 ]
@@ -22,9 +23,14 @@ export class CreateUserUseCase{
         if(userExiste){
             console.log("\nResposta: ");
 
+            if(userExiste.cpf === cpf){
+                console.log("CPF Já cadastrado");
+                throw new AppError('CPF Já cadastrado');
+            }
+
             if(userExiste.email === email){
-                console.log("Email Indisponível");
-                throw new AppError('Email Indisponível');
+                console.log("Email Já cadastrado");
+                throw new AppError('Email Já cadastrado');
             
             }if(username !== null){
                 console.log("Username Indisponível");
@@ -37,6 +43,7 @@ export class CreateUserUseCase{
         
         const user = await prisma.user.create({
             data: {
+                cpf,
                 email,
                 senha,
                 nome,
@@ -48,7 +55,9 @@ export class CreateUserUseCase{
                 cargo: undefined,
                 rank: undefined 
             }
-        });
+        }) as any;
+
+        delete user.senha;
 
         if(!user){
             console.log("Erro ao cadastrar usuário");
@@ -59,6 +68,13 @@ export class CreateUserUseCase{
         console.log("Usuário cadastrado com sucesso");
         console.log(user);
         
+
+        delete user.sobrenome;
+        delete user.dataNascimento;
+        delete user.telefone;
+        delete user.celular;
+        delete user.rank;
+
         return user;
     }
 }
