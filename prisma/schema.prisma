@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+model User {
+  id                String            @id @default(uuid())
+  username          String?           @unique
+  email             String            @unique
+  senha             String
+  nome              String
+  sobrenome         String
+  dataNascimento    DateTime
+  telefone          String?
+  celular           String?
+  cargo             String            @default("Jogador")
+  rank              String?
+
+  disponibilidade   Disponibilidade[] @relation("jogador")
+  campeonatos       Campeonatos[]     @relation("criador")
+  inscricoes        Inscricao[]       @relation("jogador")
+
+  @@map("users")
+}
+
+
+
+model Disponibilidade {
+  id          Int         @id @default(autoincrement())
+  id_jogador  String      @unique
+  diaHora     DateTime
+
+  jogador     User        @relation("jogador", fields: [id_jogador], references: [id])
+
+  @@map("atividade")
+}
+
+
+
+model Campeonatos {
+  id              String      @id @default(uuid())
+  id_criador      String      @unique
+  nome            String      @unique
+  descricao       String?
+  tipo            String
+  regras          String
+  classe          String      @default("aberto")
+  numJogadores    Int
+  premiacao       String?
+  local           String?
+  dataInicio      DateTime
+  dataFim         DateTime
+  status          String      @default("inscricao")
+
+  criador         User        @relation("criador", fields: [id_criador], references: [id])
+  inscricoes      Inscricao[] @relation("campeonato")
+  tabelas         Tabela[]    @relation("campeonato")
+  chaveamentos    Chaveamento[] @relation("campeonato")
+  partidas        Partida[]   @relation("campeonato")
+
+  @@map("campeonatos")
+}
+
+
+
+model Inscricao {
+  id              Int         @id @default(autoincrement())
+  id_campeonato   String      @unique
+  id_jogador      String      @unique
+  situacao        String      @default("pendente")
+  dataInscricao   DateTime
+
+  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+  jogador         User        @relation("jogador", fields: [id_jogador], references: [id])
+  tabelas         Tabela[]    @relation("inscricao")
+  partidaJog1     Partida[]   @relation("jogador1")
+  partidaJog2     Partida[]   @relation("jogador2")
+
+  @@map("inscricao")
+}
+
+
+
+model Tabela {
+  id              Int         @id @default(autoincrement())
+  id_campeonato   String      @unique
+  id_jogador      Int         @unique
+  posicao         Int         @default(0)
+  pontos          Int         @default(0)
+  vitorias        Int         @default(0)
+  derrotas        Int         @default(0)
+
+  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+  inscricao       Inscricao   @relation("inscricao", fields: [id_jogador], references: [id])
+
+
+  @@map("tabela")
+}
+
+
+
+model Chaveamento {
+  id              Int         @id @default(autoincrement())
+  id_campeonato   String      @unique
+  id_partida      Int?         @unique
+  chave           Int
+
+  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+  partida         Partida?     @relation("chaveamento", fields: [id_partida], references: [id])
+
+  @@map("chaveamento")
+}
+
+
+
+model Partida {
+  id              Int         @id @default(autoincrement())
+  id_campeonato   String
+  id_jogador1     Int         @unique
+  id_jogador2     Int         @unique
+  id_vencedor     Int?
+  dataPartida     DateTime?
+
+  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
+  jogador1        Inscricao   @relation("jogador1", fields: [id_jogador1], references: [id])
+  jogador2        Inscricao   @relation("jogador2", fields: [id_jogador2], references: [id])
+  chaveamento     Chaveamento? @relation("chaveamento")
+  
+
+  @@map("partida")
+}
+
