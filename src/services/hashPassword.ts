@@ -9,6 +9,6 @@ export const hashSenha = async (senha: string) => {
     return await hash(senha, saltGenerated);
 };
 
-export const verifcaSenha = async (senha: string, senhaEncriptada: string) => {
+export const verificaSenha = async (senha: string, senhaEncriptada: string) => {
     return await compare(senha, senhaEncriptada);
 };

@@ -33,6 +33,7 @@ export class UpdateUserUseCase{
         });
 
 
+        
         if(dadosDisponiveis){
 
             if(dadosDisponiveis.email === novoEmail){

@@ -1,7 +1,7 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { LoginUserDTO } from "../../interface/UsersDTO";
-import { verifcaSenha } from "../../services/hashPassword";
+import { verificaSenha } from "../../services/hashPassword";
 
 export class LoginUserUseCase{
     async execute({email, senha}: LoginUserDTO){
@@ -35,7 +35,7 @@ export class LoginUserUseCase{
         });
 
 
-        if(userSenha && !await verifcaSenha(senha, userSenha.senha)){
+        if(userSenha && !await verificaSenha(senha, userSenha.senha)){
             console.log("Senha incorreta");
             throw new AppError('Senha incorreta');
         }

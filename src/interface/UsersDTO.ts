@@ -26,3 +26,10 @@ export interface UpdateUserDTO {
     telefone: string;
     celular: string;
 }
+
+
+export interface UpdatePasswordDTO {
+    email: string;
+    senha: string;
+    novaSenha: string;
+}

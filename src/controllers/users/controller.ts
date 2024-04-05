@@ -3,6 +3,7 @@ import { CreateUserUseCase } from "./createUser";
 import { ListUserUseCase } from "./listUsers";
 import { LoginUserUseCase } from "./loginUser";
 import { UpdateUserUseCase } from "./updateUser";
+import { UpdatePasswordUseCase } from "./updatePassword";
 
 
 
@@ -61,6 +62,22 @@ export class UpdateUserController {
         const result = await updateUserUseCase.execute({ email, novoEmail, username, telefone, celular }) as any;
         result.status= "success";
         result.Resposta = "Dados atualizados com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class UpdatePasswordController {
+    async handle(req: Request, res: Response) {
+        
+        const { email, senha, novaSenha } = req.body;
+        const updateUserUseCase = new UpdatePasswordUseCase();
+        
+        const result = await updateUserUseCase.execute({ email, senha, novaSenha }) as any;
+        result.status= "success";
+        result.Resposta = "Senha atualizada com sucesso";
 
         return res.status(201).json(result);
     }
