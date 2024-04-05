@@ -17,3 +17,12 @@ export interface LoginUserDTO {
     email: string;
     senha: string;
 }
+
+
+export interface UpdateUserDTO {
+    email: string;
+    novoEmail: string;
+    username: string | null;
+    telefone: string;
+    celular: string;
+}

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CreateUserUseCase } from "./createUser";
 import { ListUserUseCase } from "./listUsers";
 import { LoginUserUseCase } from "./loginUser";
+import { UpdateUserUseCase } from "./updateUser";
 
 
 
@@ -20,6 +21,7 @@ export class CreateUserController {
 }
 
 
+
 export class ListUserController {
     async handle(req: Request, res: Response) {
         
@@ -29,6 +31,7 @@ export class ListUserController {
         return res.status(201).json(result);
     }
 }
+
 
 
 export class LoginUserController {
@@ -42,6 +45,22 @@ export class LoginUserController {
         result.status= "success";
         result.Resposta = "Login efetuado com sucesso";
         result.JWT = "token123";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class UpdateUserController {
+    async handle(req: Request, res: Response) {
+        
+        const { email, novoEmail, username, telefone, celular } = req.body;
+        const updateUserUseCase = new UpdateUserUseCase();
+        
+        const result = await updateUserUseCase.execute({ email, novoEmail, username, telefone, celular }) as any;
+        result.status= "success";
+        result.Resposta = "Dados atualizados com sucesso";
 
         return res.status(201).json(result);
     }
