@@ -1,8 +1,10 @@
 import { User } from "@prisma/client";
 import { prisma } from "../../prisma/client";
-import { CreateUserDTO } from "../../interface/CreateUserDTO";
+import { CreateUserDTO } from "../../interface/UsersDTO";
 import { AppError } from "../../errors/AppErrors";
-import e from "express";
+import { hashSenha } from "../../services/hashPassword";
+
+
 
 export class CreateUserUseCase{
     async execute({email, senha, nome, sobrenome, dataNascimento, username, telefone, celular}: CreateUserDTO): Promise<User>{
@@ -31,6 +33,7 @@ export class CreateUserUseCase{
         }
 
         dataNascimento = new Date(dataNascimento);
+        senha = await hashSenha(senha);
         
         const user = await prisma.user.create({
             data: {

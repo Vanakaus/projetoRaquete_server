@@ -1,3 +1,4 @@
+
 export interface CreateUserDTO {
     email: string;
     senha: string;
@@ -9,4 +10,9 @@ export interface CreateUserDTO {
     username?: string;
     telefone?: string;
     celular?: string;
+}
+
+export interface LoginUserDTO {
+    email: string;
+    senha: string;
 }
