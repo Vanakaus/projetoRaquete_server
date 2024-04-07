@@ -73,12 +73,12 @@ export class UpdateUserUseCase{
         
 
         if(!user){
-            console.log("Erro ao cadastrar usuário");
+            console.log("Erro ao atualizar dados do usuário");
             console.log(user);
-            throw new AppError('Erro ao cadastrar usuário\n\n\n' + user);
+            throw new AppError('Erro ao atualizar dados do usuário\n\n\n' + user);
         }
 
-        console.log("Usuário cadastrado com sucesso");
+        console.log("Dados atualizado com sucesso");
         console.log(user);
 
         return user;

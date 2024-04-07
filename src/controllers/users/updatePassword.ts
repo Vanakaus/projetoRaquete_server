@@ -47,12 +47,12 @@ export class UpdatePasswordUseCase{
         });
 
         if(!user){
-            console.log("Erro ao cadastrar usuário");
+            console.log("Erro ao atualizar senha");
             console.log(user);
-            throw new AppError('Erro ao cadastrar usuário\n\n\n' + user);
+            throw new AppError('Erro ao atualizar senha');
         }
 
-        console.log("Usuário cadastrado com sucesso");
+        console.log("Senha atualizada com sucesso");
         console.log(user);
 
 

@@ -16,7 +16,7 @@ const updatePasswordController  = new UpdatePasswordController();
 
 userRoutes.post('/cadastra', informativo, createUserController.handle);
 userRoutes.get('/listaUsuarios', informativo, listUserController.handle);
-userRoutes.get('/login', informativo, loginUserController.handle);
+userRoutes.post('/login', informativo, loginUserController.handle);
 userRoutes.patch('/atualizaDados', informativo, updateUserController.handle);
 userRoutes.patch('/atualizaSenha', informativo, updatePasswordController.handle);
 

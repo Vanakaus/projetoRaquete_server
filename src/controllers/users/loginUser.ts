@@ -15,7 +15,7 @@ export class LoginUserUseCase{
                 sobrenome: false,
                 email: false,
                 senha: false,
-                dataNascimento: true,
+                dataNascimento: false,
                 telefone: false,
                 celular: false,
                 cargo: true,

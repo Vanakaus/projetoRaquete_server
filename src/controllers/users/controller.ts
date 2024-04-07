@@ -15,7 +15,7 @@ export class CreateUserController {
         
         const result = await createUserUseCase.execute({ cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular }) as any;
         result.status= "success";
-        result.Resposta = "Usuário cadastrado com sucesso";
+        result.mensagem = "Usuário cadastrado com sucesso";
 
         return res.status(201).json(result);
     }
@@ -44,7 +44,7 @@ export class LoginUserController {
         // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
         const result = await loginUserUseCase.execute({ email, senha }) as any;
         result.status= "success";
-        result.Resposta = "Login efetuado com sucesso";
+        result.mensagem = "Login efetuado com sucesso";
         result.JWT = "token123";
 
         return res.status(201).json(result);
@@ -61,7 +61,7 @@ export class UpdateUserController {
         
         const result = await updateUserUseCase.execute({ email, novoEmail, username, telefone, celular }) as any;
         result.status= "success";
-        result.Resposta = "Dados atualizados com sucesso";
+        result.mensagem = "Dados atualizados com sucesso";
 
         return res.status(201).json(result);
     }
@@ -77,7 +77,7 @@ export class UpdatePasswordController {
         
         const result = await updateUserUseCase.execute({ email, senha, novaSenha }) as any;
         result.status= "success";
-        result.Resposta = "Senha atualizada com sucesso";
+        result.mensagem = "Senha atualizada com sucesso";
 
         return res.status(201).json(result);
     }
