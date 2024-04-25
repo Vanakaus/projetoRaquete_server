@@ -9,6 +9,16 @@ const jwt = require('jsonwebtoken');
 
 
 
+export class VerificaJWTController {
+    async handle(req: Request, res: Response) {
+        return res.status(201).json({
+            status: "success",
+            mensagem: "Token válido, acesso permitido" });
+    }
+}
+
+
+
 export class CreateUserController {
     async handle(req: Request, res: Response) {
         

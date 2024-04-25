@@ -8,7 +8,9 @@ export function verificaJWT(req: e.Request, res: e.Response, next: NextFunction)
 
     if (!token) {
         console.log("Token não encontrado");
-        return res.status(401).json({ mensagem: "Token não encontrado" });
+        return res.status(401).json({
+            status: "error",
+            mensagem: "Token não encontrado" });
     }
 
     try {
@@ -17,6 +19,8 @@ export function verificaJWT(req: e.Request, res: e.Response, next: NextFunction)
         return next();
     } catch (error) {
         console.log("Token inválido");
-        return res.status(401).json({ mensagem: "Token inválido" });
+        return res.status(401).json({
+            status: "error",
+            mensagem: "Token inválido" });
     }
 }
