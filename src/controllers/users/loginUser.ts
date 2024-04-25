@@ -16,8 +16,8 @@ export class LoginUserUseCase{
                 email: false,
                 senha: false,
                 dataNascimento: false,
-                telefone: false,
-                celular: false,
+                telefone: true,
+                celular: true,
                 cargo: true,
                 rank: false
             }
@@ -35,7 +35,7 @@ export class LoginUserUseCase{
         });
 
 
-        if(userSenha && !await verificaSenha(senha, userSenha.senha)){
+        if (userSenha && !await verificaSenha(senha, userSenha.senha)) {
             console.log("Senha incorreta");
             throw new AppError('Senha incorreta');
         }

@@ -98,7 +98,7 @@ model Inscricao {
 model Partidas {
   id              Int         @id @default(autoincrement())
   id_campeonato   String      @unique
-  chave           Int
+  chave           String
   id_jogador1     Int         @unique
   id_jogador2     Int         @unique
   id_vencedor     Int?

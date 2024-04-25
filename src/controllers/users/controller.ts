@@ -5,6 +5,8 @@ import { LoginUserUseCase } from "./loginUser";
 import { UpdateUserUseCase } from "./updateUser";
 import { UpdatePasswordUseCase } from "./updatePassword";
 
+const jwt = require('jsonwebtoken');
+
 
 
 export class CreateUserController {
@@ -43,9 +45,18 @@ export class LoginUserController {
         
         // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
         const result = await loginUserUseCase.execute({ email, senha }) as any;
+
+        
+        // Gera o token JWT
+        const cpf = result.cpf;
+        const token = jwt.sign({ cpf }, process.env.JWT_SECRET, {
+            expiresIn: '1h'
+        });
+
+
         result.status= "success";
         result.mensagem = "Login efetuado com sucesso";
-        result.JWT = "token123";
+        result.JWT = token;
 
         return res.status(201).json(result);
     }
