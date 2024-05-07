@@ -50,7 +50,7 @@ model Disponibilidade {
 
 model Campeonatos {
   id              String      @id @default(uuid())
-  id_criador      String      @unique
+  id_criador      String
   nome            String      @unique
   descricao       String?
   tipo            String

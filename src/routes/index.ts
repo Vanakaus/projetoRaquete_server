@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userRoutes } from "./user.routes";
 import { informativo } from "../middlewares";
+import { campenatoRoutes } from "./campeonatos.routes";
 
 
 const routes = Router();
@@ -13,6 +14,7 @@ routes.get('/', informativo, (req, res) => {
 
 
 routes.use('/users', userRoutes);
+routes.use('/campeonatos', campenatoRoutes);
 
 
 export { routes };
