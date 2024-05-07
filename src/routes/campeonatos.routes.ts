@@ -1,17 +1,18 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { verificaJWT } from "../middlewares/verificaJWT";
-import { CreateCampeonatoController } from "../controllers/campeonatos/controller";
+import { CreateCampeonatoController, ListCampeonatoController } from "../controllers/campeonatos/controller";
 
 
 
 const campenatoRoutes = Router();
 
 const createCampeonatoController  = new CreateCampeonatoController();
+const listaCampeonatoController = new ListCampeonatoController();
 
 
 
 campenatoRoutes.post('/cadastra', informativo, createCampeonatoController.handle);
+campenatoRoutes.get('/listaCampeonatos', informativo, listaCampeonatoController.handle);
 
 
 export { campenatoRoutes };

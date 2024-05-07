@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CreateCampeonatoUseCase } from "./createCampeonato";
+import { ListCampeonatosUseCase } from "./listaCampeonatos";
 
 
 
@@ -12,7 +13,7 @@ export class CreateCampeonatoController {
         
         const result = await createCampeonatoUseCase.execute({ cpf, nome, descricao, tipo, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
         result.status= "success";
-        result.mensagem = "Campeonato cirado com sucesso";
+        result.mensagem = "Campeonato criado com sucesso";
 
         return res.status(201).json(result);
     }
@@ -20,15 +21,15 @@ export class CreateCampeonatoController {
 
 
 
-// export class ListUserController {
-//     async handle(req: Request, res: Response) {
+export class ListCampeonatoController {
+    async handle(req: Request, res: Response) {
         
-//         const listUserUseCase = new ListUserUseCase();
+        const listCampeonatosUseCase = new ListCampeonatosUseCase();
         
-//         const result = await listUserUseCase.execute();
-//         return res.status(201).json(result);
-//     }
-// }
+        const result = await listCampeonatosUseCase.execute();
+        return res.status(201).json(result);
+    }
+}
 
 
 
