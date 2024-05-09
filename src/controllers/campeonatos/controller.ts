@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CreateCampeonatoUseCase } from "./createCampeonato";
-import { ListCampeonatosUseCase } from "./listaCampeonatos";
+import { ListaCampeonatosUseCase } from "./listaCampeonatos";
+import { LeCampeonatoUseCase } from "./leCampeonato";
 
 
 
@@ -8,10 +9,10 @@ import { ListCampeonatosUseCase } from "./listaCampeonatos";
 export class CreateCampeonatoController {
     async handle(req: Request, res: Response) {
         
-        const { cpf, nome, descricao, tipo, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim, status } = req.body;
+        const { cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim } = req.body;
         const createCampeonatoUseCase = new CreateCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpf, nome, descricao, tipo, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
+        const result = await createCampeonatoUseCase.execute({ cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 
@@ -20,13 +21,24 @@ export class CreateCampeonatoController {
 }
 
 
-
-export class ListCampeonatoController {
+export class ListaCampeonatosController {
     async handle(req: Request, res: Response) {
         
-        const listCampeonatosUseCase = new ListCampeonatosUseCase();
+        const listCampeonatosUseCase = new ListaCampeonatosUseCase();
         
         const result = await listCampeonatosUseCase.execute();
+        return res.status(201).json(result);
+    }
+}
+
+
+export class LeCampeonatoController {
+    async handle(req: Request, res: Response) {
+        
+        const { id } = req.query;
+        const leCampeonatoUseCase = new LeCampeonatoUseCase();
+        
+        const result = await leCampeonatoUseCase.execute(id as string);
         return res.status(201).json(result);
     }
 }

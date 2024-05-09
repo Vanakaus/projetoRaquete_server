@@ -53,7 +53,6 @@ model Campeonatos {
   id_criador      String
   nome            String      @unique
   descricao       String?
-  tipo            String
   regras          String
   classe          String      @default("aberto")
   numJogadores    Int

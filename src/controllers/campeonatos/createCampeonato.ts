@@ -6,7 +6,7 @@ import { CreateCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 export class CreateCampeonatoUseCase{
-    async execute({cpf, nome, descricao, tipo, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
+    async execute({cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
 
 
         // Busca todos os campeonatos que tenham o nome do novo campeonato dentro do nome deles
@@ -20,8 +20,9 @@ export class CreateCampeonatoUseCase{
 
 
         console.log("\nResposta: ");
+        console.log(campeonatoExiste);
 
-        if(campeonatoExiste){
+        if(campeonatoExiste.length > 0){
             // if(campeonatoExiste.length > 1){
             //     var num = (+campeonatoExiste[campeonatoExiste.length - 1].nome.split(" - ")[1]);
             //     nome = nome + " - " + ((+campeonatoExiste[campeonatoExiste.length - 1].nome.split(" - ")[1]) + 1);
@@ -29,7 +30,6 @@ export class CreateCampeonatoUseCase{
             //     nome = nome + " - 2";
 
 
-            console.log("\nResposta: ");
 
             console.log("Nome de campeonato indisponível");
             throw new AppError('Nome de campeonato indisponível');
@@ -44,7 +44,6 @@ export class CreateCampeonatoUseCase{
                 id_criador: cpf,
                 nome,
                 descricao,
-                tipo,
                 regras,
                 classe,
                 numJogadores,

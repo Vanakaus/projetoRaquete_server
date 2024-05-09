@@ -3,7 +3,6 @@ export interface CreateCampeonatoDTO {
     cpf: string;
     nome: string;
     descricao?: string;
-    tipo: string;
     regras: string;
     classe: string;
     numJogadores: number;

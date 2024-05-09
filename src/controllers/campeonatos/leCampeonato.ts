@@ -1,11 +1,14 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 
-export class ListaCampeonatosUseCase{
-    async execute(): Promise<any>{
+export class LeCampeonatoUseCase{
+    async execute(id: string): Promise<any>{
 
         // Busca todos os campeonatos e o seus criadores
-        const campeonatos = await prisma.campeonatos.findMany({
+        const campeonato = await prisma.campeonatos.findUnique({
+            where: {
+                id
+            },
             select: {
                 id: true,
                 nome: true,
@@ -15,19 +18,26 @@ export class ListaCampeonatosUseCase{
                 premiacao: true,
                 local: true,
                 dataInicio: true,
-                dataFim: true
+                dataFim: true,
+                criador: {
+                    select: {
+                        nome: true,
+                        username: true,
+                        email: true
+                    }
+                }
             }
         });
 
         console.log("Resposta: ");
 
-        if (campeonatos.length === 0) {
+        if (!campeonato) {
             console.log("Sem Campeonatos cadastrados");
             throw new AppError('Sem Campeonatos cadastrados');
         }
 
-        console.log(campeonatos.length + " Campeonatos Listados com sucesso");
+        console.log(campeonato);
         
-        return campeonatos;
+        return campeonato;
     }
 }
