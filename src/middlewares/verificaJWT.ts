@@ -10,7 +10,7 @@ export function verificaJWT(req: e.Request, res: e.Response, next: NextFunction)
         console.log("Token não encontrado");
         return res.status(401).json({
             status: "error",
-            mensagem: "Token não encontrado" });
+            mensagem: "Acesso não autorizado" });
     }
 
     try {
@@ -21,6 +21,6 @@ export function verificaJWT(req: e.Request, res: e.Response, next: NextFunction)
         console.log("Token inválido");
         return res.status(401).json({
             status: "error",
-            mensagem: "Token inválido" });
+            mensagem: "Acesso não autorizado" });
     }
 }

@@ -17,6 +17,7 @@ export class LeCampeonatoUseCase{
                 numJogadores: true,
                 premiacao: true,
                 local: true,
+                status: true,
                 dataInicio: true,
                 dataFim: true,
                 criador: {

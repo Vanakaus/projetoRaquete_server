@@ -80,7 +80,7 @@ model Inscricao {
   id_campeonato   String      @unique
   id_jogador      String      @unique
   situacao        String      @default("pendente")
-  dataInscricao   DateTime
+  dataInscricao   DateTime    @default(now())
 
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
   jogador         User        @relation("jogador", fields: [id_jogador], references: [cpf])

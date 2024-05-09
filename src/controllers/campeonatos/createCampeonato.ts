@@ -20,7 +20,6 @@ export class CreateCampeonatoUseCase{
 
 
         console.log("\nResposta: ");
-        console.log(campeonatoExiste);
 
         if(campeonatoExiste.length > 0){
             // if(campeonatoExiste.length > 1){

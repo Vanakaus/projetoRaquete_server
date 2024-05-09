@@ -2,7 +2,7 @@ import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 
 export class ListaCampeonatosUseCase{
-    async execute(): Promise<any>{
+    async execute(cpf: string): Promise<any>{
 
         // Busca todos os campeonatos e o seus criadores
         const campeonatos = await prisma.campeonatos.findMany({
@@ -14,8 +14,17 @@ export class ListaCampeonatosUseCase{
                 numJogadores: true,
                 premiacao: true,
                 local: true,
+                status: true,
                 dataInicio: true,
-                dataFim: true
+                dataFim: true,
+                inscricoes: {
+                    where: {
+                        id_jogador: cpf
+                    },
+                    select: {
+                        situacao: true
+                    }
+                }
             }
         });
 

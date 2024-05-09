@@ -24,9 +24,10 @@ export class CreateCampeonatoController {
 export class ListaCampeonatosController {
     async handle(req: Request, res: Response) {
         
+        const { cpf } = req.query;
         const listCampeonatosUseCase = new ListaCampeonatosUseCase();
         
-        const result = await listCampeonatosUseCase.execute();
+        const result = await listCampeonatosUseCase.execute(cpf as string);
         return res.status(201).json(result);
     }
 }
