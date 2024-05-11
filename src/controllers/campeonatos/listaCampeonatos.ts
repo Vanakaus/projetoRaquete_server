@@ -24,7 +24,12 @@ export class ListaCampeonatosUseCase{
                     select: {
                         situacao: true
                     }
-                }
+                },
+                _count: {
+                    select: {
+                        inscricoes: true
+                    }
+                },
             }
         });
 
