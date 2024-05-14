@@ -2,7 +2,8 @@ import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 
 export class LeCampeonatoUseCase{
-    async execute(id: string): Promise<any>{
+    async execute(id: string, cpf: string): Promise<any>{
+        console.log("Buscando campeonato com id: " + id + " e cpf: " + cpf);
 
         // Busca todos os campeonatos e o seus criadores
         const campeonato = await prisma.campeonatos.findUnique({
@@ -13,6 +14,7 @@ export class LeCampeonatoUseCase{
                 id: true,
                 nome: true,
                 descricao: true,
+                regras: true,
                 classe: true,
                 numJogadores: true,
                 premiacao: true,
@@ -20,13 +22,26 @@ export class LeCampeonatoUseCase{
                 status: true,
                 dataInicio: true,
                 dataFim: true,
+                inscricoes: {
+                    where: {
+                        id_jogador: cpf
+                    },
+                    select: {
+                        situacao: true
+                    }
+                },
                 criador: {
                     select: {
                         nome: true,
                         username: true,
                         email: true
                     }
-                }
+                },
+                _count: {
+                    select: {
+                        inscricoes: true
+                    }
+                },
             }
         });
 

@@ -36,10 +36,10 @@ export class ListaCampeonatosController {
 export class LeCampeonatoController {
     async handle(req: Request, res: Response) {
         
-        const { id } = req.query;
+        const { id, cpf } = req.query;
         const leCampeonatoUseCase = new LeCampeonatoUseCase();
         
-        const result = await leCampeonatoUseCase.execute(id as string);
+        const result = await leCampeonatoUseCase.execute(id as string, cpf as string);
         return res.status(201).json(result);
     }
 }
