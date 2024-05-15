@@ -6,10 +6,15 @@ import { hashSenha, verificaSenha } from "../../services/hashPassword";
 
 
 export class UpdatePasswordUseCase{
-    async execute({ email, senha, novaSenha}: UpdatePasswordDTO): Promise<any>{
+    async execute({ cpf, email, senha, novaSenha}: UpdatePasswordDTO): Promise<any>{
         
         const userExiste = await prisma.user.findFirst({
-            where: { email }
+            where: {
+                AND: {
+                    cpf,
+                    email
+                }
+            }
         });
 
 
@@ -34,7 +39,7 @@ export class UpdatePasswordUseCase{
         novaSenha = await hashSenha(novaSenha);
 
         const user = await prisma.user.update({
-            where: { email },
+            where: { cpf },
             data: {
                 senha: novaSenha
             },

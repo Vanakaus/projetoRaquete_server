@@ -30,6 +30,7 @@ export interface UpdateUserDTO {
 
 
 export interface UpdatePasswordDTO {
+    cpf: string;
     email: string;
     senha: string;
     novaSenha: string;
