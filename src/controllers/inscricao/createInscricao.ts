@@ -6,9 +6,14 @@ import { CreateInscricaoDTO } from "../../interface/InscricaoUsersDTO";
 
 
 export class CreateInscricaoUseCase{
-    async execute({id_campeonato, id_jogador}: CreateInscricaoDTO): Promise<Inscricao>{
+    async execute({cpf, id_campeonato, id_jogador}: CreateInscricaoDTO): Promise<Inscricao>{
+
+        if(cpf !== id_jogador){
+            console.log("CPF não corresponde ao token");
+            throw new AppError('CPF não corresponde ao token\nRefaça o login');
+        }
         
-        const userInscrito = await prisma.inscricao.findUnique({
+        const userInscrito = await prisma.inscricao.findFirst({
             where: {
                 id_campeonato,
                 id_jogador

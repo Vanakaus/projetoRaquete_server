@@ -1,5 +1,6 @@
 
 export interface CreateCampeonatoDTO {
+    cpfToken: string;
     cpf: string;
     nome: string;
     descricao?: string;

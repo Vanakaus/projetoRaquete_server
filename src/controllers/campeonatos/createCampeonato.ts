@@ -6,7 +6,12 @@ import { CreateCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 export class CreateCampeonatoUseCase{
-    async execute({cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
+    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
+
+        if(cpfToken !== cpf){
+            console.log("CPF não corresponde ao token");
+            throw new AppError('CPF não corresponde ao token\nRefaça o login');
+        }
 
 
         // Busca todos os campeonatos que tenham o nome do novo campeonato dentro do nome deles

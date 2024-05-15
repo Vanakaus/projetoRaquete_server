@@ -3,16 +3,25 @@ import { CreateCampeonatoUseCase } from "./createCampeonato";
 import { ListaCampeonatosUseCase } from "./listaCampeonatos";
 import { LeCampeonatoUseCase } from "./leCampeonato";
 
+const jwt = require('jsonwebtoken');
 
 
 
 export class CreateCampeonatoController {
     async handle(req: Request, res: Response) {
         
+        var cpfToken = '';
         const { cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim } = req.body;
+        const token = req.headers['x-access-token']
+
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpfToken = decoded.cpf;
+        });
+
+
         const createCampeonatoUseCase = new CreateCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
+        const result = await createCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 

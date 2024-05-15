@@ -1,16 +1,25 @@
 import { Request, Response } from "express";
 import { CreateInscricaoUseCase } from "./createInscricao";
 
+const jwt = require('jsonwebtoken');
 
 
 
 export class CreateInscricaoController {
     async handle(req: Request, res: Response) {
         
+        var cpf = '';
         const { id_campeonato, id_jogador } = req.body;
+        const token = req.headers['x-access-token']
+
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+
         const createInscricaoUseCase = new CreateInscricaoUseCase();
         
-        const result = await createInscricaoUseCase.execute({ id_campeonato, id_jogador }) as any;
+        const result = await createInscricaoUseCase.execute({ cpf, id_campeonato, id_jogador }) as any;
         result.status= "success";
         result.mensagem = "Inscrição realizada com sucesso";
 
