@@ -13,3 +13,14 @@ export interface CreateCampeonatoDTO {
     premiacao?: string;
     local?: string;
 }
+
+
+export interface ListaCampeonatoDTO {
+    cpf: string;
+}
+
+
+export interface LeCampeonatoDTO {
+    id: string;
+    cpf: string;
+}

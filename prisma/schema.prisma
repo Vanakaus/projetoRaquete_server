@@ -77,8 +77,8 @@ model Campeonatos {
 
 model Inscricao {
   id              Int         @id @default(autoincrement())
-  id_campeonato   String      @unique
-  id_jogador      String      @unique
+  id_campeonato   String
+  id_jogador      String
   situacao        String      @default("pendente")
   dataInscricao   DateTime    @default(now())
 

@@ -1,8 +1,9 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
+import { ListaCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 export class ListaCampeonatosUseCase{
-    async execute(cpf: string): Promise<any>{
+    async execute({cpf}: ListaCampeonatoDTO): Promise<any>{
 
         // Busca todos os campeonatos e o seus criadores
         const campeonatos = await prisma.campeonatos.findMany({

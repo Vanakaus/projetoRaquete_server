@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { userRoutes } from "./user.routes";
 import { informativo } from "../middlewares";
+import { userRoutes } from "./user.routes";
 import { campenatoRoutes } from "./campeonatos.routes";
+import { inscricaoRoutes } from "./inscricao.routes";
 
 
 const routes = Router();
@@ -15,6 +16,7 @@ routes.get('/', informativo, (req, res) => {
 
 routes.use('/users', userRoutes);
 routes.use('/campeonatos', campenatoRoutes);
+routes.use('/inscricao', inscricaoRoutes);
 
 
 export { routes };

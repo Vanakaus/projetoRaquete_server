@@ -27,7 +27,7 @@ export class ListaCampeonatosController {
         const { cpf } = req.query;
         const listCampeonatosUseCase = new ListaCampeonatosUseCase();
         
-        const result = await listCampeonatosUseCase.execute(cpf as string);
+        const result = await listCampeonatosUseCase.execute({cpf: cpf?.toString() ?? ''});
         return res.status(201).json(result);
     }
 }
@@ -39,7 +39,7 @@ export class LeCampeonatoController {
         const { id, cpf } = req.query;
         const leCampeonatoUseCase = new LeCampeonatoUseCase();
         
-        const result = await leCampeonatoUseCase.execute(id as string, cpf as string);
+        const result = await leCampeonatoUseCase.execute({id: id?.toString() ?? '', cpf: cpf?.toString() ?? ''});
         return res.status(201).json(result);
     }
 }

@@ -1,8 +1,9 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
+import { LeCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 export class LeCampeonatoUseCase{
-    async execute(id: string, cpf: string): Promise<any>{
+    async execute({id, cpf}: LeCampeonatoDTO): Promise<any>{
         console.log("Buscando campeonato com id: " + id + " e cpf: " + cpf);
 
         // Busca todos os campeonatos e o seus criadores
