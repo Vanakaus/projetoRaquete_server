@@ -77,10 +77,22 @@ export class LoginUserController {
 export class UpdateUserController {
     async handle(req: Request, res: Response) {
         
+        
+        var cpf = '';
         const { email, novoEmail, username, telefone, celular } = req.body;
+        const token = req.headers['x-access-token']
+        
+
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+        console.log(cpf);
+
+
         const updateUserUseCase = new UpdateUserUseCase();
         
-        const result = await updateUserUseCase.execute({ email, novoEmail, username, telefone, celular }) as any;
+        const result = await updateUserUseCase.execute({ cpf, email, novoEmail, username, telefone, celular }) as any;
         result.status= "success";
         result.mensagem = "Dados atualizados com sucesso";
 

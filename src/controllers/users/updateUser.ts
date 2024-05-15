@@ -5,10 +5,15 @@ import { AppError } from "../../errors/AppErrors";
 
 
 export class UpdateUserUseCase{
-    async execute({ email, novoEmail, username, telefone, celular}: UpdateUserDTO): Promise<any>{
+    async execute({ cpf, email, novoEmail, username, telefone, celular}: UpdateUserDTO): Promise<any>{
         
         const userExiste = await prisma.user.findFirst({
-            where: { email }
+            where: {
+                AND: {
+                    cpf,
+                    email
+                }
+            }
         });
 
 
@@ -18,14 +23,14 @@ export class UpdateUserUseCase{
         }
 
 
-        if(novoEmail === null || novoEmail === undefined || novoEmail === "")
+        if(novoEmail !== null && novoEmail !== undefined && novoEmail !== "" && novoEmail !== '')
             novoEmail = email;
 
         
         const dadosDisponiveis = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: novoEmail },
+                    { email },
                     { username }
                 ],
                 AND: { NOT: { cpf: userExiste.cpf } }
@@ -36,7 +41,7 @@ export class UpdateUserUseCase{
         
         if(dadosDisponiveis){
 
-            if(dadosDisponiveis.email === novoEmail){
+            if(dadosDisponiveis.email === email){
                 console.log("Email indisponível");
                 throw new AppError('Email indisponível');
             }
@@ -54,9 +59,9 @@ export class UpdateUserUseCase{
 
 
         const user = await prisma.user.update({
-            where: { email },
+            where: { cpf },
             data: {
-                email: novoEmail,
+                email,
                 username,
                 telefone,
                 celular

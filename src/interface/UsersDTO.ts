@@ -20,6 +20,7 @@ export interface LoginUserDTO {
 
 
 export interface UpdateUserDTO {
+    cpf: string;
     email: string;
     novoEmail: string;
     username: string | null;
