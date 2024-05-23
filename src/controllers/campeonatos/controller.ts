@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CreateCampeonatoUseCase } from "./createCampeonato";
 import { ListaCampeonatosUseCase } from "./listaCampeonatos";
 import { LeCampeonatoUseCase } from "./leCampeonato";
+import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 
 const jwt = require('jsonwebtoken');
 
@@ -37,6 +38,26 @@ export class ListaCampeonatosController {
         const listCampeonatosUseCase = new ListaCampeonatosUseCase();
         
         const result = await listCampeonatosUseCase.execute({cpf: cpf?.toString() ?? ''});
+        return res.status(201).json(result);
+    }
+}
+
+
+export class ListaCampeonatosCriadosController {
+    async handle(req: Request, res: Response) {
+        
+        var cpfToken = '';
+        const { cpf } = req.query;
+        const token = req.headers['x-access-token']
+
+
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpfToken = decoded.cpf;
+        });
+
+        const listaCampeonatosCriadosUseCase = new ListaCampeonatosCriadosUseCase();
+        
+        const result = await listaCampeonatosCriadosUseCase.execute({cpf: cpfToken, id_criador: cpf?.toString() ?? ''});
         return res.status(201).json(result);
     }
 }
