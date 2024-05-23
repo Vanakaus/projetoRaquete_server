@@ -5,3 +5,8 @@ export interface CreateInscricaoDTO {
     id_jogador: string;
 }
 
+
+export interface ListaInscricoesDTO {
+    cpf: string;
+    id_jogador: string;
+}
