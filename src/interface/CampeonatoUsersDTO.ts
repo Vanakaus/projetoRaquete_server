@@ -20,6 +20,7 @@ export interface ListaCampeonatoDTO {
     cpf: string;
 }
 
+
 export interface ListaCampeonatosCriadosDTO {
     cpf: string;
     id_criador: string;
@@ -29,4 +30,11 @@ export interface ListaCampeonatosCriadosDTO {
 export interface LeCampeonatoDTO {
     id: string;
     cpf: string;
+}
+
+
+export interface LeCampeonatoCriadoDTO {
+    cpf: string;
+    id: string;
+    id_criador: string;    
 }

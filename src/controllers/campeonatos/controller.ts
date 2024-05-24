@@ -3,6 +3,7 @@ import { CreateCampeonatoUseCase } from "./createCampeonato";
 import { ListaCampeonatosUseCase } from "./listaCampeonatos";
 import { LeCampeonatoUseCase } from "./leCampeonato";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
+import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
 
 const jwt = require('jsonwebtoken');
 
@@ -70,6 +71,25 @@ export class LeCampeonatoController {
         const leCampeonatoUseCase = new LeCampeonatoUseCase();
         
         const result = await leCampeonatoUseCase.execute({id: id?.toString() ?? '', cpf: cpf?.toString() ?? ''});
+        return res.status(201).json(result);
+    }
+}
+
+
+export class LeCampeonatoCriadoController {
+    async handle(req: Request, res: Response) {
+        
+        var cpf = '';
+        const token = req.headers['x-access-token']
+        const { id, id_criador } = req.query;
+        
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+        const leCampeonatoCriadoUseCase = new LeCampeonatoCriadoUseCase();
+        
+        const result = await leCampeonatoCriadoUseCase.execute({id: id?.toString() ?? '', cpf, id_criador: id_criador?.toString() ?? ''});
         return res.status(201).json(result);
     }
 }
