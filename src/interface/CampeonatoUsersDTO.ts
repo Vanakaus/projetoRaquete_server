@@ -1,4 +1,20 @@
 
+export interface AtualizaCampeonatoDTO {
+    cpfToken: string;
+    id: string;
+    id_criador: string;
+    nome: string;
+    descricao?: string;
+    regras: string;
+    classe: string;
+    numJogadores: number;
+    dataInicio: Date;
+    dataFim: Date;
+    premiacao: string;
+    local: string;
+}
+
+
 export interface CreateCampeonatoDTO {
     cpfToken: string;
     cpf: string;
