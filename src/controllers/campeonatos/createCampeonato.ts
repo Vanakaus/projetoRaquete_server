@@ -6,7 +6,7 @@ import { CreateCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 export class CreateCampeonatoUseCase{
-    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
+    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInscricao, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
 
         if(cpfToken !== cpf){
             console.log("CPF não corresponde ao token");
@@ -39,6 +39,7 @@ export class CreateCampeonatoUseCase{
             throw new AppError('Nome de campeonato indisponível');
         }
 
+        dataInscricao = new Date(dataInscricao);
         dataInicio = new Date(dataInicio);
         dataFim = new Date(dataFim);
 
@@ -53,6 +54,7 @@ export class CreateCampeonatoUseCase{
                 numJogadores,
                 premiacao,
                 local,
+                dataInscricao,
                 dataInicio,
                 dataFim
             }

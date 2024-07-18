@@ -58,6 +58,7 @@ model Campeonatos {
   numJogadores    Int
   premiacao       String?
   local           String?
+  dataInscricao   DateTime
   dataInicio      DateTime
   dataFim         DateTime
   status          String      @default("inscricao")

@@ -23,6 +23,7 @@ export interface CreateCampeonatoDTO {
     regras: string;
     classe: string;
     numJogadores: number;
+    dataInscricao: Date;
     dataInicio: Date;
     dataFim: Date;
 

@@ -20,7 +20,27 @@ export class CreateInscricaoUseCase{
             }
         });
 
+
+        const campeonato = await prisma.campeonatos.findFirst({
+            select: {
+                dataInscricao: true
+            },
+            where: {
+                id: id_campeonato
+            }
+        });
+
         console.log("\nResposta: ");
+
+        if(!campeonato){
+            console.log("Campeonato não encontrado");
+            throw new AppError('Campeonato não encontrado');
+        }
+
+        if(new Date(campeonato.dataInscricao) < new Date()){
+            console.log("Inscrições encerradas");
+            throw new AppError('Inscrições encerradas');
+        }
 
         if(userInscrito){
             console.log("Usuário já inscrito no campeonato");
