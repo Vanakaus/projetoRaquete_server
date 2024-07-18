@@ -60,7 +60,7 @@ export class LoginUserController {
         // Gera o token JWT
         const cpf = result.cpf;
         const token = jwt.sign({ cpf }, process.env.JWT_SECRET, {
-            expiresIn: '1h'
+            expiresIn: '10h'
         });
 
 
