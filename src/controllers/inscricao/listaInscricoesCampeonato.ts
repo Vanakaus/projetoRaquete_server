@@ -30,7 +30,9 @@ export class ListaInscricoesCampeonatoUseCase{
                     select: {
                         username: true,
                         nome: true,
-                        sobrenome: true
+                        sobrenome: true,
+                        rank: true,
+                        classe: true
                     }
                 }
             },

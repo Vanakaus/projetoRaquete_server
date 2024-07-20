@@ -3,6 +3,7 @@ import { informativo } from "../middlewares";
 import { userRoutes } from "./user.routes";
 import { campenatoRoutes } from "./campeonatos.routes";
 import { inscricaoRoutes } from "./inscricao.routes";
+import { chavesRoutes } from "./chaves.routes";
 
 
 const routes = Router();
@@ -17,6 +18,7 @@ routes.get('/', informativo, (req, res) => {
 routes.use('/users', userRoutes);
 routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
+routes.use('/chaves', chavesRoutes);
 
 
 export { routes };

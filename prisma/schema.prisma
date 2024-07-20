@@ -25,7 +25,8 @@ model User {
   telefone          String?
   celular           String?
   cargo             String            @default("Jogador")
-  rank              String?           @default("Sem Rank")
+  rank              Int               @default(0)
+  classe            String            @default("Classe 6")
 
   disponibilidade   Disponibilidade[] @relation("jogador")
   campeonatos       Campeonatos[]     @relation("criador")
@@ -43,7 +44,7 @@ model Disponibilidade {
 
   jogador     User        @relation("jogador", fields: [id_jogador], references: [cpf])
 
-  @@map("atividade")
+  @@map("disponibilidade")
 }
 
 
@@ -97,18 +98,19 @@ model Inscricao {
 
 model Partidas {
   id              Int         @id @default(autoincrement())
-  id_campeonato   String      @unique
+  id_campeonato   String
   chave           String
-  id_jogador1     Int         @unique
-  id_jogador2     Int         @unique
+  id_jogador1     Int
+  id_jogador2     Int?
   pontuacaoJog1   Int         @default(0)
   pontuacaoJog2   Int         @default(0)
   id_vencedor     Int?
   dataPartida     DateTime?
+  localPartida    String?
 
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
   jogador1        Inscricao   @relation("jogador1", fields: [id_jogador1], references: [id])
-  jogador2        Inscricao   @relation("jogador2", fields: [id_jogador2], references: [id])
+  jogador2        Inscricao?  @relation("jogador2", fields: [id_jogador2], references: [id])
   
   @@map("partidas")
 }
