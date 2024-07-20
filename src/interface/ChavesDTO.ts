@@ -11,3 +11,10 @@ export interface LimparChaveDTO {
     id_jogador: string;
     id_campeonato: string;
 }
+
+
+export interface ListarChaveDTO {
+    cpf: string;
+    id_jogador: string;
+    id_campeonato: string;
+}

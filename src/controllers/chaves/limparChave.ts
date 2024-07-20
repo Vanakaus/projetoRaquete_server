@@ -13,7 +13,6 @@ export class LimparChaveUseCase{
         }
         
         
-        // Busca todos os incritos no campeonato
         const campeonato = await prisma.campeonatos.findUnique({
             where: {
                 id: id_campeonato

@@ -13,7 +13,6 @@ export class GerarChaveUseCase{
         }
         
         
-        // Busca todos os incritos no campeonato
         const campeonato = await prisma.campeonatos.findUnique({
             where: {
                 id: id_campeonato
@@ -127,6 +126,7 @@ export class GerarChaveUseCase{
                         id_campeonato,
                         chave,
                         id_jogador1: inscricoes[i].id,
+                        id_vencedor: inscricoes[i].id
                     }
                 });
             }
