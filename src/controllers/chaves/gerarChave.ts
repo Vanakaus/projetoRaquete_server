@@ -1,6 +1,7 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { GerarChaveDTO } from "../../interface/ChavesDTO";
+import formataNumero from "../../functions/formatarNumero";
 
 
 
@@ -147,10 +148,4 @@ export class GerarChaveUseCase{
 
         return partidas;
     }
-}
-
-
-
-function formataNumero(numero: number){
-    return numero < 10 ? '0' + numero : numero;
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
 import { verificaJWT } from "../middlewares/verificaJWT";
-import { GerarChaveController, LimparChaveController, ListarChavesController } from "../controllers/chaves/controller";
+import { AtualizarPlacarController, GerarChaveController, LimparChaveController, ListarChavesController } from "../controllers/chaves/controller";
 
 
 
@@ -10,12 +10,14 @@ const chavesRoutes = Router();
 const gerarChaveController  = new GerarChaveController();
 const limparChaveController = new LimparChaveController();
 const listarChavesController = new ListarChavesController();
+const atualizarPlacarController = new AtualizarPlacarController();
 
 
 
 chavesRoutes.get('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
 chavesRoutes.get('/limparChaves', informativo, verificaJWT, limparChaveController.handle);
 chavesRoutes.get('/listarChaves', informativo, verificaJWT, listarChavesController.handle);
+chavesRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);
 
 
 
