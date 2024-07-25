@@ -82,6 +82,9 @@ export class ListarChavesUseCase{
             },
             where: {
                 id_campeonato
+            },
+            orderBy: {
+                chave: 'asc'
             }
         });
 

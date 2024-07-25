@@ -85,7 +85,9 @@ export class GerarChaveUseCase{
         console.log("\nChaves: ");
         for(let i = 0; i < qtdPartidas/2; i++){
 
-            const chave = formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(i + 1);
+            let chave = (i % 2 === 0) ?
+            formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil((i + 1)/2)) :
+            formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil(qtdPartidas/4 + i/2));
 
             // console.log("Chave: ", chave);
             // console.log("\tJogador 1:");
