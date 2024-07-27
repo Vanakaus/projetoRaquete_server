@@ -86,7 +86,7 @@ export class AtualizarPlacarController {
     async handle(req: Request, res: Response) {
         
         let cpf = '';
-        const { id, id_jogador, chave, id_jogador1, id_jogador2, pontuacaoJog1, pontuacaoJog2, id_vencedor } = req.body;
+        const { id, id_jogador, pontuacaoJog1, pontuacaoJog2, id_vencedor } = req.body;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -96,9 +96,9 @@ export class AtualizarPlacarController {
 
         const atualizarPlacarUseCase = new AtualizarPlacarUseCase();
         
-        const result = await atualizarPlacarUseCase.execute({ cpf, id, id_jogador, chave, id_jogador1, id_jogador2, pontuacaoJog1, pontuacaoJog2, id_vencedor }) as any;
+        const result = await atualizarPlacarUseCase.execute({ cpf, id, id_jogador, pontuacaoJog1, pontuacaoJog2, id_vencedor }) as any;
         result.status= "success";
-        result.mensagem = "Chaves deletadas com sucesso";
+        result.mensagem = "Placar atualizado com sucesso";
 
         return res.status(201).json(result);
     }

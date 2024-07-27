@@ -6,7 +6,7 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class AtualizarPlacarUseCase{
-    async execute({cpf, id, id_jogador, chave, id_jogador1, id_jogador2, pontuacaoJog1, pontuacaoJog2, id_vencedor}: AtualizarPlacarDTO): Promise<any>{ 
+    async execute({cpf, id, id_jogador, pontuacaoJog1, pontuacaoJog2, id_vencedor}: AtualizarPlacarDTO): Promise<any>{ 
 
         if(cpf !== id_jogador){
             console.log("CPF não corresponde ao token");
@@ -33,12 +33,12 @@ export class AtualizarPlacarUseCase{
             throw new AppError('Pontuação inválida\n\n\n');
         }
 
-        if(pontuacaoJog1 > pontuacaoJog2 && id_jogador1 !== id_vencedor){
+        if(pontuacaoJog1 > pontuacaoJog2 && partida.id_jogador1 !== id_vencedor){
             console.log("Id do jogador 1 não corresponde ao vencedor");
             throw new AppError('Id do jogador 1 não corresponde ao vencedor\n\n\n');
         }
 
-        if(pontuacaoJog2 > pontuacaoJog1 && id_jogador2 !== id_vencedor){
+        if(pontuacaoJog2 > pontuacaoJog1 && partida.id_jogador2 !== id_vencedor){
             console.log("Id do jogador 2 não corresponde ao vencedor");
             throw new AppError('Id do jogador 2 não corresponde ao vencedor\n\n\n');
         }
@@ -63,7 +63,7 @@ export class AtualizarPlacarUseCase{
 
         console.log("\n\nAtualizando próxima partida");
 
-        const novaChave = formataNumero( Number( chave.substring(0, 2) ) ) + ":" + formataNumero( Math.ceil( Number(chave.substring(3, 5)) / 2 ) );
+        const novaChave = formataNumero( Number(partida.chave.substring(0, 2)) / 2 ) + ":" + formataNumero( Math.ceil(Number(partida.chave.substring(3, 5)) / 2) );
 
         let novaPartida = await prisma.partidas.findFirst({
             where: {
@@ -79,7 +79,7 @@ export class AtualizarPlacarUseCase{
             console.log("\n\nPróxima partida encontrada");
             console.log(novaPartida);
 
-            if(novaPartida.id_jogador1){
+            if(Number(partida.chave.substring(3, 5)) % 2 === 1){
 
                 console.log("\n\nAtualizando jogador 1");
                 novaPartida = await prisma.partidas.update({
@@ -87,14 +87,14 @@ export class AtualizarPlacarUseCase{
                         id: novaPartida.id
                     },
                     data: {
-                        id_jogador2: id_vencedor
+                        id_jogador1: id_vencedor
                     }
                 });
 
                 console.log("\n\nPartida atualizada com sucesso");
                 console.log(partidaAtualizada);
 
-            }else if(novaPartida.id_jogador2){
+            }else if(Number(partida.chave.substring(3, 5)) % 2 === 0){
 
                 console.log("\n\nAtualizando jogador 2");
                 novaPartida = await prisma.partidas.update({
@@ -102,7 +102,7 @@ export class AtualizarPlacarUseCase{
                         id: novaPartida.id
                     },
                     data: {
-                        id_jogador1: id_vencedor
+                        id_jogador2: id_vencedor
                     }
                 });
 
@@ -117,7 +117,7 @@ export class AtualizarPlacarUseCase{
 
             console.log("\n\nPróxima partida não encontrada. Criando nova partida");
 
-            if( Number(chave.substring(3, 5)) % 2 === 1){
+            if( Number(partida.chave.substring(3, 5)) % 2 === 1){
                 novaPartida = await prisma.partidas.create({
                     data: {
                         id_campeonato: partida.id_campeonato,
@@ -129,7 +129,7 @@ export class AtualizarPlacarUseCase{
                 console.log("\n\nPartida criada com sucesso");
                 console.log(novaPartida);
 
-            }else if( Number(chave.substring(3, 5)) % 2 === 0){
+            }else if( Number(partida.chave.substring(3, 5)) % 2 === 0){
                 novaPartida = await prisma.partidas.create({
                     data: {
                         id_campeonato: partida.id_campeonato,
