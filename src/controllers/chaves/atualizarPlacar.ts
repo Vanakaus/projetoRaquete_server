@@ -6,7 +6,7 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class AtualizarPlacarUseCase{
-    async execute({cpf, id, id_jogador, pontuacaoJog1, pontuacaoJog2, id_vencedor}: AtualizarPlacarDTO): Promise<any>{ 
+    async execute({cpf, id, id_jogador, pontuacao1, pontuacao2, id_vencedor}: AtualizarPlacarDTO): Promise<any>{ 
 
         if(cpf !== id_jogador){
             console.log("CPF não corresponde ao token");
@@ -28,17 +28,19 @@ export class AtualizarPlacarUseCase{
             throw new AppError('Partida não encontrada\n\n\n' + partida);
         }
 
-        if(Number(pontuacaoJog1) < 0 || Number(pontuacaoJog2) < 0 || pontuacaoJog1 === pontuacaoJog2){
+        if(Number(pontuacao1) < 0 || Number(pontuacao2) < 0 || pontuacao1 === pontuacao2){
             console.log("Pontuação inválida");
+            console.log("Pontuação 1: ", pontuacao1);
+            console.log("Pontuação 2: ", pontuacao2);
             throw new AppError('Pontuação inválida\n\n\n');
         }
 
-        if(pontuacaoJog1 > pontuacaoJog2 && partida.id_jogador1 !== id_vencedor){
+        if(pontuacao1 > pontuacao2 && partida.id_jogador1 !== id_vencedor){
             console.log("Id do jogador 1 não corresponde ao vencedor");
             throw new AppError('Id do jogador 1 não corresponde ao vencedor\n\n\n');
         }
 
-        if(pontuacaoJog2 > pontuacaoJog1 && partida.id_jogador2 !== id_vencedor){
+        if(pontuacao2 > pontuacao1 && partida.id_jogador2 !== id_vencedor){
             console.log("Id do jogador 2 não corresponde ao vencedor");
             throw new AppError('Id do jogador 2 não corresponde ao vencedor\n\n\n');
         }
@@ -49,8 +51,8 @@ export class AtualizarPlacarUseCase{
                 id
             },
             data: {
-                pontuacaoJog1,
-                pontuacaoJog2,
+                pontuacao1,
+                pontuacao2,
                 id_vencedor
             }
         });
@@ -91,9 +93,6 @@ export class AtualizarPlacarUseCase{
                     }
                 });
 
-                console.log("\n\nPartida atualizada com sucesso");
-                console.log(partidaAtualizada);
-
             }else if(Number(partida.chave.substring(3, 5)) % 2 === 0){
 
                 console.log("\n\nAtualizando jogador 2");
@@ -105,12 +104,10 @@ export class AtualizarPlacarUseCase{
                         id_jogador2: id_vencedor
                     }
                 });
-
-                console.log("\n\nPartida atualizada com sucesso");
-                console.log(partidaAtualizada);
-                
             }
-
+            
+            console.log("\n\nPartida atualizada com sucesso");
+            console.log(partidaAtualizada);
 
 
         }else{
@@ -126,9 +123,6 @@ export class AtualizarPlacarUseCase{
                     }
                 });
 
-                console.log("\n\nPartida criada com sucesso");
-                console.log(novaPartida);
-
             }else if( Number(partida.chave.substring(3, 5)) % 2 === 0){
                 novaPartida = await prisma.partidas.create({
                     data: {
@@ -137,16 +131,63 @@ export class AtualizarPlacarUseCase{
                         id_jogador2: id_vencedor
                     }
                 });
+            }
 
                 console.log("\n\nPartida criada com sucesso");
                 console.log(novaPartida);
 
-            }
         }
 
+        novaPartida = await prisma.partidas.findFirst({
+            select:{
+                id: true,
+                id_campeonato: true,
+                chave: true,
+                id_jogador1: true,
+                id_jogador2: true,
+                pontuacao1: true,
+                pontuacao2: true,
+                id_vencedor: true,
+                dataPartida: true,
+                localPartida: true,
+                jogador1: {
+                    select: {
+                        jogador: {
+                            select: {
+                                username: true,
+                                nome: true,
+                                sobrenome: true,
+                                rank: true
+                            }
+                        }
+                    }
+                },
+                jogador2: {
+                    select: {
+                        jogador: {
+                            select: {
+                                username: true,
+                                nome: true,
+                                sobrenome: true,
+                                rank: true
+                            }
+                        }
+                    }
+                },
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
+            },
+            where: {
+                id: novaPartida?.id
+            }
+        });
 
 
-        return { partida, novaPartida };
+
+        return { partidaAtualizada, novaPartida};
     }
 }
 

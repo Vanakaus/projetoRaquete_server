@@ -102,8 +102,8 @@ model Partidas {
   chave           String
   id_jogador1     Int?
   id_jogador2     Int?
-  pontuacaoJog1   Int         @default(0)
-  pontuacaoJog2   Int         @default(0)
+  pontuacao1   Int         @default(0)
+  pontuacao2   Int         @default(0)
   id_vencedor     Int?
   dataPartida     DateTime?
   localPartida    String?

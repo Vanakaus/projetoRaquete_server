@@ -35,7 +35,7 @@ export interface AtualizarPlacarDTO {
     id: number;
     id_jogador: string;
 
-    pontuacaoJog1: number;
-    pontuacaoJog2: number;
+    pontuacao1: number;
+    pontuacao2: number;
     id_vencedor: number;
 }
