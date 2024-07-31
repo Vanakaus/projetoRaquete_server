@@ -16,7 +16,7 @@ const atualizarPlacarController = new AtualizarPlacarController();
 
 chavesRoutes.get('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
 chavesRoutes.get('/limparChaves', informativo, verificaJWT, limparChaveController.handle);
-chavesRoutes.get('/listarChaves', informativo, verificaJWT, listarChavesController.handle);
+chavesRoutes.get('/listarChaves', informativo, listarChavesController.handle);
 chavesRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);
 
 

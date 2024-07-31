@@ -5,13 +5,8 @@ import { ListarChaveDTO } from "../../interface/ChavesDTO";
 
 
 export class ListarChavesUseCase{
-    async execute({cpf, id_jogador, id_campeonato}: ListarChaveDTO): Promise<any>{
+    async execute({id_campeonato}: ListarChaveDTO): Promise<any>{
 
-        if(cpf !== id_jogador){
-            console.log("CPF não corresponde ao token");
-            throw new AppError('CPF não corresponde ao token\nRefaça o login');
-        }
-        
         
         const campeonato = await prisma.campeonatos.findUnique({
             where: {

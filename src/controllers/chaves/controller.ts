@@ -61,19 +61,11 @@ export class LimparChaveController {
 export class ListarChavesController {
     async handle(req: Request, res: Response) {
         
-        var cpf = '';
-        const { id_jogador } = req.query as any;
         const { id_campeonato } = req.query as any;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
 
         const listarChavesUseCase = new ListarChavesUseCase();
         
-        const result = await listarChavesUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
+        const result = await listarChavesUseCase.execute({ id_campeonato }) as any;
         result.status= "success";
         result.mensagem = "Chaves deletadas com sucesso";
 
