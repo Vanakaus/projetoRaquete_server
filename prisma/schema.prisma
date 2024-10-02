@@ -57,6 +57,7 @@ model Campeonatos {
   regras          String
   classe          String      @default("aberto")
   numJogadores    Int
+  games           Int         @default(3)
   premiacao       String?
   local           String?
   dataInscricao   DateTime
@@ -102,8 +103,8 @@ model Partidas {
   chave           String
   id_jogador1     Int?
   id_jogador2     Int?
-  pontuacao1   Int         @default(0)
-  pontuacao2   Int         @default(0)
+  id_pontuacao1   Int
+  id_pontuacao2   Int
   id_vencedor     Int?
   dataPartida     DateTime?
   localPartida    String?
@@ -111,8 +112,34 @@ model Partidas {
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
   jogador1        Inscricao?  @relation("jogador1", fields: [id_jogador1], references: [id])
   jogador2        Inscricao?  @relation("jogador2", fields: [id_jogador2], references: [id])
+  placar1         Placar      @relation("placar1", fields: [id_pontuacao1], references: [id])
+  placar2         Placar      @relation("placar2", fields: [id_pontuacao2], references: [id])
+  
   
   @@map("partidas")
+}
+
+
+
+
+model Placar {
+  id              Int         @id @default(autoincrement())
+  set1            Int       @default(-1)
+  set2            Int       @default(-1)
+  set3            Int       @default(-1)
+  set4            Int       @default(-1)
+  set5            Int       @default(-1)
+  tiebreak1       Boolean   @default(false)
+  tiebreak2     	Boolean   @default(false)
+  tiebreak3     	Boolean   @default(false)
+  tiebreak4     	Boolean   @default(false)
+  tiebreak5     	Boolean   @default(false)
+
+
+  PartidasJog1 Partidas[] @relation("placar1")
+  PartidasJog2 Partidas[] @relation("placar2")
+  
+  @@map("placar")
 }
 
 

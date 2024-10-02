@@ -40,11 +40,11 @@ export class ListarChavesUseCase{
                 chave: true,
                 id_jogador1: true,
                 id_jogador2: true,
-                pontuacao1: true,
-                pontuacao2: true,
                 id_vencedor: true,
                 dataPartida: true,
                 localPartida: true,
+                placar1: true,
+                placar2: true,
                 campeonato: {
                     select: {
                         nome: true
@@ -84,8 +84,8 @@ export class ListarChavesUseCase{
         });
 
         
-        console.log("\n\nChaves listadas com sucesso");
-        console.log(partidas);
+        console.log("\n\nChaves listadas com sucesso: ", partidas.length);
+        // console.log(partidas);
         console.log("\n\n");
 
 

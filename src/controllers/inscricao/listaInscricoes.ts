@@ -60,7 +60,7 @@ export class ListaInscricoesUseCase{
             
         }
 
-        console.log("Campeonatos listados: " + inscricoes.length);
+        console.log("Inscrições listadas: " + inscricoes.length);
         
 
         return inscricoes;

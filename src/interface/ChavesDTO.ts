@@ -33,7 +33,9 @@ export interface AtualizarPlacarDTO {
     id: number;
     id_jogador: string;
 
-    pontuacao1: number;
-    pontuacao2: number;
+    novoPS1: [ number, number, number, number, number ];
+    novoPS2: [ number, number, number, number, number ];
+    novoPT1: [ boolean, boolean, boolean, boolean, boolean ];
+    novoPT2: [ boolean, boolean, boolean, boolean, boolean ];
     id_vencedor: number;
 }

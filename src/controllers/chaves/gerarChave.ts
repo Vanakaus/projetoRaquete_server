@@ -90,6 +90,9 @@ export class GerarChaveUseCase{
             formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil((i + 1)/2)) :
             formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil(qtdPartidas/4 + i/2));
 
+            const placar1 = await prisma.placar.create({});
+            const placar2 = await prisma.placar.create({});
+
             // console.log("Chave: ", chave);
             // console.log("\tJogador 1:");
             // console.log("\t\tID: " + inscricoes[i].id);
@@ -112,7 +115,9 @@ export class GerarChaveUseCase{
                         id_campeonato,
                         chave,
                         id_jogador1: inscricoes[i].id,
-                        id_jogador2: inscricoes[qtdPartidas - i].id
+                        id_jogador2: inscricoes[qtdPartidas - i].id,
+                        id_pontuacao1: placar1.id,
+                        id_pontuacao2: placar2.id
                     }
                 });
             } else {
@@ -124,12 +129,30 @@ export class GerarChaveUseCase{
                 // console.log("\t\tRank: ");
 
 
-                const partida = await prisma.partidas.create({
+                var partida = await prisma.partidas.create({
                     data: {
                         id_campeonato,
                         chave,
                         id_jogador1: inscricoes[i].id,
-                        id_vencedor: inscricoes[i].id
+                        id_vencedor: inscricoes[i].id,
+                        id_pontuacao1: placar1.id,
+                        id_pontuacao2: placar2.id
+                    }
+                });
+
+
+                const placar1Aux = await prisma.placar.create({});
+                const placar2Aux = await prisma.placar.create({});
+
+                const novaChave = formataNumero( Number(partida.chave.substring(0, 2)) / 2 ) + ":" + formataNumero( Math.ceil(Number(partida.chave.substring(3, 5)) / 2) );
+
+                partida = await prisma.partidas.create({
+                    data: {
+                        id_campeonato,
+                        chave: novaChave,
+                        id_jogador1: inscricoes[i].id,
+                        id_pontuacao1: placar1Aux.id,
+                        id_pontuacao2: placar2Aux.id
                     }
                 });
             }
