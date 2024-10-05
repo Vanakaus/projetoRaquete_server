@@ -57,7 +57,7 @@ model Campeonatos {
   regras          String
   classe          String      @default("aberto")
   numJogadores    Int
-  games           Int         @default(3)
+  sets            Int         @default(3)
   premiacao       String?
   local           String?
   dataInscricao   DateTime

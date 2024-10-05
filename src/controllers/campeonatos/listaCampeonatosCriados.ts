@@ -20,6 +20,7 @@ export class ListaCampeonatosCriadosUseCase{
                 classe: true,
                 numJogadores: true,
                 premiacao: true,
+                sets: true,
                 local: true,
                 status: true,
                 dataInicio: true,

@@ -14,7 +14,7 @@ export class AtualizaCampeonatoController {
     async handle(req: Request, res: Response) {
         
         var cpfToken = '';
-        const { id_criador, id, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim } = req.body;
+        const { id_criador, id, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim } = req.body;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -24,7 +24,7 @@ export class AtualizaCampeonatoController {
 
         const createCampeonatoUseCase = new AtualizaCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}) as any;
+        const result = await createCampeonatoUseCase.execute({ cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato atualizado com sucesso";
 
@@ -38,7 +38,7 @@ export class CreateCampeonatoController {
     async handle(req: Request, res: Response) {
         
         var cpfToken = '';
-        const { cpf, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInscricao, dataInicio, dataFim } = req.body;
+        const { cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInscricao, dataInicio, dataFim } = req.body;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -48,7 +48,7 @@ export class CreateCampeonatoController {
 
         const createCampeonatoUseCase = new CreateCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, local,dataInscricao, dataInicio, dataFim}) as any;
+        const result = await createCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local,dataInscricao, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 

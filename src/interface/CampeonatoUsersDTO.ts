@@ -11,6 +11,7 @@ export interface AtualizaCampeonatoDTO {
     dataInicio: Date;
     dataFim: Date;
     premiacao: string;
+    sets: number;
     local: string;
 }
 
@@ -26,6 +27,7 @@ export interface CreateCampeonatoDTO {
     dataInscricao: Date;
     dataInicio: Date;
     dataFim: Date;
+    sets: number;
 
     // Opicional
     premiacao?: string;

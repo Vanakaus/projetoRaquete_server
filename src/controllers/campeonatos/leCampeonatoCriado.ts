@@ -25,6 +25,7 @@ export class LeCampeonatoCriadoUseCase{
                 classe: true,
                 numJogadores: true,
                 premiacao: true,
+                sets: true,
                 local: true,
                 dataInicio: true,
                 dataFim: true,

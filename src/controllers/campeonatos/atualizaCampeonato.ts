@@ -6,7 +6,7 @@ import { AtualizaCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 export class AtualizaCampeonatoUseCase{
-    async execute({cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, local, dataInicio, dataFim}: AtualizaCampeonatoDTO): Promise<User>{
+    async execute({cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim}: AtualizaCampeonatoDTO): Promise<User>{
 
         if(cpfToken !== id_criador){
             console.log("CPF não corresponde ao token");
@@ -45,6 +45,7 @@ export class AtualizaCampeonatoUseCase{
                 classe,
                 numJogadores,
                 premiacao,
+                sets,
                 local,
                 dataInicio,
                 dataFim
