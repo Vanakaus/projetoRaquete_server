@@ -39,3 +39,11 @@ export interface AtualizarPlacarDTO {
     novoPT2: [ boolean, boolean, boolean, boolean, boolean ];
     id_vencedor: number;
 }
+
+
+export interface AtualizarDatasDTO {
+    cpf: string;
+    id_jogador: string;
+
+    novasDatas: [ { id: number, data: string } ];
+}

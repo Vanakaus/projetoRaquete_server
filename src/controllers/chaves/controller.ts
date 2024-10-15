@@ -4,6 +4,7 @@ import { LimparChaveUseCase } from "./limparChave";
 import { ListarChavesUseCase } from "./listarChaves";
 import { AtualizarPlacarUseCase } from "./atualizarPlacar";
 import { AtualizarPlacarDTO } from "../../interface/ChavesDTO";
+import { AtualizardatasUseCase } from "./atualizarDatas";
 
 const jwt = require('jsonwebtoken');
 
@@ -93,6 +94,40 @@ export class AtualizarPlacarController {
         result.mensagem = "Placar atualizado com sucesso";
 
         return res.status(201).json(result);
+    }
+}
+
+
+export class AtualizarDatasController {
+    async handle(req: Request, res: Response) {
+        
+        let cpf = '';
+        const { id_jogador, novasDatas } = req.body;
+        const token = req.headers['x-access-token']
+
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+
+        const atualizarDatasUseCase = new AtualizardatasUseCase();
+        
+        const result = await atualizarDatasUseCase.execute({ cpf, id_jogador, novasDatas }) as any;
+
+        
+        if(result.partidasNaoAtualizadas.length > 0){
+            result.status= "error";
+
+            if(result.partidasAtualizadas.length > 0)
+                result.mensagem = "Algumas partidas não foram encontradas";
+            else
+                result.mensagem = "Nenhuma partida foi encontrada";
+            return res.status(400).json(result);
+        } else {
+            result.status= "success";
+            result.mensagem = "Datas atualizadas com sucesso";
+            return res.status(201).json(result);
+        }
     }
 }
 
