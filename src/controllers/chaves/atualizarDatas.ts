@@ -1,7 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { AtualizarDatasDTO } from "../../interface/ChavesDTO";
-import formataNumero from "../../functions/formatarNumero";
 
 
 
@@ -22,12 +21,10 @@ export class AtualizardatasUseCase{
 
         console.log("\nAtualizando datas");
 
-        const partidasAtualizadas = [] as Number[];
-        const partidasNaoAtualizadas = [] as Number[];
+        const partidasAtualizadas = [] as { id: number, data: string } [];
+        const partidasNaoAtualizadas = [] as { id: number, data: string }[];
 
         for (const data of novasDatas) {
-
-            console.log("Atualizando partida com id: " + data.id + " para data: " + data.data);
 
             const partida = await prisma.partidas.findUnique({
                 where: {
@@ -36,8 +33,7 @@ export class AtualizardatasUseCase{
             });
 
             if(!partida){
-                console.log("Partida não encontrada");
-                partidasNaoAtualizadas.push(data.id);
+                partidasNaoAtualizadas.push(data);
                 continue;
             }
 
@@ -50,7 +46,11 @@ export class AtualizardatasUseCase{
                 }
             });
 
-            partidasAtualizadas.push(partidaAtualizada.id);
+            if(!partidaAtualizada){
+                partidasNaoAtualizadas.push({ id: data.id, data: new Date().toISOString() });
+            } else {
+                partidasAtualizadas.push({ id: data.id, data: data.data });
+            }
         }
 
         console.log("Partidas atualizadas: ");
