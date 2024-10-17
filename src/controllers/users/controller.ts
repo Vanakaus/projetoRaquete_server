@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { CriaUserUseCase } from "./criaUser";
 import { ListUserUseCase } from "./listUsers";
 import { LoginUserUseCase } from "./loginUser";
-import { UpdateUserUseCase } from "./updateUser";
-import { UpdatePasswordUseCase } from "./updatePassword";
+import { AtualizaUserUseCase } from "./atualizaUser";
+import { AtualizaPasswordUseCase } from "./atualizaPassword";
 
 const jwt = require('jsonwebtoken');
 
@@ -74,7 +74,7 @@ export class LoginUserController {
 
 
 
-export class UpdateUserController {
+export class AtualizaUserController {
     async handle(req: Request, res: Response) {
         
         
@@ -87,9 +87,9 @@ export class UpdateUserController {
         });
 
 
-        const updateUserUseCase = new UpdateUserUseCase();
+        const atualizaUserUseCase = new AtualizaUserUseCase();
         
-        const result = await updateUserUseCase.execute({ cpf, email, novoEmail, username, telefone, celular }) as any;
+        const result = await atualizaUserUseCase.execute({ cpf, email, novoEmail, username, telefone, celular }) as any;
         result.status= "success";
         result.mensagem = "Dados atualizados com sucesso";
 
@@ -99,7 +99,7 @@ export class UpdateUserController {
 
 
 
-export class UpdatePasswordController {
+export class AtualizaPasswordController {
     async handle(req: Request, res: Response) {
         
         var cpf = '';
@@ -111,9 +111,9 @@ export class UpdatePasswordController {
         });
 
 
-        const updateUserUseCase = new UpdatePasswordUseCase();
+        const atualizaUserUseCase = new AtualizaPasswordUseCase();
         
-        const result = await updateUserUseCase.execute({ cpf, email, senha, novaSenha }) as any;
+        const result = await atualizaUserUseCase.execute({ cpf, email, senha, novaSenha }) as any;
         result.status= "success";
         result.mensagem = "Senha atualizada com sucesso";
 

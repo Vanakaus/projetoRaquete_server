@@ -1,12 +1,12 @@
 import { prisma } from "../../prisma/client";
-import { UpdatePasswordDTO } from "../../interface/UsersDTO";
+import { AtualizaPasswordDTO } from "../../interface/UsersDTO";
 import { AppError } from "../../errors/AppErrors";
 import { hashSenha, verificaSenha } from "../../services/hashPassword";
 
 
 
-export class UpdatePasswordUseCase{
-    async execute({ cpf, email, senha, novaSenha}: UpdatePasswordDTO): Promise<any>{
+export class AtualizaPasswordUseCase{
+    async execute({ cpf, email, senha, novaSenha}: AtualizaPasswordDTO): Promise<any>{
         
         const userExiste = await prisma.user.findFirst({
             where: {

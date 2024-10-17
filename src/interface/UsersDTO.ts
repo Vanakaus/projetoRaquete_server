@@ -19,7 +19,7 @@ export interface LoginUserDTO {
 }
 
 
-export interface UpdateUserDTO {
+export interface AtualizaUserDTO {
     cpf: string;
     email: string;
     novoEmail: string;
@@ -29,7 +29,7 @@ export interface UpdateUserDTO {
 }
 
 
-export interface UpdatePasswordDTO {
+export interface AtualizaPasswordDTO {
     cpf: string;
     email: string;
     senha: string;

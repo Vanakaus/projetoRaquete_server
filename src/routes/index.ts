@@ -20,7 +20,7 @@ routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
 routes.use('/partidas', partidasRoutes);
 routes.use('/horarios', horariosRoutes);
-routes.use('/quadras', quadrasRoutes);
+// routes.use('/quadras', quadrasRoutes);
 
 
 export { routes };
