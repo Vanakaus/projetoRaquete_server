@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateInscricaoUseCase } from "./createInscricao";
+import { CriaInscricaoUseCase } from "./criaInscricao";
 import { ListaInscricoesUseCase } from "./listaInscricoes";
 import { ListaInscricoesCampeonatoUseCase } from "./listaInscricoesCampeonato";
 
@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 
 
-export class CreateInscricaoController {
+export class CriaInscricaoController {
     async handle(req: Request, res: Response) {
         
         var cpf = '';
@@ -19,9 +19,9 @@ export class CreateInscricaoController {
         });
 
 
-        const createInscricaoUseCase = new CreateInscricaoUseCase();
+        const criaInscricaoUseCase = new CriaInscricaoUseCase();
         
-        const result = await createInscricaoUseCase.execute({ cpf, id_campeonato, id_jogador }) as any;
+        const result = await criaInscricaoUseCase.execute({ cpf, id_campeonato, id_jogador }) as any;
         result.status= "success";
         result.mensagem = "Inscrição realizada com sucesso";
 

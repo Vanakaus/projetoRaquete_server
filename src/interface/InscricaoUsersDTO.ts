@@ -1,5 +1,5 @@
 
-export interface CreateInscricaoDTO {
+export interface CriaInscricaoDTO {
     cpf: string;
     id_campeonato: string;
     id_jogador: string;

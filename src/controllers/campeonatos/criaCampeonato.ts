@@ -1,12 +1,12 @@
 import { User } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { CreateCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
+import { CriaCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 
-export class CreateCampeonatoUseCase{
-    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInscricao, dataInicio, dataFim}: CreateCampeonatoDTO): Promise<User>{
+export class CriaCampeonatoUseCase{
+    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInscricao, dataInicio, dataFim}: CriaCampeonatoDTO): Promise<User>{
 
         if(cpfToken !== cpf){
             console.log("CPF não corresponde ao token");

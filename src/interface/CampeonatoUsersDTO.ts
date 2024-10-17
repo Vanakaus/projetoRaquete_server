@@ -16,7 +16,7 @@ export interface AtualizaCampeonatoDTO {
 }
 
 
-export interface CreateCampeonatoDTO {
+export interface CriaCampeonatoDTO {
     cpfToken: string;
     cpf: string;
     nome: string;

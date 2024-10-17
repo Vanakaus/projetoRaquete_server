@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserUseCase } from "./createUser";
+import { CriaUserUseCase } from "./criaUser";
 import { ListUserUseCase } from "./listUsers";
 import { LoginUserUseCase } from "./loginUser";
 import { UpdateUserUseCase } from "./updateUser";
@@ -19,13 +19,13 @@ export class VerificaJWTController {
 
 
 
-export class CreateUserController {
+export class CriaUserController {
     async handle(req: Request, res: Response) {
         
         const { cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular } = req.body;
-        const createUserUseCase = new CreateUserUseCase();
+        const criaUserUseCase = new CriaUserUseCase();
         
-        const result = await createUserUseCase.execute({ cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular }) as any;
+        const result = await criaUserUseCase.execute({ cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular }) as any;
         result.status= "success";
         result.mensagem = "Usuário cadastrado com sucesso";
 

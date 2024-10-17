@@ -3,7 +3,7 @@ import { informativo } from "../middlewares";
 import { userRoutes } from "./user.routes";
 import { campenatoRoutes } from "./campeonatos.routes";
 import { inscricaoRoutes } from "./inscricao.routes";
-import { poartidasRoutes } from "./partidas.routes";
+import { partidasRoutes } from "./partidas.routes";
 
 
 const routes = Router();
@@ -18,7 +18,9 @@ routes.get('/', informativo, (req, res) => {
 routes.use('/users', userRoutes);
 routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
-routes.use('/partidas', poartidasRoutes);
+routes.use('/partidas', partidasRoutes);
+routes.use('/horarios', horariosRoutes);
+routes.use('/quadras', quadrasRoutes);
 
 
 export { routes };

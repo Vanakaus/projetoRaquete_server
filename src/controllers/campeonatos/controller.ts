@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateCampeonatoUseCase } from "./createCampeonato";
+import { CriaCampeonatoUseCase } from "./criaCampeonato";
 import { ListaCampeonatosUseCase } from "./listaCampeonatos";
 import { LeCampeonatoUseCase } from "./leCampeonato";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
@@ -22,9 +22,9 @@ export class AtualizaCampeonatoController {
         });
 
 
-        const createCampeonatoUseCase = new AtualizaCampeonatoUseCase();
+        const criaCampeonatoUseCase = new AtualizaCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim}) as any;
+        const result = await criaCampeonatoUseCase.execute({ cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato atualizado com sucesso";
 
@@ -34,7 +34,7 @@ export class AtualizaCampeonatoController {
 
 
 
-export class CreateCampeonatoController {
+export class CriaCampeonatoController {
     async handle(req: Request, res: Response) {
         
         var cpfToken = '';
@@ -46,9 +46,9 @@ export class CreateCampeonatoController {
         });
 
 
-        const createCampeonatoUseCase = new CreateCampeonatoUseCase();
+        const criaCampeonatoUseCase = new CriaCampeonatoUseCase();
         
-        const result = await createCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local,dataInscricao, dataInicio, dataFim}) as any;
+        const result = await criaCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local,dataInscricao, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 

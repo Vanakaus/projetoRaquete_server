@@ -1,12 +1,12 @@
 import { Inscricao } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { CreateInscricaoDTO } from "../../interface/InscricaoUsersDTO";
+import { CriaInscricaoDTO } from "../../interface/InscricaoUsersDTO";
 
 
 
-export class CreateInscricaoUseCase{
-    async execute({cpf, id_campeonato, id_jogador}: CreateInscricaoDTO): Promise<Inscricao>{
+export class CriaInscricaoUseCase{
+    async execute({cpf, id_campeonato, id_jogador}: CriaInscricaoDTO): Promise<Inscricao>{
 
         if(cpf !== id_jogador){
             console.log("CPF não corresponde ao token");

@@ -5,7 +5,7 @@ import { AtualizarDatasController, AtualizarPlacarController, GerarChaveControll
 
 
 
-const poartidasRoutes = Router();
+const partidasRoutes = Router();
 
 const gerarChaveController  = new GerarChaveController();
 const limparChaveController = new LimparChaveController();
@@ -15,12 +15,12 @@ const atualizarDatasController = new AtualizarDatasController();
 
 
 
-poartidasRoutes.get('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
-poartidasRoutes.get('/limparChaves', informativo, verificaJWT, limparChaveController.handle);
-poartidasRoutes.get('/listarChaves', informativo, listarChavesController.handle);
-poartidasRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);
-poartidasRoutes.patch('/atualizarDatas', informativo, verificaJWT, atualizarDatasController.handle);
+partidasRoutes.get('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
+partidasRoutes.get('/limparChaves', informativo, verificaJWT, limparChaveController.handle);
+partidasRoutes.get('/listarChaves', informativo, listarChavesController.handle);
+partidasRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);
+partidasRoutes.patch('/atualizarDatas', informativo, verificaJWT, atualizarDatasController.handle);
 
 
 
-export { poartidasRoutes }
+export { partidasRoutes }

@@ -1,13 +1,13 @@
 import { User } from "@prisma/client";
 import { prisma } from "../../prisma/client";
-import { CreateUserDTO } from "../../interface/UsersDTO";
+import { CriaUserDTO } from "../../interface/UsersDTO";
 import { AppError } from "../../errors/AppErrors";
 import { hashSenha } from "../../services/hashPassword";
 
 
 
-export class CreateUserUseCase{
-    async execute({cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular}: CreateUserDTO): Promise<User>{
+export class CriaUserUseCase{
+    async execute({cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular}: CriaUserDTO): Promise<User>{
         
         const userExiste = await prisma.user.findFirst({
             where: {
