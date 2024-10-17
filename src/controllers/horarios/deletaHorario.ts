@@ -41,14 +41,24 @@ export class DeletaHorarioUseCase{
 
 
         // Verifica se o horário já foi cadastrado
-        const horarioCadastrado = await prisma.horarios.findUnique({
+        let horario = await prisma.horarios.findUnique({
             where: {
                 id,
                 id_campeonato
+            },
+            select: {
+                id: true,
+                id_campeonato: true,
+                horario: true,
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
             }
         });
 
-        if(!horarioCadastrado){
+        if(!horario){
             console.log("Horário não encontrado");
             throw new AppError('Horário não encontrado');
         }
@@ -56,7 +66,7 @@ export class DeletaHorarioUseCase{
         
 
         // Cria o horário
-        const horarioCriado = await prisma.horarios.delete({
+        horario = await prisma.horarios.delete({
             where: {
                 id
             },
@@ -75,10 +85,10 @@ export class DeletaHorarioUseCase{
 
 
         // Retorna o horário criado
-        console.log("Horário deletado: " + horarioCriado.horario);
-        console.log("Campeonato: " + horarioCriado.campeonato.nome);
+        console.log("Horário deletado: " + horario.horario);
+        console.log("Campeonato: " + horario.campeonato.nome);
         
 
-        return horarioCriado;
+        return horario;
     }
 }

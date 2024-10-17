@@ -41,14 +41,24 @@ export class CriaHorarioUseCase{
 
 
         // Verifica se o horário já foi cadastrado
-        const horarioCadastrado = await prisma.horarios.findFirst({
+        let horarioReq = await prisma.horarios.findFirst({
             where: {
                 id_campeonato: id_campeonato,
                 horario: horario
+            },
+            select: {
+                id: true,
+                id_campeonato: true,
+                horario: true,
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
             }
         });
 
-        if(horarioCadastrado){
+        if(horarioReq){
             console.log("Horário já cadastrado");
             throw new AppError('Horário já cadastrado');
         }
@@ -56,7 +66,7 @@ export class CriaHorarioUseCase{
         
 
         // Cria o horário
-        const horarioCriado = await prisma.horarios.create({
+        horarioReq = await prisma.horarios.create({
             data: {
                 id_campeonato,
                 horario
@@ -76,10 +86,10 @@ export class CriaHorarioUseCase{
 
 
         // Retorna o horário criado
-        console.log("Horário criado: " + horarioCriado.horario);
-        console.log("Campeonato: " + horarioCriado.campeonato.nome);
+        console.log("Horário criado: " + horarioReq.horario);
+        console.log("Campeonato: " + horarioReq.campeonato.nome);
         
 
-        return horarioCriado;
+        return horarioReq;
     }
 }

@@ -41,14 +41,24 @@ export class AtualizaHorarioUseCase{
 
 
         // Verifica se o horário já foi cadastrado
-        const horarioCadastrado = await prisma.horarios.findUnique({
+        let horarioReq = await prisma.horarios.findUnique({
             where: {
                 id,
                 id_campeonato
+            },
+            select: {
+                id: true,
+                id_campeonato: true,
+                horario: true,
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
             }
         });
 
-        if(!horarioCadastrado){
+        if(!horarioReq){
             console.log("Horário não encontrado");
             throw new AppError('Horário não encontrado');
         }
@@ -56,7 +66,7 @@ export class AtualizaHorarioUseCase{
         
 
         // Cria o horário
-        const horarioCriado = await prisma.horarios.update({
+        horarioReq = await prisma.horarios.update({
             where: {
                 id
             },
@@ -78,10 +88,10 @@ export class AtualizaHorarioUseCase{
 
 
         // Retorna o horário criado
-        console.log("Horário atualizado: " + horarioCriado.horario);
-        console.log("Campeonato: " + horarioCriado.campeonato.nome);
+        console.log("Horário atualizado: " + horarioReq.horario);
+        console.log("Campeonato: " + horarioReq.campeonato.nome);
         
 
-        return horarioCriado;
+        return horarioReq;
     }
 }
