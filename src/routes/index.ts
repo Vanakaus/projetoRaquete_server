@@ -4,6 +4,7 @@ import { userRoutes } from "./user.routes";
 import { campenatoRoutes } from "./campeonatos.routes";
 import { inscricaoRoutes } from "./inscricao.routes";
 import { partidasRoutes } from "./partidas.routes";
+import { horariosRoutes } from "./horarios.routes";
 
 
 const routes = Router();
