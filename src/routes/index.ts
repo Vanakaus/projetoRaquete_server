@@ -5,6 +5,7 @@ import { campenatoRoutes } from "./campeonatos.routes";
 import { inscricaoRoutes } from "./inscricao.routes";
 import { partidasRoutes } from "./partidas.routes";
 import { horariosRoutes } from "./horarios.routes";
+import { quadrasRoutes } from "./quadras.routes";
 
 
 const routes = Router();
@@ -21,7 +22,7 @@ routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
 routes.use('/partidas', partidasRoutes);
 routes.use('/horarios', horariosRoutes);
-// routes.use('/quadras', quadrasRoutes);
+routes.use('/quadras', quadrasRoutes);
 
 
 export { routes };
