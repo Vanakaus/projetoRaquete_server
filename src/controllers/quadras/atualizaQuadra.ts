@@ -40,7 +40,7 @@ export class AtualizaQuadraUseCase{
 
 
 
-        // Verifica se o horário já foi cadastrado
+        // Verifica se a quadra já foi cadastrada
         let quadraReq = await prisma.quadras.findUnique({
             where: {
                 id,
@@ -61,6 +61,31 @@ export class AtualizaQuadraUseCase{
         if(!quadraReq){
             console.log("Quadra não encontrado");
             throw new AppError('Quadra não encontrado');
+        }
+
+
+
+        // Verifica se a nova quadra está disponível
+        quadraReq = await prisma.quadras.findFirst({
+            where: {
+                id_campeonato,
+                nome: quadra
+            },
+            select: {
+                id: true,
+                id_campeonato: true,
+                nome: true,
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
+            }
+        });
+
+        if(quadraReq){
+            console.log("Quadra já cadastrada");
+            throw new AppError('Quadra já cadastrada');
         }
 
         

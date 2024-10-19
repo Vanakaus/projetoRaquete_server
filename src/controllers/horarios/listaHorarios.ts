@@ -45,6 +45,9 @@ export class ListaHorariosUseCase{
             },
             where: {
                 id_campeonato: id_campeonato
+            },
+            orderBy: {
+                horario: 'asc'
             }
         });
 

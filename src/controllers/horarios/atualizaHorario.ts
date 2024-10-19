@@ -63,6 +63,31 @@ export class AtualizaHorarioUseCase{
             throw new AppError('Horário não encontrado');
         }
 
+
+
+        // Verifica se o horário já foi cadastrado
+        horarioReq = await prisma.horarios.findFirst({
+            where: {
+                id_campeonato,
+                horario
+            },
+            select: {
+                id: true,
+                id_campeonato: true,
+                horario: true,
+                campeonato: {
+                    select: {
+                        nome: true
+                    }
+                }
+            }
+        });
+
+        if(horarioReq){
+            console.log("Horário já cadastrado");
+            throw new AppError('Horário já cadastrado');
+        }
+
         
 
         // Cria o horário

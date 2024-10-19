@@ -45,6 +45,9 @@ export class ListaQuadrasUseCase{
             },
             where: {
                 id_campeonato
+            },
+            orderBy: {
+                nome: 'asc'
             }
         });
 
