@@ -46,5 +46,12 @@ export interface AtualizarDatasDTO {
     id_jogador: string;
     id_campeonato: string;
 
-    novasDatas: [ { id: number, data: number, local: number } ];
+    novasDatas: novaData[];
+}
+
+export interface novaData {
+    id: number;
+    data: Date;
+    id_data: number;
+    id_local: number;
 }

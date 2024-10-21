@@ -42,6 +42,7 @@ export class ListarChavesUseCase{
                 id_jogador2: true,
                 id_vencedor: true,
                 dataPartida: true,
+                id_data: true,
                 id_local: true,
                 placar1: true,
                 placar2: true,
@@ -91,7 +92,7 @@ export class ListarChavesUseCase{
                 id_campeonato
             },
             orderBy: {
-                chave: 'desc'
+                chave: 'asc'
             }
         });
 

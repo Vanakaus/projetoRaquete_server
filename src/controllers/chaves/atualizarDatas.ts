@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { AtualizarDatasDTO } from "../../interface/ChavesDTO";
+import { AtualizarDatasDTO, novaData } from "../../interface/ChavesDTO";
 
 
 
@@ -21,15 +21,15 @@ export class AtualizardatasUseCase{
 
         console.log("\nAtualizando datas");
 
-        const partidasAtualizadas = [] as { id: number, data: number, local: number } [];
-        const partidasNaoAtualizadas = [] as { id: number, data: number, local: number } [];
+        const partidasAtualizadas = [] as novaData[];
+        const partidasNaoAtualizadas = [] as novaData[];
 
         for (const data of novasDatas) {
 
             
             const quadra = await prisma.quadras.findUnique({
                 where: {
-                    id: data.local,
+                    id: data.id_local,
                     id_campeonato
                 }
             });
@@ -43,7 +43,7 @@ export class AtualizardatasUseCase{
 
             const horario = await prisma.horarios.findUnique({
                 where: {
-                    id: data.data,
+                    id: data.id_data,
                     id_campeonato
                 }, select: {
                     id: true,
@@ -75,17 +75,23 @@ export class AtualizardatasUseCase{
                     id: data.id
                 },
                 data: {
-                    dataPartida: horario.horario,
+                    dataPartida: data.data,
                     id_data: horario.id,
                     id_local: quadra.id
                 }
             });
 
-            if(!partidaAtualizada){
+            if(!partidaAtualizada)
                 partidasNaoAtualizadas.push(data);
-            } else {
-                partidasAtualizadas.push(data);
-            }
+            else if (partidaAtualizada.dataPartida && partidaAtualizada.id_data && partidaAtualizada.id_local)
+                partidasAtualizadas.push({
+                id: partidaAtualizada.id,
+                data: partidaAtualizada.dataPartida,
+                id_data: partidaAtualizada.id_data,
+                id_local: partidaAtualizada.id_local
+            });
+            else
+                partidasNaoAtualizadas.push(data);
         }
 
         console.log("Partidas atualizadas: ");
