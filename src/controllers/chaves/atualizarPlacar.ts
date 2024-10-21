@@ -169,7 +169,8 @@ export class AtualizarPlacarUseCase{
                 id_pontuacao2: true,
                 id_vencedor: true,
                 dataPartida: true,
-                localPartida: true,
+                id_data: true,
+                id_local: true,
                 placar1: true,
                 placar2: true,
                 jogador1: {

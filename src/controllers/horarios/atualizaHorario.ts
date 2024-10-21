@@ -90,7 +90,7 @@ export class AtualizaHorarioUseCase{
 
         
 
-        // Cria o horário
+        // Atualiza o horário
         horarioReq = await prisma.horarios.update({
             where: {
                 id
@@ -109,6 +109,33 @@ export class AtualizaHorarioUseCase{
                 }
             }
         });
+
+
+
+        // Atualiza as partidas que possuem o horário
+        const partidas = await prisma.partidas.findMany({
+            where: {
+                id_campeonato,
+                id_data: id
+            }
+        });
+
+        for (const partida of partidas) {
+
+            if (partida.dataPartida) {
+                const dataPartida = new Date(partida.dataPartida);
+                dataPartida.setHours(parseInt(horarioReq.horario.split(":")[0], 10));
+                dataPartida.setMinutes(parseInt(horarioReq.horario.split(":")[1], 10));
+                await prisma.partidas.update({
+                    where: {
+                        id: partida.id
+                    },
+                    data: {
+                        dataPartida
+                    }
+                });
+            }
+        }
 
 
 

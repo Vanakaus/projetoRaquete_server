@@ -18,6 +18,30 @@ export class AtualizardatasUseCase{
             console.log("Datas vazias");
             throw new AppError('Datas vazias');
         }
+        
+        
+        // Verifica se o campeonato existe e se o jogador é o responsável por ele
+        const campeonato = await prisma.campeonatos.findFirst({
+            select: {
+                id_criador: true,
+            },
+            where: {
+                id: id_campeonato
+            }
+        });
+
+
+
+        if(!campeonato){
+            console.log("Campeonato não encontrado");
+            throw new AppError('Campeonato não encontrado');
+        }
+
+        if(campeonato.id_criador !== id_jogador){
+            console.log("Usuário não é o responsavel pelo campeonato");
+            throw new AppError('Usuário não é o responsavel pelo campeonato');
+        }
+
 
         console.log("\nAtualizando datas");
 
