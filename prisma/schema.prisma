@@ -109,16 +109,16 @@ model Partidas {
   id_pontuacao2   Int
   id_vencedor     Int?
   dataPartida     DateTime?
-  horarioPartida  Int?
-  localPartida    Int?
+  id_data         Int?
+  id_local        Int?
 
   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato],  references: [id])
   jogador1        Inscricao?  @relation("jogador1",   fields: [id_jogador1],    references: [id])
   jogador2        Inscricao?  @relation("jogador2",   fields: [id_jogador2],    references: [id])
   placar1         Placar      @relation("placar1",    fields: [id_pontuacao1],  references: [id])
   placar2         Placar      @relation("placar2",    fields: [id_pontuacao2],  references: [id])
-  quadra          Quadras?    @relation("quadra",     fields: [localPartida],   references: [id])
-  horario         Horarios?   @relation("horario",    fields: [horarioPartida], references: [id])
+  quadra          Quadras?    @relation("quadra",     fields: [id_local],       references: [id])
+  data            Horarios?   @relation("horario",    fields: [id_data],        references: [id])
   
   @@map("partidas")
 }

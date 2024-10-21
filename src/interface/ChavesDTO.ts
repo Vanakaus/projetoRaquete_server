@@ -44,6 +44,7 @@ export interface AtualizarPlacarDTO {
 export interface AtualizarDatasDTO {
     cpf: string;
     id_jogador: string;
+    id_campeonato: string;
 
-    novasDatas: [ { id: number, data: string } ];
+    novasDatas: [ { id: number, data: number, local: number } ];
 }

@@ -102,7 +102,7 @@ export class AtualizarDatasController {
     async handle(req: Request, res: Response) {
         
         let cpf = '';
-        const { id_jogador, novasDatas } = req.body;
+        const { id_jogador, id_campeonato, novasDatas } = req.body;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -112,7 +112,7 @@ export class AtualizarDatasController {
 
         const atualizarDatasUseCase = new AtualizardatasUseCase();
         
-        const result = await atualizarDatasUseCase.execute({ cpf, id_jogador, novasDatas }) as any;
+        const result = await atualizarDatasUseCase.execute({ cpf, id_jogador, id_campeonato, novasDatas }) as any;
 
         
         if(result.partidasNaoAtualizadas.length > 0){
