@@ -14,9 +14,14 @@ export class GerarChaveUseCase{
         }
         
         
-        const campeonato = await prisma.campeonatos.findUnique({
+        let campeonato = await prisma.campeonatos.findUnique({
             where: {
                 id: id_campeonato
+            },
+            select: {
+                id: true,
+                id_criador: true,
+                status: true
             }
         });
 
@@ -35,10 +40,10 @@ export class GerarChaveUseCase{
         }
 
 
-        // if(campeonato.status !== 'Inscrições encerradas'){
-        //     console.log("Não é possível gerar chave \nCampeonato Status: " + campeonato.status);
-        //     throw new AppError('Não é possível gerar chave \nCampeonato Status: ' + campeonato.status);
-        // }
+        if(campeonato.status.id !== 2){
+            console.log("Não é possível gerar chave \nCampeonato Status: " + campeonato.status);
+            throw new AppError('Não é possível gerar chave \nCampeonato Status: ' + campeonato.status);
+        }
 
 
 
@@ -160,15 +165,96 @@ export class GerarChaveUseCase{
         }
 
 
-        const partidas = await prisma.partidas.findMany({
+        const partidas = await  await prisma.partidas.findMany({
+            select: {
+                id: true,
+                id_campeonato: true,
+                chave: true,
+                id_jogador1: true,
+                id_jogador2: true,
+                id_vencedor: true,
+                dataPartida: true,
+                id_data: true,
+                id_local: true,
+                placar1: true,
+                placar2: true,
+                campeonato: {
+                    select: {
+                        nome: true,
+                        sets: true
+                    }
+                },
+                data: {
+                    select: {
+                        id: true,
+                        horario: true
+                    }
+                },
+                quadra: {
+                    select: {
+                        id: true,
+                        nome: true
+                    }
+                },
+                jogador1: {
+                    select: {
+                        jogador: {
+                            select: {
+                                username: true,
+                                nome: true,
+                                sobrenome: true,
+                                rank: true
+                            }
+                        }
+                    }
+                },
+                jogador2: {
+                    select: {
+                        jogador: {
+                            select: {
+                                username: true,
+                                nome: true,
+                                sobrenome: true,
+                                rank: true
+                            }
+                        }
+                    }
+                }
+            },
             where: {
                 id_campeonato
+            },
+            orderBy: {
+                chave: 'asc'
             }
         });
 
-        console.log("\n\nChaves geradas com sucesso: ", partidas.length);
+        console.log("\n\Jogos geradas com sucesso: ", partidas.length);
 
 
-        return partidas;
+
+        campeonato = await prisma.campeonatos.update({
+            where: {
+                id: id_campeonato
+            },
+            data: {
+                id_status: 3
+            },
+            select: {
+                id: true,
+                id_criador: true,
+                id_status: true,
+                nome: true,
+                status: {
+                    select: {
+                        id: true,
+                        nome: true
+                    }
+                }
+            }
+        });
+
+
+        return {partidas, campeonato};
     }
 }

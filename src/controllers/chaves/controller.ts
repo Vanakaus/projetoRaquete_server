@@ -3,7 +3,6 @@ import { GerarChaveUseCase } from "./gerarChave";
 import { LimparChaveUseCase } from "./limparChave";
 import { ListarChavesUseCase } from "./listarChaves";
 import { AtualizarPlacarUseCase } from "./atualizarPlacar";
-import { AtualizarPlacarDTO } from "../../interface/ChavesDTO";
 import { AtualizardatasUseCase } from "./atualizarDatas";
 
 const jwt = require('jsonwebtoken');
@@ -14,8 +13,7 @@ export class GerarChaveController {
     async handle(req: Request, res: Response) {
         
         var cpf = '';
-        const { id_jogador } = req.query as any;
-        const { id_campeonato } = req.query as any;
+        const { id_jogador, id_campeonato } = req.query as any;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -27,7 +25,7 @@ export class GerarChaveController {
         
         const result = await gerarChaveUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
         result.status= "success";
-        result.mensagem = "Chaves geradas com sucesso";
+        result.mensagem = "Jogos geradas com sucesso";
 
         return res.status(201).json(result);
     }
@@ -52,7 +50,7 @@ export class LimparChaveController {
         
         const result = await limparChaveUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
         result.status= "success";
-        result.mensagem = "Chaves deletadas com sucesso";
+        result.mensagem = "Jogos deletados com sucesso";
 
         return res.status(201).json(result);
     }
@@ -68,7 +66,7 @@ export class ListarChavesController {
         
         const result = await listarChavesUseCase.execute({ id_campeonato }) as any;
         result.status= "success";
-        result.mensagem = "Chaves deletadas com sucesso";
+        result.mensagem = "Jogos deletados com sucesso";
 
         return res.status(201).json(result);
     }

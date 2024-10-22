@@ -57,3 +57,26 @@ export interface LeCampeonatoCriadoDTO {
     id: string;
     id_criador: string;    
 }
+
+
+export interface AbrirFecharInscricoesDTO {
+    cpf: string;
+    id: string;
+    id_criador: string;
+    abreFecha: boolean;
+}
+
+
+export interface FinalizarCampeonatoDTO {
+    cpf: string;
+    id: string;
+    id_criador: string;
+    cancela: boolean;
+}
+
+
+export interface ReabrirCampeonatoDTO {
+    cpf: string;
+    id: string;
+    id_criador: string;
+}

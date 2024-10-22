@@ -30,7 +30,7 @@ export class ListarChavesUseCase{
 
 
 1
-        console.log("Listando chaves do campeonato: ");
+        console.log("Listando jogos do campeonato: ");
         console.log("\tID: " + id_campeonato);
         console.log("\tNome: " + campeonato.nome);
         const partidas = await prisma.partidas.findMany({
@@ -48,7 +48,8 @@ export class ListarChavesUseCase{
                 placar2: true,
                 campeonato: {
                     select: {
-                        nome: true
+                        nome: true,
+                        sets: true,
                     }
                 },
                 data: {
@@ -97,7 +98,7 @@ export class ListarChavesUseCase{
         });
 
         
-        console.log("\n\nChaves listadas com sucesso: ", partidas.length);
+        console.log("\n\nJogos listadas com sucesso: ", partidas.length);
         // console.log(partidas);
         console.log("\n\n");
 

@@ -13,9 +13,15 @@ export class LimparChaveUseCase{
         }
         
         
-        const campeonato = await prisma.campeonatos.findUnique({
+        let campeonato = await prisma.campeonatos.findUnique({
             where: {
                 id: id_campeonato
+            },
+            select: {
+                id: true,
+                id_criador: true,
+                nome: true,
+                status: true,
             }
         });
 
@@ -34,10 +40,10 @@ export class LimparChaveUseCase{
         }
 
 
-        // if(campeonato.status !== 'Chaves Geradas'){
-        //     console.log("Não é possível gerar chave \nCampeonato Status: " + campeonato.status);
-        //     throw new AppError('Não é possível gerar chave \nCampeonato Status: ' + campeonato.status);
-        // }
+        if(campeonato.status.id !== 3 && campeonato.status.id !== 4){
+            console.log("Não é possível limpar os jogos \nCampeonato Status: " + campeonato.status);
+            throw new AppError('Não é possível limpar os jogos \nCampeonato Status: ' + campeonato.status);
+        }
 
 
 1
@@ -56,7 +62,29 @@ export class LimparChaveUseCase{
         console.log("\n\n");
 
 
-        return inscricoes;
+        campeonato = await prisma.campeonatos.update({
+            where: {
+                id: id_campeonato
+            },
+            data: {
+                id_status: 2
+            },
+            select: {
+                id: true,
+                id_criador: true,
+                nome: true,
+                id_status: true,
+                status: {
+                    select: {
+                        id: true,
+                        nome: true
+                    }
+                }
+            }
+        });
+
+
+        return {inscricoes, partidas:[], campeonato};
     }
 }
 

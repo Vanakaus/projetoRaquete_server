@@ -5,6 +5,9 @@ import { LeCampeonatoUseCase } from "./leCampeonato";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
 import { AtualizaCampeonatoUseCase } from "./atualizaCampeonato";
+import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
+import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
+import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 
 const jwt = require('jsonwebtoken');
 
@@ -115,6 +118,76 @@ export class LeCampeonatoCriadoController {
         const leCampeonatoCriadoUseCase = new LeCampeonatoCriadoUseCase();
         
         const result = await leCampeonatoCriadoUseCase.execute({id: id?.toString() ?? '', cpf, id_criador: id_criador?.toString() ?? ''});
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class AbreFechaInscricoesController {
+    async handle(req: Request, res: Response) {
+        
+        var cpf = '';
+        const token = req.headers['x-access-token']
+        const { id, id_criador, abreFecha } = req.body;
+        
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+        const AbrirFecharUseCase = new AbreFechaInscricoesUseCase();
+        
+        const result = await AbrirFecharUseCase.execute({id, cpf, id_criador, abreFecha});
+        result.status= "success";
+        result.mensagem = `Inscrições ${abreFecha ? 'abertas' : 'fechadas'} com sucesso`;
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class FinalizaCampeonatoController {
+    async handle(req: Request, res: Response) {
+        
+        var cpf = '';
+        const token = req.headers['x-access-token']
+        const { id, id_criador, cancela } = req.body;
+        
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+        const FinalizarUseCase = new FinalizarCampeonatoUseCase();
+        
+        const result = await FinalizarUseCase.execute({id, cpf, id_criador, cancela});
+        result.status= "success";
+        result.mensagem = `Campeonato ${cancela ? 'cancelado' : 'finalizado'} com sucesso`;
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+
+export class ReabrirCampeonatoController {
+    async handle(req: Request, res: Response) {
+        
+        var cpf = '';
+        const token = req.headers['x-access-token']
+        const { id, id_criador } = req.body;
+        
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
+            cpf = decoded.cpf;
+        });
+
+        const reabrirCampeonatoUseCase = new ReabrirCampeonatoUseCase();
+        
+        const result = await reabrirCampeonatoUseCase.execute({id, cpf, id_criador});
+        result.status= "success";
+        result.mensagem = "Campeonato reaberto com sucesso";
+
         return res.status(201).json(result);
     }
 }
