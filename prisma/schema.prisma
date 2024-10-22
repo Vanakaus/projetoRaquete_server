@@ -63,9 +63,10 @@ model Campeonatos {
   dataInscricao   DateTime
   dataInicio      DateTime
   dataFim         DateTime
-  status          String      @default("inscricao")
+  id_status       Int         @default(1)
 
-  criador         User        @relation("criador", fields: [id_criador], references: [cpf])
+  criador         User        @relation("criador",  fields: [id_criador], references: [cpf])
+  status          Status      @relation("status",   fields: [id_status],  references: [id])
   inscricoes      Inscricao[] @relation("campeonato")
   chaveamentos    Partidas[]  @relation("campeonato")
   quadras         Quadras[]   @relation("campeonato")
@@ -76,6 +77,17 @@ model Campeonatos {
   // partidas        Partida[]   @relation("campeonato")
 
   @@map("campeonatos")
+}
+
+
+
+model Status {
+  id              Int         @id @default(autoincrement())
+  nome            String      @default("pendente")
+
+  campeonato      Campeonatos[]   @relation("status")
+
+  @@map("status")
 }
 
 
