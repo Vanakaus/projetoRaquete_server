@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AbreFechaInscricoesController, AtualizaCampeonatoController, CriaCampeonatoController, FinalizaCampeonatoController, LeCampeonatoController, LeCampeonatoCriadoController, ListaCampeonatosController, ListaCampeonatosCriadosController, ReabrirCampeonatoController } from "../controllers/campeonatos/controller";
+import { AbreFechaInscricoesController, AtualizaCampeonatoController, CriaCampeonatoController, FinalizaCampeonatoController, LeCampeonatoController, LeCampeonatoCriadoController, ListaCampeonatosController, ListaCampeonatosCriadosController, ListaProximosCampeonatosController, ReabrirCampeonatoController } from "../controllers/campeonatos/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
-import { ReabrirCampeonatoUseCase } from "../controllers/campeonatos/reabrirCampeonato";
 
 
 
@@ -17,6 +16,7 @@ const listaCampeonatosCriadosController = new ListaCampeonatosCriadosController(
 const abreFechaInscricoesController = new AbreFechaInscricoesController();
 const finalizaCampeonato = new FinalizaCampeonatoController();
 const reabrirCampeonato = new ReabrirCampeonatoController();
+const listaProximosCampeonatoController = new ListaProximosCampeonatosController();
 
 
 
@@ -31,6 +31,8 @@ campenatoRoutes.get('/leCampeonatoCriado', informativo, verificaJWT, leCampeonat
 campenatoRoutes.patch('/abreFechaInscricoes', informativo, verificaJWT, abreFechaInscricoesController.handle);
 campenatoRoutes.patch('/finalizarCampeonato', informativo, verificaJWT, finalizaCampeonato.handle);
 campenatoRoutes.patch('/reabrirCampeonato', informativo, verificaJWT, reabrirCampeonato.handle);
+
+campenatoRoutes.get('/proximosCampeonatos', informativo, listaProximosCampeonatoController.handle);
 
 
 export { campenatoRoutes };

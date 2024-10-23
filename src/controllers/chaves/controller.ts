@@ -4,6 +4,7 @@ import { LimparChaveUseCase } from "./limparChave";
 import { ListarChavesUseCase } from "./listarChaves";
 import { AtualizarPlacarUseCase } from "./atualizarPlacar";
 import { AtualizardatasUseCase } from "./atualizarDatas";
+import { ListaProximasPartidasUseCase } from "./listaProximasPartidas";
 
 const jwt = require('jsonwebtoken');
 
@@ -126,6 +127,24 @@ export class AtualizarDatasController {
             result.mensagem = "Datas atualizadas com sucesso";
             return res.status(201).json(result);
         }
+    }
+}
+
+
+
+
+export class ListarProximasPartidasController {
+    async handle(req: Request, res: Response) {
+        
+        const { id_jogador } = req.query as any;
+
+        const listarProximasPartidasUseCase = new ListaProximasPartidasUseCase();
+        
+        const result = await listarProximasPartidasUseCase.execute( id_jogador ) as any;
+        result.status= "success";
+        result.mensagem = "Datas atualizadas com sucesso";
+
+        return res.status(201).json(result);
     }
 }
 

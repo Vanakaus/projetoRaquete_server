@@ -8,6 +8,7 @@ import { AtualizaCampeonatoUseCase } from "./atualizaCampeonato";
 import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
 import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
+import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
 
 const jwt = require('jsonwebtoken');
 
@@ -187,6 +188,25 @@ export class ReabrirCampeonatoController {
         const result = await reabrirCampeonatoUseCase.execute({id, cpf, id_criador});
         result.status= "success";
         result.mensagem = "Campeonato reaberto com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+
+
+export class ListaProximosCampeonatosController {
+    async handle(req: Request, res: Response) {
+        
+        const { id_jogador } = req.query as any;
+        
+        const listaProximosCampeonatosUseCase = new ListaProximosCampeonatosUseCase();
+        
+        const result = await listaProximosCampeonatosUseCase.execute(id_jogador) as any;
+        result.status= "success";
+        result.mensagem = "Campeonatos listados com sucesso";
 
         return res.status(201).json(result);
     }
