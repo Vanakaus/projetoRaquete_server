@@ -32,6 +32,9 @@ export class ListaCampeonatosUseCase{
                         inscricoes: true
                     }
                 },
+            },
+            orderBy: {
+                dataInicio: 'asc'
             }
         });
 

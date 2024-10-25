@@ -142,7 +142,7 @@ export class ListarProximasPartidasController {
         
         const result = await listarProximasPartidasUseCase.execute( id_jogador ) as any;
         result.status= "success";
-        result.mensagem = "Datas atualizadas com sucesso";
+        result.mensagem = "Partidas listadas com sucesso";
 
         return res.status(201).json(result);
     }

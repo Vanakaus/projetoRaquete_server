@@ -5,6 +5,32 @@ export class ListaProximosCampeonatosUseCase{
     async execute(id_jogador: string): Promise<any>{
 
         const campeonatos = await prisma.campeonatos.findMany({
+            select: {
+                id: true,
+                nome: true,
+                descricao: true,
+                classe: true,
+                numJogadores: true,
+                premiacao: true,
+                sets: true,
+                local: true,
+                status: true,
+                dataInicio: true,
+                dataFim: true,
+                inscricoes: {
+                    where: {
+                        id_jogador
+                    },
+                    select: {
+                        situacao: true
+                    }
+                },
+                _count: {
+                    select: {
+                        inscricoes: true
+                    }
+                },
+            },
             where: {
                 AND: [{
                         inscricoes: {
@@ -29,8 +55,7 @@ export class ListaProximosCampeonatosUseCase{
             },
             orderBy: {
                 dataInicio: 'asc'
-            },
-            take: 5
+            }, take: 5
         });
 
         
@@ -43,6 +68,6 @@ export class ListaProximosCampeonatosUseCase{
 
         console.log(campeonatos.length + " Campeonatos Listados com sucesso");
         
-        return campeonatos;
+        return {campeonatos};
     }
 }

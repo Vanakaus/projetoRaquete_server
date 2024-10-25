@@ -47,6 +47,9 @@ export class ListaInscricoesUseCase{
                         id_jogador: cpf
                     }
                 }
+            },
+            orderBy: {
+                dataInicio: 'asc'
             }
         });
 

@@ -41,6 +41,9 @@ export class ListaCampeonatosCriadosUseCase{
             },
             where: {
                 id_criador
+            },
+            orderBy: {
+                dataInicio: 'asc'
             }
         });
 
