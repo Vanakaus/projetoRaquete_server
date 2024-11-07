@@ -102,7 +102,7 @@ export class ListaProximasPartidasUseCase{
 
         if (partidas.length === 0) {
             console.log("Não há partidas próximas");
-            throw new AppError('Não há partidas próximas', 404);
+            throw new AppError('Não há partidas próximas', 204);
         }
 
         console.log(partidas.length + " Partidas Listadas com sucesso");

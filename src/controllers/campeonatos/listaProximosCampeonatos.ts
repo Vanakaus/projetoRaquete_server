@@ -63,7 +63,7 @@ export class ListaProximosCampeonatosUseCase{
 
         if (campeonatos.length === 0) {
             console.log("Não há campeonatos próximos");
-            throw new AppError('Não há campeonatos próximos', 404);
+            throw new AppError('Não há campeonatos próximos', 204);
         }
 
         console.log(campeonatos.length + " Campeonatos Listados com sucesso");

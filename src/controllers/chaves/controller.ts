@@ -26,7 +26,7 @@ export class GerarChaveController {
         
         const result = await gerarChaveUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
         result.status= "success";
-        result.mensagem = "Jogos geradas com sucesso";
+        result.mensagem = "Jogos gerados com sucesso";
 
         return res.status(201).json(result);
     }
