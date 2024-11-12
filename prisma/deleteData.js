@@ -15,6 +15,7 @@ async function main() {
 
   await prisma.campeonatos.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.status.deleteMany();
 
   // Cria o usuario admin executando o script createAdmin.js
   exec('node prisma/createAdmin.js', (err, stdout, stderr) => {
@@ -24,6 +25,15 @@ async function main() {
       return;
     }
   });
+
+// Cria a tabela status atraves do script createStatus.js
+exec('node prisma/createStatus.js', (err, stdout, stderr) => {
+  if (err) {
+    console.error('Error creating status table');
+    console.error(err);
+    return;
+  }
+});
 }
 
 
