@@ -8,6 +8,9 @@
     "dev": "ts-node-dev --exit-child --transpile-only --ignore-watch node_modules src/server.ts",
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
+    "deleteData": "node prisma/deleteData.js",
+    "createAdmin": "node prisma/createAdmin.js",
+    "createStatus": "node prisma/createStatus.js",
     "populate": "node prisma/populate.js"
   },
   "keywords": [
