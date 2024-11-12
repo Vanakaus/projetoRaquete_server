@@ -4,4 +4,4 @@ node_modules
 .env
 
 # Ignore the test db files 
-prisma/dev*
+prisma/*.db
