@@ -47,6 +47,6 @@ export class ListaCampeonatosUseCase{
 
         console.log(campeonatos.length + " Campeonatos Listados com sucesso");
         
-        return campeonatos;
+        return {campeonatos};
     }
 }

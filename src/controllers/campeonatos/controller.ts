@@ -68,6 +68,10 @@ export class ListaCampeonatosController {
         const listCampeonatosUseCase = new ListaCampeonatosUseCase();
         
         const result = await listCampeonatosUseCase.execute({cpf: cpf?.toString() ?? ''});
+
+        result.status= "success";
+        result.mensagem = "Campeonatos listados com sucesso";
+        
         return res.status(201).json(result);
     }
 }
