@@ -28,6 +28,7 @@ async function main() {
       username: 'adm',
       email: 'admin@admin',
       senha: senha,
+      cargo: 'admin',
       nome: 'Administrador',
       sobrenome: 'admin',
       dataNascimento: faker.date.past(30, new Date(2000, 0, 1)),

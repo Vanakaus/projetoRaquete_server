@@ -5,3 +5,4 @@ node_modules
 
 # Ignore the test db files 
 prisma/*.db
+prisma/teste.js
