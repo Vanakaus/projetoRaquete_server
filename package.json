@@ -31,8 +31,10 @@
     "express-async-errors": "^3.1.1",
     "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.2",
+    "nodemon": "^2.0.22",
     "server": "file:",
     "ts-node-dev": "^2.0.0",
+    "tsc": "^2.0.4",
     "typescript": "^5.4.3"
   },
   "devDependencies": {
