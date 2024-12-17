@@ -16,210 +16,202 @@ datasource db {
 
 
 model User {
+  // email               String            @id
   cpf               String            @id @default("00000000000")
-  username          String?           @unique
-  email             String            @unique
-  senha             String
   nome              String
-  sobrenome         String
-  dataNascimento    DateTime
-  telefone          String?
-  celular           String?
-  cargo             String            @default("Jogador")
-  rank              Int               @default(0)
-  classe            String            @default("Classe 6")
-
-  disponibilidade   Disponibilidade[] @relation("jogador")
-  campeonatos       Campeonatos[]     @relation("criador")
-  inscricoes        Inscricao[]       @relation("jogador")
+  senha             String
+  
+  academia          Academias?        @relation("admin")
 
   @@map("users")
 }
 
 
 
-model Disponibilidade {
-  id          Int         @id @default(autoincrement())
-  id_jogador  String      @unique
-  diaHora     DateTime
+model Academias {
+  email             String            @id
+  id_admin          String            @unique
+  nome              String
+  telefone          String
 
-  jogador     User        @relation("jogador", fields: [id_jogador], references: [cpf])
+  admin       User                    @relation("admin", fields: [id_admin], references: [cpf])
+  classes     Classes[]               @relation("classe")
+  ranking     Ranking[]               @relation("ranking")
+  tenistas    Tenistas[]              @relation("tenista")
+  Torneios    Torneios[]              @relation("torneio")
 
-  @@map("disponibilidade")
+  @@map("academias")
 }
 
 
 
-model Campeonatos {
-  id              String      @id @default(uuid())
-  id_criador      String
-  nome            String      @unique
-  descricao       String?
-  regras          String
-  classe          String      @default("aberto")
-  numJogadores    Int
-  sets            Int         @default(3)
-  premiacao       String?
-  local           String?
-  dataInscricao   DateTime
-  dataInicio      DateTime
-  dataFim         DateTime
-  id_status       Int         @default(1)
+model Generos {
+  id                Int               @id @default(autoincrement())
+  nome              String
 
-  criador         User        @relation("criador",  fields: [id_criador], references: [cpf])
-  status          Status      @relation("status",   fields: [id_status],  references: [id])
-  inscricoes      Inscricao[] @relation("campeonato")
-  chaveamentos    Partidas[]  @relation("campeonato")
-  quadras         Quadras[]   @relation("campeonato")
-  horarios        Horarios[]  @relation("campeonato")
+  classes           Classes[]         @relation("classe")
+
+  @@map("generos")
+}
 
 
-  // tabelas         Tabela[]    @relation("campeonato")
-  // partidas        Partida[]   @relation("campeonato")
 
-  @@map("campeonatos")
+model Classes {
+  sigla             String            @id
+  id_academia       String
+  id_genero         Int
+  nome              String
+  dupla             Boolean           @default(false)
+
+  academia          Academias         @relation("classe", fields: [id_academia], references: [email])
+  genero            Generos           @relation("classe", fields: [id_genero], references: [id])
+  classeRanking     ClasseRanking[]   @relation("classe")
+
+  @@map("classes")
+}
+
+
+
+model Ranking {
+  id                Int               @id @default(autoincrement())
+  id_academia       String
+  nome              String
+
+  academia          Academias         @relation("ranking", fields: [id_academia], references: [email])
+  classeRanking     ClasseRanking[]   @relation("ranking")
+
+  @@map("ranking")
+}
+
+
+
+model ClasseRanking {
+  id                Int               @id @default(autoincrement())
+  id_classe         String
+  id_ranking        Int
+
+  classe            Classes           @relation("classe", fields: [id_classe], references: [sigla])
+  ranking           Ranking           @relation("ranking", fields: [id_ranking], references: [id])
+
+  @@map("classeRanking")
+}
+
+
+
+model Tenistas {
+  cpf               String            @id
+  id_academia       String
+  nome              String
+
+  academia         Academias         @relation("tenista", fields: [id_academia], references: [email])
+  inscricao        Inscricao[]       @relation("inscricao")
+  partida1         Partidas[]        @relation("partida1")
+  partida2         Partidas[]        @relation("partida2")
+
+  @@map("tenistas")
 }
 
 
 
 model Status {
-  id              Int         @id @default(autoincrement())
-  nome            String      @default("pendente")
+  id                Int               @id @default(autoincrement())
+  nome              String
 
-  campeonato      Campeonatos[]   @relation("status")
+  Torneios          Torneios[]        @relation("torneio")
 
   @@map("status")
 }
 
 
 
+model PontuacoesCampeonato {
+  id                Int               @id @default(autoincrement())
+  vencedor          Int               @default(100)
+  r1                Int               @default(70)
+  r2                Int               @default(60)
+  r4                Int               @default(50)
+  r8                Int               @default(30)
+  r16               Int               @default(20)
+  r32               Int               @default(10)
+  r64               Int               @default(05)
+  participação      Int               @default(05)
+
+  Torneios          Torneios[]        @relation("torneio")
+
+  @@map("pontuacoesCampeonato")
+}
+
+
+
+model Torneios {
+  id                String            @id @default(uuid())
+  id_academia       String
+  id_status         Int
+  id_pontuacoes     Int
+  nome              String
+  descricao         String
+  local             String
+  simples           Boolean
+  duplas            Boolean
+  ranking           Boolean
+  sets              Int
+  tiebreakao        Boolean
+  dataInicio        DateTime
+  dataFim           DateTime
+
+  academia          Academias         @relation("torneio", fields: [id_academia], references: [email])
+  status            Status            @relation("torneio", fields: [id_status], references: [id])
+  pontuacoes        PontuacoesCampeonato @relation("torneio", fields: [id_pontuacoes], references: [id])
+  inscricao         Inscricao[]       @relation("inscricao")
+  partida           Partidas[]        @relation("partida")
+
+  @@map("campeonatos")
+}
+
+
+
 model Inscricao {
-  id              Int         @id @default(autoincrement())
-  id_campeonato   String
-  id_jogador      String
-  situacao        String      @default("pendente")
-  dataInscricao   DateTime    @default(now())
-
-  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato],  references: [id])
-  jogador         User        @relation("jogador",    fields: [id_jogador],     references: [cpf])
-  chavJog1        Partidas[]  @relation("jogador1")
-  chavJog2        Partidas[]  @relation("jogador2")
-
-  // tabelas         Tabela[]    @relation("inscricao")
-
+  id                Int               @id @default(autoincrement())
+  id_torneio        String
+  id_jogador        String
+  
+  torneio           Torneios          @relation("inscricao", fields: [id_torneio], references: [id])
+  jogador           Tenistas          @relation("inscricao", fields: [id_jogador], references: [cpf])
+  
   @@map("inscricao")
 }
 
 
 
 model Partidas {
-  id              Int         @id @default(autoincrement())
-  id_campeonato   String
+  id              Int                 @id @default(autoincrement())
+  id_torneio      String
+  id_tenista1     String?
+  id_tenista2     String?
   chave           String
-  id_jogador1     Int?
-  id_jogador2     Int?
-  id_pontuacao1   Int
-  id_pontuacao2   Int
-  id_vencedor     Int?
+  vencedor        Int?
   dataPartida     DateTime?
-  id_data         Int?
-  id_local        Int?
+  local           Int?
 
-  campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato],  references: [id])
-  jogador1        Inscricao?  @relation("jogador1",   fields: [id_jogador1],    references: [id])
-  jogador2        Inscricao?  @relation("jogador2",   fields: [id_jogador2],    references: [id])
-  placar1         Placar      @relation("placar1",    fields: [id_pontuacao1],  references: [id])
-  placar2         Placar      @relation("placar2",    fields: [id_pontuacao2],  references: [id])
-  quadra          Quadras?    @relation("quadra",     fields: [id_local],       references: [id])
-  data            Horarios?   @relation("horario",    fields: [id_data],        references: [id])
+  torneio         Torneios            @relation("partida", fields: [id_torneio], references: [id])
+  tenista1        Tenistas?           @relation("partida1", fields: [id_tenista1], references: [cpf])
+  tenista2        Tenistas?           @relation("partida2", fields: [id_tenista2], references: [cpf])
+  set             Sets[]              @relation("sets")
   
   @@map("partidas")
 }
 
 
 
-model Placar {
-  id              Int         @id @default(autoincrement())
-  set1            Int       @default(-1)
-  set2            Int       @default(-1)
-  set3            Int       @default(-1)
-  set4            Int       @default(-1)
-  set5            Int       @default(-1)
-  tiebreak1       Boolean   @default(false)
-  tiebreak2     	Boolean   @default(false)
-  tiebreak3     	Boolean   @default(false)
-  tiebreak4     	Boolean   @default(false)
-  tiebreak5     	Boolean   @default(false)
+model  Sets {
+  id              Int                 @id @default(autoincrement())
+  id_partida      Int
+  tiebreak        Boolean
+  placarTen1      Int
+  placarTen2      Int
 
-
-  PartidasJog1 Partidas[] @relation("placar1")
-  PartidasJog2 Partidas[] @relation("placar2")
+  partida         Partidas            @relation("sets", fields: [id_partida], references: [id])  
   
-  @@map("placar")
+  @@map("sets")
 }
-
-
-
-model  Quadras {
-  id              Int           @id @default(autoincrement())
-  id_campeonato   String
-  nome            String
-
-  campeonato      Campeonatos   @relation("campeonato", fields: [id_campeonato], references: [id])
-  partidas        Partidas[]    @relation("quadra")
-  
-  @@map("quadras")
-}
-
-
-
-model  Horarios {
-  id              Int           @id @default(autoincrement())
-  id_campeonato   String
-  horario         String
-
-  campeonato      Campeonatos   @relation("campeonato", fields: [id_campeonato], references: [id])
-  partidas        Partidas[]    @relation("horario")
-  
-  @@map("horarios")
-}
-
-
-
-
-
-// model Tabela {
-//   id              Int         @id @default(autoincrement())
-//   id_campeonato   String      @unique
-//   id_jogador      Int         @unique
-//   posicao         Int         @default(0)
-//   pontos          Int         @default(0)
-//   vitorias        Int         @default(0)
-//   derrotas        Int         @default(0)
-
-//   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
-//   inscricao       Inscricao   @relation("inscricao", fields: [id_jogador], references: [id])
-
-
-//   @@map("tabela")
-// }
-
-
-
-// model Partida {
-//   id              Int         @id @default(autoincrement())
-//   id_campeonato   String
-//   id_jogador1     Int         @unique
-//   id_jogador2     Int         @unique
-//   id_vencedor     Int?
-//   dataPartida     DateTime?
-
-//   campeonato      Campeonatos @relation("campeonato", fields: [id_campeonato], references: [id])
-//   jogador1        Inscricao   @relation("jogador1", fields: [id_jogador1], references: [id])
-//   jogador2        Inscricao   @relation("jogador2", fields: [id_jogador2], references: [id])
-//   chaveamento     Chaveamento? @relation("chaveamento")
-  
-
-//   @@map("partida")
-// }
 
