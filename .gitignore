@@ -7,3 +7,4 @@ node_modules
 prisma/*.db
 prisma/*.db-journal
 prisma/teste.js
+prisma/migrations/*

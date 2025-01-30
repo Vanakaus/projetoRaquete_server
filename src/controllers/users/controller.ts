@@ -50,16 +50,16 @@ export class ListUserController {
 export class LoginUserController {
     async handle(req: Request, res: Response) {
         
-        const { email, senha } = req.body;
+        const { login, senha } = req.body;
         const loginUserUseCase = new LoginUserUseCase();
         
         // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
-        const result = await loginUserUseCase.execute({ email, senha }) as any;
+        const result = await loginUserUseCase.execute({ login, senha }) as any;
 
         
         // Gera o token JWT
-        const cpf = result.cpf;
-        const token = jwt.sign({ cpf }, process.env.JWT_SECRET, {
+        // const cpf = result.cpf;
+        const token = jwt.sign({ login }, process.env.JWT_SECRET, {
             expiresIn: '10h'
         });
 

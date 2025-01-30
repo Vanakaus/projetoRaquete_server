@@ -7,26 +7,23 @@ const prisma = new PrismaClient();
 async function main() {
 
   // Verifica se o usuario admin ja foi criado, caso sim, não faz nada
-  const adminExists = await prisma.user.findUnique({
+  const acadExists = await prisma.academias.findUnique({
     where: {
-      login: 'admin',
+      id: 'academiaAdministradora',
     },
   });
 
-  if (adminExists) {
+  if (acadExists) {
     return;
   }
 
-  // Cria a senha encriptada
-  const saltGenerated = await genSalt(10);
-  const senha = await hash('admin', saltGenerated);
-  
   // Cria o usuario admin
-  await prisma.user.create({
+  await prisma.academias.create({
     data: {
-      login: 'admin',
-      nome: 'Admin',
-      senha: senha,
+      id: 'academiaAdministradora',
+      id_admin: 'admin',
+      nome: 'Academia Administradora',
+      telefone: '1234567890',
     },
   });
 }

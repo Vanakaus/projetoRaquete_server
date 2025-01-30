@@ -10,6 +10,7 @@
     "migrate": "npx prisma migrate dev",
     "deleteData": "node prisma/deleteData.js",
     "createAdmin": "node prisma/createAdmin.js",
+    "createAcad": "node prisma/createAcad.js",
     "createStatus": "node prisma/createStatus.js",
     "populate": "node prisma/populate.js"
   },
