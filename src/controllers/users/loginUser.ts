@@ -13,6 +13,7 @@ export class LoginUserUseCase{
                 login: true,
                 nome: true,
                 senha: false,
+                id_academia: true,
             }
         });
 

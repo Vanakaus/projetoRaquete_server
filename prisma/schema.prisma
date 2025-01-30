@@ -17,10 +17,11 @@ datasource db {
 
 model User {
   login             String            @id
+  id_academia       String
   nome              String
   senha             String
   
-  academia          Academias?        @relation("admin")
+  academia          Academias         @relation("admin", fields: [id_academia], references: [id])
 
   @@map("users")
 }
@@ -29,15 +30,14 @@ model User {
 
 model Academias {
   id                String            @id @default(uuid())
-  id_admin          String            @unique
   nome              String
   telefone          String
 
-  admin       User                    @relation("admin", fields: [id_admin], references: [login])
   classes     Classes[]               @relation("classe")
   ranking     Ranking[]               @relation("ranking")
   tenistas    Tenistas[]              @relation("tenista")
   Torneios    Torneios[]              @relation("torneio")
+  User        User[]                  @relation("admin")
 
   @@map("academias")
 }

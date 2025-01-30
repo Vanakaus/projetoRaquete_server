@@ -6,6 +6,7 @@ import { inscricaoRoutes } from "./inscricao.routes";
 import { partidasRoutes } from "./partidas.routes";
 import { horariosRoutes } from "./horarios.routes";
 import { quadrasRoutes } from "./quadras.routes";
+import { classesRoutes } from "./classes.routes";
 
 
 const routes = Router();
@@ -18,6 +19,8 @@ routes.get('/', informativo, (req, res) => {
 
 
 routes.use('/users', userRoutes);
+routes.use('/classes', classesRoutes);
+
 routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
 routes.use('/partidas', partidasRoutes);

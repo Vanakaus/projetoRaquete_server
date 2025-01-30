@@ -27,6 +27,7 @@ async function main() {
       login: 'admin',
       nome: 'Admin',
       senha: senha,
+      id_academia: 'academiaAdministradora',
     },
   });
 }

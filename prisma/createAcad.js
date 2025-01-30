@@ -21,7 +21,6 @@ async function main() {
   await prisma.academias.create({
     data: {
       id: 'academiaAdministradora',
-      id_admin: 'admin',
       nome: 'Academia Administradora',
       telefone: '1234567890',
     },
