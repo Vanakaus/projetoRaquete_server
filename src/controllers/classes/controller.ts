@@ -1,7 +1,20 @@
 import { Request, Response } from "express";
 import { CriarClasseUseCase } from "./criarClasse";
+import { ListarClassesUseCase } from "./listarClasses";
 
 const jwt = require('jsonwebtoken');
+
+
+
+export class ListarClassesController {
+    async handle(req: Request, res: Response) {
+        
+        const listarClassesUseCase = new ListarClassesUseCase();
+        
+        const result = await listarClassesUseCase.execute();
+        return res.status(201).json(result);
+    }
+}
 
 
 
