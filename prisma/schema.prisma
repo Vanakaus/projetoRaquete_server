@@ -49,6 +49,7 @@ model Classes {
   id_academia       String
   nome              String
   masculino         Boolean           @default(false)
+  misto             Boolean           @default(false)
   dupla             Boolean           @default(false)
 
   academia          Academias         @relation("classe", fields: [id_academia], references: [id])

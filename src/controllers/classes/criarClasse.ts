@@ -6,7 +6,7 @@ import { CriaClasseDTO } from "../../interface/ClasseDTO";
 
 
 export class CriarClasseUseCase{
-    async execute({ id_academia, sigla, nome, masculino, dupla }: CriaClasseDTO): Promise<User>{
+    async execute({ id_academia, sigla, nome, masculino, misto, dupla }: CriaClasseDTO): Promise<User>{
         
         const classeExiste = await prisma.classes.findFirst({
             where: {
@@ -41,6 +41,7 @@ export class CriarClasseUseCase{
                 sigla,
                 nome,
                 masculino,
+                misto,
                 dupla,
                 academia: {
                     connect: { id: id_academia } // Replace 'someAcademiaId' with the actual ID or logic to get the ID

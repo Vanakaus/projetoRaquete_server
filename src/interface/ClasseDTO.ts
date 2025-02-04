@@ -4,5 +4,16 @@ export interface CriaClasseDTO {
     sigla: string;
     nome: string;
     masculino: boolean;
+    misto: boolean;
+    dupla: boolean;
+}
+
+
+export interface AtualizarClasseDTO {
+    sigla_original: string;
+    sigla: string;
+    nome: string;
+    masculino: boolean;
+    misto: boolean;
     dupla: boolean;
 }

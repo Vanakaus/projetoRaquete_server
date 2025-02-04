@@ -8,6 +8,7 @@ export class ListarClassesUseCase{
                 sigla: true,
                 nome: true,
                 masculino: true,
+                misto: true,
                 dupla: true
             }
         });
