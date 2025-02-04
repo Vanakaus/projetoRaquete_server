@@ -5,13 +5,13 @@ import { AtualizarClasseDTO } from "../../interface/ClasseDTO";
 
 
 export class AtualizarClasseUseCase{
-    async execute({ sigla_original, sigla, nome, masculino, misto, dupla}: AtualizarClasseDTO): Promise<any>{
+    async execute({ id, sigla, nome, masculino, misto, dupla}: AtualizarClasseDTO): Promise<any>{
         console.log("Atualizando classe");
-        console.log({sigla_original, sigla, nome, masculino, dupla});
+        console.log({ id, sigla, nome, masculino, dupla});
         
         const classeExiste = await prisma.classes.findFirst({
             where: {
-                sigla: sigla_original
+                id
             }
         });
 
@@ -22,26 +22,30 @@ export class AtualizarClasseUseCase{
         }
 
 
-        let siglaExiste;
 
-        if(sigla !== sigla_original){
-            siglaExiste = await prisma.classes.findFirst({
-                where: {
-                    sigla
-                }
-            });
-
-            if(siglaExiste){
-                console.log("Sigla indisponível");
-                throw new AppError('Sigla indisponível', 409); 
+        const siglaExiste = await prisma.classes.findFirst({
+            where: {
+                AND: [
+                    {sigla},
+                    {NOT: {id}}
+                ]
             }
+        });
+
+        if(siglaExiste){
+            console.log("Sigla indisponível");
+            throw new AppError('Sigla indisponível', 409); 
         }
         
+
 
         if(classeExiste.nome !== nome){
             const nomeExiste = await prisma.classes.findFirst({
                 where: {
-                    nome
+                    AND: [
+                        {nome},
+                        {NOT: {id}}
+                    ]
                 }
             });
 
@@ -53,7 +57,7 @@ export class AtualizarClasseUseCase{
 
 
         const classe = await prisma.classes.update({
-            where: { sigla: sigla_original },
+            where: { id },
             data: {
                 sigla,
                 nome,

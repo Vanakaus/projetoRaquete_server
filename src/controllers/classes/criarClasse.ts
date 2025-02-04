@@ -44,7 +44,7 @@ export class CriarClasseUseCase{
                 misto,
                 dupla,
                 academia: {
-                    connect: { id: id_academia } // Replace 'someAcademiaId' with the actual ID or logic to get the ID
+                    connect: { id: id_academia }
                 }
             }
         }) as any;

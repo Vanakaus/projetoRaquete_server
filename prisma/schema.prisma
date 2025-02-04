@@ -45,9 +45,10 @@ model Academias {
 
 
 model Classes {
-  sigla             String            @id
+  id                Int               @id @default(autoincrement())
   id_academia       String
-  nome              String
+  sigla             String            @unique
+  nome              String            @unique
   masculino         Boolean           @default(false)
   misto             Boolean           @default(false)
   dupla             Boolean           @default(false)
