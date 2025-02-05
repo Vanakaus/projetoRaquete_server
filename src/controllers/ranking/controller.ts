@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ListarRankingUseCase } from "./listarRanking";
 import { CriarRankingUseCase } from "./criarRanking";
+import { ListarRankingClassesUseCase } from "./listarRankingClasses";
 
 const jwt = require('jsonwebtoken');
 
@@ -19,6 +20,20 @@ export class ListarRankingController {
         });
 
         const result = await listarRankingUseCase.execute({ id_academia }) as any;
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class ListarRankingClassesController {
+    async handle(req: Request, res: Response) {
+        
+        const listarRankingClassesUseCase = new ListarRankingClassesUseCase();
+        
+        const idRanking = Number(req.query.idRanking);
+
+        const result = await listarRankingClassesUseCase.execute({ idRanking }) as any;
         return res.status(201).json(result);
     }
 }

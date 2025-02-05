@@ -4,6 +4,11 @@ export interface listarRankingDTO {
 }
 
 
+export interface listarRankingClassesDTO {
+    idRanking: number;
+}
+
+
 export interface CriaRankingDTO {
     id_academia: string;
     nome: string;

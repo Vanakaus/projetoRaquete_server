@@ -1,10 +1,10 @@
-import { listarClassesDTO } from "../../interface/ClasseDTO";
+import { listarRankingDTO } from "../../interface/RankingDTO";
 import { prisma } from "../../prisma/client";
 
 
 
 export class ListarRankingUseCase{
-    async execute( {id_academia}: listarClassesDTO ): Promise<any>{
+    async execute( {id_academia}: listarRankingDTO ): Promise<any>{
 
         const ranking = await prisma.ranking.findMany({
             select: {
