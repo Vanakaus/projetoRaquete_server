@@ -76,10 +76,10 @@ model Ranking {
 
 model ClasseRanking {
   id                Int               @id @default(autoincrement())
-  id_classe         String
+  id_classe         Int
   id_ranking        Int
 
-  classe            Classes           @relation("classe", fields: [id_classe], references: [sigla])
+  classe            Classes           @relation("classe", fields: [id_classe], references: [id])
   ranking           Ranking           @relation("ranking", fields: [id_ranking], references: [id])
 
   @@map("classeRanking")
