@@ -50,9 +50,9 @@ export class CriarClasseUseCase{
         }) as any;
 
         if(!classe){
-            console.log("Erro ao cadastrar usuário");
+            console.log("Erro ao cadastrar classe");
             console.log(classe);
-            throw new AppError('Erro ao cadastrar usuário\n\n\n' + classe);
+            throw new AppError('Erro ao cadastrar classe\n\n\n' + classe);
         }
 
         console.log("Usuário cadastrado com sucesso");

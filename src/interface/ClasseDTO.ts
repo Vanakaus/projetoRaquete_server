@@ -22,3 +22,10 @@ export interface AtualizarClasseDTO {
     misto: boolean;
     dupla: boolean;
 }
+
+
+export interface AdicionarClasseRankingDTO {
+    id_academia: string;
+    idClasse: number;
+    idRanking: number;
+}
