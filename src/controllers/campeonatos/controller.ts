@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CriaCampeonatoUseCase } from "./criaCampeonato";
-import { ListaTorneiosAcademiaUseCase } from "./listaTorneiosAcademia";
+import { ListarTorneiosAcademiaUseCase } from "./listarTorneiosAcademia";
 import { LeCampeonatoUseCase } from "./leCampeonato";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
@@ -10,6 +10,7 @@ import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
 import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
+import { ListarStatusUseCase } from "./listarStatus";
 
 const jwt = require('jsonwebtoken');
 
@@ -17,10 +18,25 @@ const jwt = require('jsonwebtoken');
 
 
 
-export class ListaTorneiosAcademiaController {
+export class ListarStatusController {
     async handle(req: Request, res: Response) {
         
-        const listTorneiosUseCase = new ListaTorneiosAcademiaUseCase();
+        const listarStatusUseCase = new ListarStatusUseCase();
+
+        const result = await listarStatusUseCase.execute();
+
+        result.status= "success";
+        result.mensagem = "Status listados com sucesso";
+        
+        return res.status(201).json(result);
+    }
+}
+
+
+export class ListarTorneiosAcademiaController {
+    async handle(req: Request, res: Response) {
+        
+        const listarTorneiosUseCase = new ListarTorneiosAcademiaUseCase();
 
         const token = req.headers['x-access-token']
 
@@ -29,7 +45,7 @@ export class ListaTorneiosAcademiaController {
             id_academia = decoded.id_academia;
         });
 
-        const result = await listTorneiosUseCase.execute({ id_academia });
+        const result = await listarTorneiosUseCase.execute({ id_academia });
 
         result.status= "success";
         result.mensagem = "Torneios listados com sucesso";

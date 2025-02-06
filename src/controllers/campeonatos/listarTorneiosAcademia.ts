@@ -2,7 +2,7 @@ import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { ListaTorneiosAcademiaDTO } from "../../interface/TorneiosDTO";
 
-export class ListaTorneiosAcademiaUseCase{
+export class ListarTorneiosAcademiaUseCase{
     async execute({ id_academia }: ListaTorneiosAcademiaDTO): Promise<any>{
 
         console.log("Buscando Torneios da Academia: " + id_academia);
