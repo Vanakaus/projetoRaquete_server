@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
 import { userRoutes } from "./user.routes";
-import { campenatoRoutes } from "./campeonatos.routes";
+import { torneioRoutes } from "./torneios.routes";
 import { inscricaoRoutes } from "./inscricao.routes";
 import { partidasRoutes } from "./partidas.routes";
 import { horariosRoutes } from "./horarios.routes";
 import { quadrasRoutes } from "./quadras.routes";
 import { classesRoutes } from "./classes.routes";
-import { RankingRoutes } from "./ranking.routes";
+import { rankingRoutes } from "./ranking.routes";
 
 
 const routes = Router();
@@ -21,9 +21,9 @@ routes.get('/', informativo, (req, res) => {
 
 routes.use('/users', userRoutes);
 routes.use('/classes', classesRoutes);
-routes.use('/ranking', RankingRoutes);
+routes.use('/ranking', rankingRoutes);
+routes.use('/torneios', torneioRoutes);
 
-routes.use('/campeonatos', campenatoRoutes);
 routes.use('/inscricao', inscricaoRoutes);
 routes.use('/partidas', partidasRoutes);
 routes.use('/horarios', horariosRoutes);

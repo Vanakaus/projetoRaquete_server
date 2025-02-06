@@ -16,22 +16,19 @@ export interface AtualizaCampeonatoDTO {
 }
 
 
-export interface CriaCampeonatoDTO {
-    cpfToken: string;
-    cpf: string;
+export interface CriaTorneioDTO {
+    id_academia: string;
+    idRanking: number;
     nome: string;
     descricao?: string;
-    regras: string;
-    classe: string;
-    numJogadores: number;
-    dataInscricao: Date;
+    local?: string;
+    sets: number;
+    tiebreak: boolean;
+    modalidade: { simples: boolean, duplas: boolean };
+    pontuacao: { participacao: number, r32: number, r16: number, r8: number, r4: number, r2: number, r1: number, vencedor: number };
+    classes: number[];
     dataInicio: Date;
     dataFim: Date;
-    sets: number;
-
-    // Opicional
-    premiacao?: string;
-    local?: string;
 }
 
 

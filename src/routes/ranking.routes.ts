@@ -6,16 +6,16 @@ import { CriarRankingController, ListarRankingClassesController, ListarRankingCo
 
 
 
-const RankingRoutes = Router();
+const rankingRoutes = Router();
 
 const listarRankingController  = new ListarRankingController();
 const listarRankingClassesController  = new ListarRankingClassesController();
 const criarRankingController  = new CriarRankingController();
 
 
-RankingRoutes.get('/listar', informativo, verificaJWT, listarRankingController.handle);
-RankingRoutes.get('/listarClasses', informativo, verificaJWT, listarRankingClassesController.handle);
-RankingRoutes.post('/criar', informativo, verificaJWT, criarRankingController.handle);
+rankingRoutes.get('/listar', informativo, verificaJWT, listarRankingController.handle);
+rankingRoutes.get('/listarClasses', informativo, verificaJWT, listarRankingClassesController.handle);
+rankingRoutes.post('/criar', informativo, verificaJWT, criarRankingController.handle);
 
 
-export { RankingRoutes };
+export { rankingRoutes };

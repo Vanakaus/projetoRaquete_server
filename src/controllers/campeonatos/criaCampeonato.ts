@@ -1,80 +1,160 @@
 import { User } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { CriaCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
+import { CriaTorneioDTO } from "../../interface/CampeonatoUsersDTO";
 
 
 
 export class CriaCampeonatoUseCase{
-    async execute({cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInscricao, dataInicio, dataFim}: CriaCampeonatoDTO): Promise<User>{
+    async execute({ id_academia, idRanking, nome, descricao = "", local = "", sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}: CriaTorneioDTO): Promise<User>{
 
-        if(cpfToken !== cpf){
-            console.log("CPF não corresponde ao token");
-            throw new AppError('CPF não corresponde ao token\nRefaça o login');
-        }
-
-
-        // Busca todos os campeonatos que tenham o nome do novo campeonato dentro do nome deles
-        const campeonatoExiste = await prisma.campeonatos.findMany({
-            where: {
-                nome: {
-                    contains: nome
-                }
-            }
-        });
+        console.log("CriaCampeonatoUseCase");
+        console.log({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim});
 
 
         console.log("\nResposta: ");
 
-        if(campeonatoExiste.length > 0){
-            // if(campeonatoExiste.length > 1){
-            //     var num = (+campeonatoExiste[campeonatoExiste.length - 1].nome.split(" - ")[1]);
-            //     nome = nome + " - " + ((+campeonatoExiste[campeonatoExiste.length - 1].nome.split(" - ")[1]) + 1);
-            // } else
-            //     nome = nome + " - 2";
+        // Verifica se o torneio já existe
+        const torneioExiste = await prisma.torneios.findFirst({
+            where: {
+                id_academia,
+                nome
+            }
+        });
 
 
-
-            console.log("Nome de campeonato indisponível");
-            throw new AppError('Nome de campeonato indisponível');
+        if(torneioExiste){
+            console.log("Nome de torneio indisponível");
+            throw new AppError('Nome de torneio indisponível');
         }
 
-        dataInscricao = new Date(dataInscricao);
-        dataInicio = new Date(dataInicio);
-        dataFim = new Date(dataFim);
+
+
+        // Verifica se o ranking existe
+        const rankingExiste = await prisma.ranking.findFirst({
+            where: {
+                id_academia,
+                id: idRanking
+            }
+        });
+
+        if(!rankingExiste){
+            console.log("Erro ao sincronizar ranking");
+            throw new AppError('Erro ao sincronizar ranking');
+        }
+
+
+
+        // Verifica se as classes existem e as adiciona ao ranking, salvando o id da classeRanking para adicionar ao torneio
+        const classeRanking: number[] = [];
+        for (let i = 0; i < classes.length; i++) {
+            let classeExiste = await prisma.classeRanking.findFirst({
+                where: {
+                    id_classe: classes[i],
+                }
+            }) as any;
+
+
+            if(!classeExiste){
+                classeExiste = await prisma.classes.findFirst({
+                    where: {
+                        id: classes[i]
+                    }
+                });
+
+                if(!classeExiste){
+                    console.log("Classe não encontrada");
+                    throw new AppError('Classe não encontrada');
+                }
+
+                const novaClasse = await prisma.classeRanking.create({
+                    data: {
+                        id_classe: classes[i],
+                        id_ranking: idRanking
+                    }
+                });
+
+                if(!novaClasse){
+                    console.log("Erro ao adicionar classe ao ranking");
+                    throw new AppError('Erro ao adicionar classe ao ranking');
+                }
+
+                classeRanking.push(novaClasse.id);
+            } else {
+                classeRanking.push(classeExiste.id);
+            }
+        }
+
+
+
+        // Acha o status inicial
+        const status = await prisma.status.findFirst({});
+
+        if(!status){
+            console.log("Erro ao encontrar status inicial");
+            throw new AppError('Erro ao encontrar status inicial');
+        }
+
+
+        // Adiciona as pontuações
+        const pontuacaoCampeonato = await prisma.pontuacoesCampeonato.create({
+            data: {
+                ...pontuacao
+            }
+        });
+
 
         
-        const campeonato = await prisma.campeonatos.create({
+        // Cria o torneio
+        dataInicio = new Date(dataInicio);
+        dataFim = new Date(dataFim);
+        
+        const torneio = await prisma.torneios.create({
             data: {
-                id_criador: cpf,
+                id_academia,
+                id_pontuacoes: pontuacaoCampeonato.id,
+                id_status: status.id,
                 nome,
                 descricao,
-                regras,
-                classe,
-                numJogadores,
-                premiacao,
-                sets,
                 local,
-                dataInscricao,
+                sets,
+                tiebreak,
+                simples: modalidade.simples,
+                duplas: modalidade.duplas,
                 dataInicio,
                 dataFim
             }
         }) as any;
         
 
-        if(!campeonato){
+        if(!torneio){
             console.log("Erro ao criar campeonato");
-            console.log(campeonato);
-            throw new AppError('Erro ao criar campeonato\n\n\n' + campeonato);
+            console.log(torneio);
+            throw new AppError('Erro ao criar campeonato\n\n\n' + torneio);
         }
 
+
+
+        // Adiciona as classes ao torneio
+        classeRanking.forEach(async (classe) => {
+            await prisma.classeTorneio.create({
+                data: {
+                    id_classeRanking: classe,
+                    id_torneio: torneio.id,
+                    cabecasChave: 0
+                }
+            });
+        });
+
+
+
+
+
+
         console.log("Campeonato criado com sucesso");
-        console.log(campeonato);
+        console.log(torneio);
         
 
-        delete campeonato.id_criador;
-        delete campeonato.id;
-
-        return campeonato;
+        return torneio;
     }
 }

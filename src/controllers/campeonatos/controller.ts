@@ -38,21 +38,20 @@ export class AtualizaCampeonatoController {
 
 
 
-export class CriaCampeonatoController {
+export class CriarCampeonatoController {
     async handle(req: Request, res: Response) {
         
-        var cpfToken = '';
-        const { cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInscricao, dataInicio, dataFim } = req.body;
+        const { idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim } = req.body;
         const token = req.headers['x-access-token']
 
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpfToken = decoded.cpf;
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
         });
-
 
         const criaCampeonatoUseCase = new CriaCampeonatoUseCase();
         
-        const result = await criaCampeonatoUseCase.execute({ cpfToken, cpf, nome, descricao, regras, classe, numJogadores, premiacao, sets, local,dataInscricao, dataInicio, dataFim}) as any;
+        const result = await criaCampeonatoUseCase.execute({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 

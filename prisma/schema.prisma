@@ -142,9 +142,8 @@ model Torneios {
   local             String
   simples           Boolean
   duplas            Boolean
-  ranking           Boolean
   sets              Int
-  tiebreakao        Boolean
+  tiebreak          Boolean
   dataInicio        DateTime
   dataFim           DateTime
 
