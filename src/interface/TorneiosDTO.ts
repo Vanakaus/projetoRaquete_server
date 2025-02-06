@@ -1,18 +1,6 @@
 
-export interface AtualizaCampeonatoDTO {
-    cpfToken: string;
-    id: string;
-    id_criador: string;
-    nome: string;
-    descricao?: string;
-    regras: string;
-    classe: string;
-    numJogadores: number;
-    dataInicio: Date;
-    dataFim: Date;
-    premiacao: string;
-    sets: number;
-    local: string;
+export interface ListaTorneiosAcademiaDTO {
+    id_academia: string;
 }
 
 
@@ -32,8 +20,20 @@ export interface CriaTorneioDTO {
 }
 
 
-export interface ListaCampeonatoDTO {
-    cpf: string;
+export interface AtualizaCampeonatoDTO {
+    cpfToken: string;
+    id: string;
+    id_criador: string;
+    nome: string;
+    descricao?: string;
+    regras: string;
+    classe: string;
+    numJogadores: number;
+    dataInicio: Date;
+    dataFim: Date;
+    premiacao: string;
+    sets: number;
+    local: string;
 }
 
 

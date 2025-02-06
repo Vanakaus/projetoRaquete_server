@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { AbrirFecharInscricoesDTO } from "../../interface/CampeonatoUsersDTO";
+import { AbrirFecharInscricoesDTO } from "../../interface/TorneiosDTO";
 
 export class AbreFechaInscricoesUseCase{
     async execute({id, cpf, id_criador, abreFecha}: AbrirFecharInscricoesDTO): Promise<any>{

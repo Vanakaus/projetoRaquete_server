@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { LeCampeonatoCriadoDTO } from "../../interface/CampeonatoUsersDTO";
+import { LeCampeonatoCriadoDTO } from "../../interface/TorneiosDTO";
 
 export class LeCampeonatoCriadoUseCase{
     async execute({id, cpf, id_criador}: LeCampeonatoCriadoDTO): Promise<any>{

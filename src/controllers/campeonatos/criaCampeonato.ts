@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { CriaTorneioDTO } from "../../interface/CampeonatoUsersDTO";
+import { CriaTorneioDTO } from "../../interface/TorneiosDTO";
 
 
 
