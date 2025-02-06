@@ -66,6 +66,7 @@ export class AtualizarClasseUseCase{
                 dupla
             },
             select: {
+                id: true,
                 sigla: true,
                 nome: true,
                 masculino: true,

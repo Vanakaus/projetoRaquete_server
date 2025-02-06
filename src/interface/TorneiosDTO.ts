@@ -4,6 +4,11 @@ export interface ListaTorneiosAcademiaDTO {
 }
 
 
+export interface LeTorneioDTO {
+    id: string;
+}
+
+
 export interface CriaTorneioDTO {
     id_academia: string;
     idRanking: number;
@@ -40,12 +45,6 @@ export interface AtualizaCampeonatoDTO {
 export interface ListaCampeonatosCriadosDTO {
     cpf: string;
     id_criador: string;
-}
-
-
-export interface LeCampeonatoDTO {
-    id: string;
-    cpf: string;
 }
 
 

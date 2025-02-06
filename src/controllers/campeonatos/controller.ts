@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { CriaCampeonatoUseCase } from "./criaCampeonato";
 import { ListarTorneiosAcademiaUseCase } from "./listarTorneiosAcademia";
-import { LeCampeonatoUseCase } from "./leCampeonato";
+import { LerTorneioUseCase } from "./leTorneio";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
 import { AtualizaCampeonatoUseCase } from "./atualizaCampeonato";
@@ -33,6 +33,29 @@ export class ListarStatusController {
 }
 
 
+
+export class CriarTorneioController {
+    async handle(req: Request, res: Response) {
+        
+        const { idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim } = req.body;
+        const token = req.headers['x-access-token']
+
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
+
+        const criaCampeonatoUseCase = new CriaCampeonatoUseCase();
+        
+        const result = await criaCampeonatoUseCase.execute({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}) as any;
+        result.status= "success";
+        result.mensagem = "Campeonato criado com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
 export class ListarTorneiosAcademiaController {
     async handle(req: Request, res: Response) {
         
@@ -55,24 +78,22 @@ export class ListarTorneiosAcademiaController {
 }
 
 
-
-export class CriarTorneioController {
+export class LerTorneioController {
     async handle(req: Request, res: Response) {
         
-        const { idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim } = req.body;
-        const token = req.headers['x-access-token']
+        const lerTorneioUseCase = new LerTorneioUseCase();
 
-        var id_academia = '';
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
-            id_academia = decoded.id_academia;
-        });
+        const { id } = req.query;
 
-        const criaCampeonatoUseCase = new CriaCampeonatoUseCase();
-        
-        const result = await criaCampeonatoUseCase.execute({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}) as any;
+        if (typeof id !== 'string') {
+            return res.status(400).json({ status: "error", mensagem: "Id inválido" });
+        }
+
+        const result = await lerTorneioUseCase.execute({ id });
+
         result.status= "success";
-        result.mensagem = "Campeonato criado com sucesso";
-
+        result.mensagem = "Torneio lido com sucesso";
+        
         return res.status(201).json(result);
     }
 }
