@@ -1,10 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
-const { faker } = require('@faker-js/faker');
-const { genSalt } = require('bcryptjs');
-const { hash } = require('bcryptjs');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-async function main() {
+export async function CreateAdmin() {
 
   // Verifica se o usuario admin ja foi criado, caso sim, não faz nada
   const adminExists = await prisma.user.findUnique({
@@ -34,7 +31,7 @@ async function main() {
 
 
 
-main()
+CreateAdmin()
   .catch((e) => {
     throw e;
   })
