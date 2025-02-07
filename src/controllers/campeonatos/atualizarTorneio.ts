@@ -49,7 +49,6 @@ export class AtualizarTorneioUseCase{
             throw new AppError('Torneio não encontrado');
         }
 
-        console.log("check1");
 
 
         // Verifica se o torneio já existe
@@ -70,7 +69,6 @@ export class AtualizarTorneioUseCase{
 
 
 
-        console.log("check2");
 
         // Atualiza o torneio de acordo com o status do torneio
         dataInicio = new Date(dataInicio);
@@ -131,7 +129,6 @@ export class AtualizarTorneioUseCase{
         }
 
 
-        console.log("check3");
 
         if(torneioExiste.status.id < 5){
             const pontuacoes = await prisma.pontuacoesCampeonato.update({
@@ -159,7 +156,6 @@ export class AtualizarTorneioUseCase{
 
 
 
-        console.log("check4");
 
         
         if(torneioExiste.status.id < 2){
@@ -181,7 +177,6 @@ export class AtualizarTorneioUseCase{
             });
 
 
-            console.log("check5");
 
             // Adiciona as classes ao torneio
 
@@ -227,7 +222,6 @@ export class AtualizarTorneioUseCase{
                 }
             }
 
-            console.log("check6");
 
             // Adiciona as classes ao torneio
             for (let i = 0; i < classeRanking.length; i++) {
@@ -242,7 +236,6 @@ export class AtualizarTorneioUseCase{
 
         }
 
-        console.log("check7");
 
         return { torneio };
     }
