@@ -51,6 +51,7 @@ export class CriaCampeonatoUseCase{
             let classeExiste = await prisma.classeRanking.findFirst({
                 where: {
                     id_classe: classes[i],
+                    id_ranking: idRanking
                 }
             }) as any;
 
@@ -136,15 +137,15 @@ export class CriaCampeonatoUseCase{
 
 
         // Adiciona as classes ao torneio
-        classeRanking.forEach(async (classe) => {
+        for (let i = 0; i < classeRanking.length; i++) {
             await prisma.classeTorneio.create({
                 data: {
-                    id_classeRanking: classe,
+                    id_classeRanking: classeRanking[i],
                     id_torneio: torneio.id,
                     cabecasChave: 0
                 }
             });
-        });
+        }
 
 
 

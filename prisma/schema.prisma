@@ -176,11 +176,11 @@ model Inscricao {
   id                Int               @id @default(autoincrement())
   id_tenista        String
   id_tenista2       String?
-  id_classetorneio  Int
+  id_classeTorneio  Int
   
   tenista1          Tenistas          @relation("inscricao_tenista", fields: [id_tenista], references: [cpf])
   tenista2          Tenistas?         @relation("inscricao_tenista2", fields: [id_tenista2], references: [cpf])
-  classeTorneio     ClasseTorneio     @relation("inscricao", fields: [id_classetorneio], references: [id])
+  classeTorneio     ClasseTorneio     @relation("inscricao", fields: [id_classeTorneio], references: [id])
   Partidas1         Partidas[]        @relation("inscricao1")
   Partidas2         Partidas[] @relation("inscricao2")
   

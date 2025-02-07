@@ -51,6 +51,7 @@ export class LerTorneioUseCase{
                                 id: true,
                                 classe: {
                                     select: {
+                                        id: true,
                                         sigla: true,
                                         nome: true,
                                         masculino: true,

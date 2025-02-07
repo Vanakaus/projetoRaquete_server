@@ -5,7 +5,7 @@ import { ListarTorneiosAcademiaUseCase } from "./listarTorneiosAcademia";
 import { LerTorneioUseCase } from "./leTorneio";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
-import { AtualizaCampeonatoUseCase } from "./atualizaCampeonato";
+import { AtualizarTorneioUseCase } from "./atualizarTorneio";
 import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
 import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
@@ -100,27 +100,26 @@ export class LerTorneioController {
 
 
 
-// export class AtualizaCampeonatoController {
-//     async handle(req: Request, res: Response) {
+export class AtualizarTorneioController {
+    async handle(req: Request, res: Response) {
         
-//         var cpfToken = '';
-//         const { id_criador, id, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim } = req.body;
-//         const token = req.headers['x-access-token']
+        const atualizarTorneioUseCase = new AtualizarTorneioUseCase();
 
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpfToken = decoded.cpf;
-//         });
+        const { id, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim } = req.body;
+        const token = req.headers['x-access-token']
 
-
-//         const criaCampeonatoUseCase = new AtualizaCampeonatoUseCase();
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
         
-//         const result = await criaCampeonatoUseCase.execute({ cpfToken, id, id_criador, nome, descricao, regras, classe, numJogadores, premiacao, sets, local, dataInicio, dataFim}) as any;
-//         result.status= "success";
-//         result.mensagem = "Campeonato atualizado com sucesso";
+        const result = await atualizarTorneioUseCase.execute({ id, id_academia, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }) as any;
+        result.status= "success";
+        result.mensagem = "Campeonato atualizado com sucesso";
 
-//         return res.status(201).json(result);
-//     }
-// }
+        return res.status(201).json(result);
+    }
+}
 
 
 

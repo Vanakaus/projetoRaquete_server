@@ -25,20 +25,20 @@ export interface CriaTorneioDTO {
 }
 
 
-export interface AtualizaCampeonatoDTO {
-    cpfToken: string;
+export interface AtualizarTorneioDTO {
+    id_academia: string;
     id: string;
-    id_criador: string;
     nome: string;
-    descricao?: string;
-    regras: string;
-    classe: string;
-    numJogadores: number;
+    descricao: string;
+    local: string;
+    sets: number;
+    tiebreak: boolean;
+    modalidade: { simples: boolean, duplas: boolean };
+    pontuacao: { participacao: number, r32: number, r16: number, r8: number, r4: number, r2: number, r1: number, vencedor: number };
+    classesDeleta: number[];
+    classesAdiciona: number[];
     dataInicio: Date;
     dataFim: Date;
-    premiacao: string;
-    sets: number;
-    local: string;
 }
 
 
