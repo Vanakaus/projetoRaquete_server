@@ -29,15 +29,15 @@ model User {
 
 
 model Academias {
-  id                String            @id @default(uuid())
-  nome              String
-  telefone          String
+  id                  String                  @id @default(uuid())
+  nome                String
+  telefone            String
 
-  classes     Classes[]               @relation("classe")
-  ranking     Ranking[]               @relation("ranking")
-  tenistas    Tenistas[]              @relation("tenista")
-  Torneios    Torneios[]              @relation("torneio")
-  User        User[]                  @relation("admin")
+  classes             Classes[]               @relation("classe")
+  ranking             Ranking[]               @relation("ranking")
+  tenistasAcademias   TenistasAcademias[]     @relation("tenista")
+  Torneios            Torneios[]              @relation("torneio")
+  User                User[]                  @relation("admin")
 
   @@map("academias")
 }
@@ -81,23 +81,35 @@ model ClasseRanking {
 
   classe            Classes           @relation("classe", fields: [id_classe], references: [id])
   ranking           Ranking           @relation("ranking", fields: [id_ranking], references: [id])
+  ClasseTorneio     ClasseTorneio[]   @relation("classe")
 
   @@map("classeRanking")
-  ClasseTorneio ClasseTorneio[] @relation("classe")
 }
 
 
 
 model Tenistas {
   cpf               String            @id
-  id_academia       String
   nome              String
 
+  TenistasAcademias TenistasAcademias[] @relation("tenista")
+
+  @@map("tenistas")
+}
+
+
+
+model TenistasAcademias {
+  id                Int               @id @default(autoincrement())
+  id_tenista        String
+  id_academia       String
+
   academia          Academias         @relation("tenista", fields: [id_academia], references: [id])
+  tenista           Tenistas          @relation("tenista", fields: [id_tenista], references: [cpf])
   Inscricao1        Inscricao[]       @relation("inscricao_tenista")
   Inscricao2        Inscricao[]       @relation("inscricao_tenista2")
 
-  @@map("tenistas")
+  @@map("tenistasAcademias")
 }
 
 
@@ -173,16 +185,16 @@ model ClasseTorneio {
 
 
 model Inscricao {
-  id                Int               @id @default(autoincrement())
-  id_tenista        String
-  id_tenista2       String?
-  id_classeTorneio  Int
+  id                  Int                 @id @default(autoincrement())
+  id_tenistaAcademia  Int
+  id_tenistaAcademia2 Int?
+  id_classeTorneio    Int
   
-  tenista1          Tenistas          @relation("inscricao_tenista", fields: [id_tenista], references: [cpf])
-  tenista2          Tenistas?         @relation("inscricao_tenista2", fields: [id_tenista2], references: [cpf])
-  classeTorneio     ClasseTorneio     @relation("inscricao", fields: [id_classeTorneio], references: [id])
-  Partidas1         Partidas[]        @relation("inscricao1")
-  Partidas2         Partidas[] @relation("inscricao2")
+  tenista1            TenistasAcademias   @relation("inscricao_tenista", fields: [id_tenistaAcademia], references: [id])
+  tenista2            TenistasAcademias?  @relation("inscricao_tenista2", fields: [id_tenistaAcademia2], references: [id])
+  classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id])
+  Partidas1           Partidas[]          @relation("inscricao1")
+  Partidas2           Partidas[]          @relation("inscricao2")
   
   @@map("inscricao")
 }

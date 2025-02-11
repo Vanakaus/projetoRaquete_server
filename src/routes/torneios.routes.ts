@@ -26,8 +26,8 @@ const atualizarTorneioController = new AtualizarTorneioController();
 torneioRoutes.post('/criar', informativo, verificaJWT, criarTorneioController.handle);
 
 torneioRoutes.get('/listarStatus', informativo, listarStatusController.handle);
-torneioRoutes.get('/listarAcademia', informativo, listarTorneiosAcademiaController.handle);
-torneioRoutes.get('/ler', informativo, lerTorneioController.handle);
+torneioRoutes.get('/listarAcademia', informativo, verificaJWT, listarTorneiosAcademiaController.handle);
+torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
 
 torneioRoutes.patch('/atualizarTorneio', informativo, verificaJWT, atualizarTorneioController.handle);
 
