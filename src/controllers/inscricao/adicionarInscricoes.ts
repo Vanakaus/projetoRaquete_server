@@ -134,6 +134,29 @@ export class AdicionarInscricoesUseCase{
                 
                 // Verifica se é dupla e repete o processo para o segundo jogador
                 if(duplas){
+
+                    const tenistaExiste2 = await prisma.tenistas.findFirst({
+                        where: {
+                            cpf: jogador2.cpf
+                        }
+                    });
+
+                    if(!tenistaExiste2){
+                        const novoTenista2 = await prisma.tenistas.create({
+                            data: {
+                                cpf: jogador2.cpf,
+                                nome: jogador2.nome
+                            }
+                        });
+
+                        if(!novoTenista2){
+                            console.log("Erro ao cadastrar novo jogador");
+                            falha = true;
+                            continue;
+                        }
+                    }
+                    
+
                     const tenistaAcademiaExiste2 = await prisma.tenistasAcademias.findFirst({
                         where: {
                             id_tenista: jogador2.cpf,
