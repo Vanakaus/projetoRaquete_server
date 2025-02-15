@@ -142,7 +142,6 @@ export class CriaCampeonatoUseCase{
                 data: {
                     id_classeRanking: classeRanking[i],
                     id_torneio: torneio.id,
-                    cabecasChave: 0
                 }
             });
         }

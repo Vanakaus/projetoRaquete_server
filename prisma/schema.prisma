@@ -173,7 +173,7 @@ model ClasseTorneio {
   id                Int               @id @default(autoincrement())
   id_classeRanking  Int
   id_torneio        String
-  cabecasChave      Int
+  cabecasChave      Int               @default(-1)
 
   classeRanking     ClasseRanking     @relation("classe", fields: [id_classeRanking], references: [id])
   torneio           Torneios          @relation("classe", fields: [id_torneio], references: [id])
@@ -195,8 +195,22 @@ model Inscricao {
   classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id])
   Partidas1           Partidas[]          @relation("inscricao1")
   Partidas2           Partidas[]          @relation("inscricao2")
+  pontuacaoRanking    pontuacaoRanking[]  @relation("pontuacaoRanking")
   
   @@map("inscricao")
+}
+
+
+
+model pontuacaoRanking {
+  id                Int               @id @default(autoincrement())
+  id_inscricao      Int
+  pontuacao         Int
+  data              DateTime          @default(now())
+  
+  inscricao         Inscricao         @relation("pontuacaoRanking", fields: [id_inscricao], references: [id])
+
+  @@map("pontuacaoRanking")
 }
 
 

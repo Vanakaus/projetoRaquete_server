@@ -1,8 +1,8 @@
 
 export interface GerarChaveDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
+    idTorneio: string;
+    idClasseTorneio: number;
+    numCabecas: number;
 }
 
 

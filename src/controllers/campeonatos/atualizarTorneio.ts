@@ -228,8 +228,7 @@ export class AtualizarTorneioUseCase{
                 await prisma.classeTorneio.create({
                     data: {
                         id_classeRanking: classeRanking[i],
-                        id_torneio: torneio.id,
-                        cabecasChave: 0
+                        id_torneio: torneio.id
                     }
                 });
             }

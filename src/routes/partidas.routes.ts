@@ -16,14 +16,14 @@ const listarProximasPartidasController = new ListarProximasPartidasController();
 
 
 
-partidasRoutes.get('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
+partidasRoutes.post('/gerarChaves', informativo, verificaJWT, gerarChaveController.handle);
 partidasRoutes.get('/limparChaves', informativo, verificaJWT, limparChaveController.handle);
 partidasRoutes.get('/listarChaves', informativo, listarChavesController.handle);
 
 partidasRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);
 partidasRoutes.patch('/atualizarDatas', informativo, verificaJWT, atualizarDatasController.handle);
 
-partidasRoutes.get('/proximasPartidas', informativo, listarProximasPartidasController.handle);
+// partidasRoutes.get('/proximasPartidas', informativo, listarProximasPartidasController.handle);
 
 
 

@@ -13,18 +13,18 @@ const jwt = require('jsonwebtoken');
 export class GerarChaveController {
     async handle(req: Request, res: Response) {
         
-        var cpf = '';
-        const { id_jogador, id_campeonato } = req.query as any;
+        const { idTorneio, idClasseTorneio, numCabecas } = req.body;
         const token = req.headers['x-access-token']
 
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
         });
 
 
         const gerarChaveUseCase = new GerarChaveUseCase();
         
-        const result = await gerarChaveUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
+        const result = await gerarChaveUseCase.execute({ idTorneio, idClasseTorneio, numCabecas }) as any;
         result.status= "success";
         result.mensagem = "Jogos gerados com sucesso";
 
