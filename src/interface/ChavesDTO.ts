@@ -14,7 +14,7 @@ export interface LimparChaveDTO {
 
 
 export interface ListarChaveDTO {
-    id_campeonato: string;
+    idTorneio: string;
 }
 
 

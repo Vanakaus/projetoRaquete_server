@@ -220,10 +220,10 @@ model Partidas {
   id_inscricao    Int?
   id_inscricao2   Int?
   chave           String
-  id_vencedor     Int?
-  dataPartida     String?
-  horaPartida     String?
-  local           Int?
+  id_vencedor     Int                 @default(-1)
+  dataPartida     String              @default("")
+  horaPartida     String              @default("")
+  local           String              @default("")
 
   inscricao1      Inscricao?          @relation("inscricao1", fields: [id_inscricao], references: [id])
   inscricao2      Inscricao?          @relation("inscricao2", fields: [id_inscricao2], references: [id])

@@ -24,8 +24,8 @@ routes.use('/classes', classesRoutes);
 routes.use('/ranking', rankingRoutes);
 routes.use('/torneios', torneioRoutes);
 routes.use('/inscricoes', inscricaoRoutes);
-
 routes.use('/partidas', partidasRoutes);
+
 routes.use('/horarios', horariosRoutes);
 routes.use('/quadras', quadrasRoutes);
 

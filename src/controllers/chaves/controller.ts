@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GerarChaveUseCase } from "./gerarChave";
 import { LimparChaveUseCase } from "./limparChave";
-import { ListarChavesUseCase } from "./listarChaves";
+import { ListarPartidasUseCase } from "./listarPartidas";
 import { AtualizarPlacarUseCase } from "./atualizarPlacar";
 import { AtualizardatasUseCase } from "./atualizarDatas";
 import { ListaProximasPartidasUseCase } from "./listaProximasPartidas";
@@ -15,12 +15,6 @@ export class GerarChaveController {
         
         const { idTorneio, idClasseTorneio, numCabecas } = req.body;
         const token = req.headers['x-access-token']
-
-        var id_academia = '';
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
-            id_academia = decoded.id_academia;
-        });
-
 
         const gerarChaveUseCase = new GerarChaveUseCase();
         
@@ -61,13 +55,13 @@ export class LimparChaveController {
 export class ListarChavesController {
     async handle(req: Request, res: Response) {
         
-        const { id_campeonato } = req.query as any;
+        const { idTorneio } = req.query as any;
 
-        const listarChavesUseCase = new ListarChavesUseCase();
+        const listarPartidasUseCase = new ListarPartidasUseCase();
         
-        const result = await listarChavesUseCase.execute({ id_campeonato }) as any;
+        const result = await listarPartidasUseCase.execute({ idTorneio }) as any;
         result.status= "success";
-        result.mensagem = "Jogos deletados com sucesso";
+        result.mensagem = "Partidas listadas com sucesso";
 
         return res.status(201).json(result);
     }
