@@ -46,6 +46,7 @@ export class AdicionarInscricoesUseCase{
         // Variáveis de controle de mesnsagem de resposta
         let falha = false;
         let sucesso = false;
+        const inscricoes = [];
 
         // Passa por todas as inscriçõesClasse
         for (let i = 0; i < inscricaoClasse.length; i++) {
@@ -97,6 +98,12 @@ export class AdicionarInscricoesUseCase{
                     if(!novoTenista){
                         console.log("Erro ao cadastrar novo jogador");
                         falha = true;
+                        inscricoes.push({
+                            jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                            sucesso: false,
+                            repetido: false,
+                            mensagem: `Erro ao cadastrar jogador 1(${jogador.nome}) no sistema`
+                         });
                         continue;
                     }
                 }
@@ -121,8 +128,14 @@ export class AdicionarInscricoesUseCase{
                     });
 
                     if(!novoTenistaAcademia){
-                        console.log("Erro ao cadastrar jogador na academia");
+                        console.log("Erro ao adicionar jogador na academia");
                         falha = true;
+                        inscricoes.push({
+                            jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                            sucesso: false,
+                            repetido: false,
+                            mensagem: `Erro ao adicionar jogador 1(${jogador.nome}) na academia`
+                         });
                         continue;
                     }else{
                         id_tenistaAcademia = novoTenistaAcademia.id;
@@ -152,6 +165,12 @@ export class AdicionarInscricoesUseCase{
                         if(!novoTenista2){
                             console.log("Erro ao cadastrar novo jogador");
                             falha = true;
+                            inscricoes.push({
+                                jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                                sucesso: false,
+                                repetido: false,
+                                mensagem: `Erro ao cadastrar jogador 2(${jogador2.nome}) no sistema`
+                            });
                             continue;
                         }
                     }
@@ -173,8 +192,14 @@ export class AdicionarInscricoesUseCase{
                         });
 
                         if(!novoTenistaAcademia2){
-                            console.log("Erro ao cadastrar jogador na academia");
+                            console.log("Erro ao adicionar jogador na academia");
                             falha = true;
+                            inscricoes.push({
+                                jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                                sucesso: false,
+                                repetido: false,
+                                mensagem: `Erro ao adicionar jogador 2(${jogador2.nome}) na academia`
+                            });
                             continue;
                         } else{
                             id_tenistaAcademia2 = novoTenistaAcademia2.id;
@@ -198,8 +223,14 @@ export class AdicionarInscricoesUseCase{
 
 
                 if(inscricaoExiste){
-                    console.log("Inscrição já realizada");
+                    console.log("Inscrição repetida");
                     sucesso = true;
+                    inscricoes.push({
+                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                        sucesso: true,
+                        repetido: true,
+                        mensagem: `Inscrição repetida`
+                    });
                     continue;
                 }
 
@@ -216,21 +247,31 @@ export class AdicionarInscricoesUseCase{
                 if(!novaInscricao){
                     console.log("Erro ao cadastrar inscrição");
                     falha = true;
+                    inscricoes.push({
+                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                        sucesso: false,
+                        repetido: false,
+                        mensagem: `Erro adicionar inscrição`
+                    });
                     continue;
                 }else{
                     sucesso = true;
+                    inscricoes.push({
+                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                        sucesso: true,
+                        repetido: false,
+                        mensagem: `Inscrição adicionada com sucesso`
+                    });
                 }
             }
         }
 
 
-        console.log (sucesso ? 
-                        falha ?
-                            "Inscrições realizadas com falhas"
-                            : "Inscrições realizadas com sucesso"
-                    : "Erro ao realizar inscrições");
-        
+        console.log("\n\n");
+        console.log(`${inscricoes.reduce((acc, cur) => acc + (cur.sucesso && !cur.repetido ? 1 : 0), 0)} inscrições realizadas com sucesso`);
+        console.log(`${inscricoes.reduce((acc, cur) => acc + (cur.repetido ? 1 : 0), 0)} inscrições repetidas`);
+        console.log(`${inscricoes.reduce((acc, cur) => acc + (cur.sucesso ? 0 : 1), 0)} inscrições com falha`);        
 
-        return { sucesso, falha };
+        return { sucesso, falha, inscricoes };
     }
 }

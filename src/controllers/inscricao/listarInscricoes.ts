@@ -54,13 +54,6 @@ export class ListarInscricoesUseCase{
             orderBy: {
                 pontuacaoRanking: {
                     _count: 'desc'
-                },
-                classeTorneio: {
-                    classeRanking: {
-                        classe: {
-                            sigla: 'asc'
-                        }
-                    }
                 }
             }
         });
