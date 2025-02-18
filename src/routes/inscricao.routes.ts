@@ -1,21 +1,21 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
 import { verificaJWT } from "../middlewares/verificaJWT";
-import { AdicionarInscricoesController, ListaInscricoesCampeonatoController, ListaInscricoesController } from "../controllers/inscricao/controller";
+import { AdicionarInscricoesController, ListaInscricoesCampeonatoController, ListarInscricoesController } from "../controllers/inscricao/controller";
 
 
 
 const inscricaoRoutes = Router();
 
 const adicionarInscricoesController  = new AdicionarInscricoesController();
-const listaInscricoesController = new ListaInscricoesController();
+const listarInscricoesController = new ListarInscricoesController();
 const listaInscricoesCampeonatoController = new ListaInscricoesCampeonatoController();
 
 
 
 inscricaoRoutes.post('/adicionar', informativo, verificaJWT, adicionarInscricoesController.handle);
+inscricaoRoutes.get('/listar', informativo, verificaJWT, listarInscricoesController.handle);
 
-// inscricaoRoutes.get('/listaInscricoes', informativo, verificaJWT, listaInscricoesController.handle);
 // inscricaoRoutes.get('/listaInscricoesCampeonato', informativo, verificaJWT, listaInscricoesCampeonatoController.handle);
 
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ListaInscricoesUseCase } from "./listaInscricoes";
+import { ListarInscricoesUseCase } from "./listarInscricoes";
 import { ListaInscricoesCampeonatoUseCase } from "./listaInscricoesCampeonato";
 import { AdicionarInscricoesUseCase } from "./adicionarInscricoes";
 
@@ -34,21 +34,14 @@ export class AdicionarInscricoesController {
 }
 
 
-export class ListaInscricoesController {
+export class ListarInscricoesController {
     async handle(req: Request, res: Response) {
+
+        const listarInscricoesUseCase = new ListarInscricoesUseCase();
         
-        var cpf = '';
-        const { id_jogador } = req.query as any;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
-
-        const listaInscricoesUseCase = new ListaInscricoesUseCase();
+        const { idTorneio } = req.query as any;
         
-        const result = await listaInscricoesUseCase.execute({ cpf, id_jogador }) as any;
+        const result = await listarInscricoesUseCase.execute({ idTorneio }) as any;
         result.status= "success";
         result.mensagem = "Inscrições listadas com sucesso";
 
