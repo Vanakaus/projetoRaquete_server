@@ -53,12 +53,16 @@ export class AdicionarInscricoesUseCase{
 
             // Variáveis de dados
             const duplas = inscricaoClasse[i].duplas;
-
+                const id_classeTorneio = inscricaoClasse[i].id_classeTorneio;
+                const sigla = await prisma.classeTorneio.findFirst({
+                where: {    id: id_classeTorneio    },
+                select: {   classeRanking: {    select: {   classe: {   select: {   sigla: true  }   }   }   }   }
+            });
             
             // Verifica se a classe existe, caso não exista passa para a próxima
             const classeExiste = await prisma.classeTorneio.findFirst({
                 where: {
-                    id: inscricaoClasse[i].id_classeTorneio
+                    id: id_classeTorneio
                 }
             });
 
@@ -75,7 +79,6 @@ export class AdicionarInscricoesUseCase{
                 // Variaveis de dados
                 const jogador = inscricaoClasse[i].inscricaoJogador[j];
                 const jogador2 = inscricaoClasse[i].inscricaoJogador[j+1];
-                const id_classeTorneio = inscricaoClasse[i].id_classeTorneio;
                 let id_tenistaAcademia = 0;
                 let id_tenistaAcademia2 = 0;
 
@@ -255,12 +258,27 @@ export class AdicionarInscricoesUseCase{
                     });
                     continue;
                 }else{
+
+                    const pontuacao = await prisma.pontuacaoRanking.findMany({
+                        where: {
+                            OR: [
+                                {inscricao: {   id_tenistaAcademia: {   in: duplas ? [id_tenistaAcademia, id_tenistaAcademia2] : [id_tenistaAcademia]   }   }},
+                                {inscricao: {   id_tenistaAcademia2: {  in: duplas ? [id_tenistaAcademia, id_tenistaAcademia2] : [id_tenistaAcademia]   }   }}
+                        ]},
+                        select: {
+                            pontuacao: true
+                        },
+                    });
+
+
                     sucesso = true;
                     inscricoes.push({
                         jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                         sucesso: true,
                         repetido: false,
-                        mensagem: `Inscrição adicionada com sucesso`
+                        mensagem: `Inscrição adicionada com sucesso`,
+                        pontuacao: pontuacao.reduce((acc, cur) => acc + cur.pontuacao, 0),
+                        siglaClasse: sigla?.classeRanking.classe.sigla
                     });
                 }
             }
