@@ -17,7 +17,7 @@ const listarProximasPartidasController = new ListarProximasPartidasController();
 
 
 partidasRoutes.post('/gerarChave', informativo, verificaJWT, gerarChaveController.handle);
-partidasRoutes.get('/limparChave', informativo, verificaJWT, limparChaveController.handle);
+partidasRoutes.post('/limparChave', informativo, verificaJWT, limparChaveController.handle);
 partidasRoutes.get('/listar', informativo, listarChavesController.handle);
 
 partidasRoutes.patch('/atualizarPlacar', informativo, verificaJWT, atualizarPlacarController.handle);

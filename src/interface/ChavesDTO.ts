@@ -7,9 +7,8 @@ export interface GerarChaveDTO {
 
 
 export interface LimparChaveDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
+    idTorneio: string;
+    id_ClasseTorneio: number;
 }
 
 

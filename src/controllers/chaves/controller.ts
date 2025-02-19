@@ -14,7 +14,6 @@ export class GerarChaveController {
     async handle(req: Request, res: Response) {
         
         const { idTorneio, idClasseTorneio, numCabecas } = req.body;
-        const token = req.headers['x-access-token']
 
         const gerarChaveUseCase = new GerarChaveUseCase();
         
@@ -31,25 +30,18 @@ export class GerarChaveController {
 export class LimparChaveController {
     async handle(req: Request, res: Response) {
         
-        var cpf = '';
-        const { id_jogador } = req.query as any;
-        const { id_campeonato } = req.query as any;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
+        const { idTorneio, id_ClasseTorneio } = req.body;
 
         const limparChaveUseCase = new LimparChaveUseCase();
         
-        const result = await limparChaveUseCase.execute({ cpf, id_jogador, id_campeonato }) as any;
+        const result = await limparChaveUseCase.execute({ idTorneio, id_ClasseTorneio }) as any;
         result.status= "success";
         result.mensagem = "Jogos deletados com sucesso";
 
         return res.status(201).json(result);
     }
 }
+
 
 
 export class ListarChavesController {
@@ -66,6 +58,7 @@ export class ListarChavesController {
         return res.status(201).json(result);
     }
 }
+
 
 
 export class AtualizarPlacarController {
