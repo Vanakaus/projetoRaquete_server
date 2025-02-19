@@ -8,12 +8,6 @@ import formataNumero from "../../functions/formatarNumero";
 export class GerarChaveUseCase{
     async execute({ idTorneio, idClasseTorneio, numCabecas}: GerarChaveDTO): Promise<any>{
 
-        console.log("Gerar Chave UseCase: ");
-        console.log("idTorneio: ", idTorneio);
-        console.log("idClasseTorneio: ", idClasseTorneio);
-        console.log("numCabecas: ", numCabecas);
-        
-        
         // Verifica se o torneio existe e qual seu status
         let torneio = await prisma.torneios.findUnique({
             where: {
@@ -221,10 +215,8 @@ export class GerarChaveUseCase{
                         id: true,
                         tenista1: {
                             select: {
-                                id: true,
                                 tenista: {
                                     select: {
-                                        cpf: true,
                                         nome: true,
                                     }
                                 }
@@ -232,10 +224,8 @@ export class GerarChaveUseCase{
                         },
                         tenista2: {
                             select: {
-                                id: true,
                                 tenista: {
                                     select: {
-                                        cpf: true,
                                         nome: true,
                                     }
                                 }
@@ -248,10 +238,8 @@ export class GerarChaveUseCase{
                         id: true,
                         tenista1: {
                             select: {
-                                id: true,
                                 tenista: {
                                     select: {
-                                        cpf: true,
                                         nome: true,
                                     }
                                 }
@@ -259,10 +247,8 @@ export class GerarChaveUseCase{
                         },
                         tenista2: {
                             select: {
-                                id: true,
                                 tenista: {
                                     select: {
-                                        cpf: true,
                                         nome: true,
                                     }
                                 }
@@ -278,12 +264,8 @@ export class GerarChaveUseCase{
             },
             where: {
                 OR: [
-                    {inscricao1: {
-                        id_classeTorneio: idClasseTorneio
-                    }},
-                    {inscricao2: {
-                        id_classeTorneio: idClasseTorneio
-                    }}
+                    { inscricao1: { id_classeTorneio: idClasseTorneio } },
+                    { inscricao2: { id_classeTorneio: idClasseTorneio } }
                 ]
             },
             orderBy: {
@@ -325,7 +307,7 @@ export class GerarChaveUseCase{
                     id: idTorneio
                 },
                 data: {
-                    id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)
+                    id_status: Number(process.env.STATUS_JOGOS_GERADOS)
                 },
                 select: {
                     status: {
@@ -338,7 +320,6 @@ export class GerarChaveUseCase{
             });
         }
 
-        // return {partidas, campeonato};
         return { torneio, partidas };
     }
 }

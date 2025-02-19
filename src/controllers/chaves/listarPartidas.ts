@@ -43,17 +43,9 @@ export class ListarPartidasUseCase{
                 dataPartida: true,
                 horaPartida: true,
                 local: true,
-                Sets: {
-                    select: {
-                        id: true,
-                        pontTen1: true,
-                        pontTen2: true,
-                        tiebreak: true
-                    }
-                },
+                Sets: true,
                 inscricao1: {
                     select: {
-                        id: true,
                         tenista1: {
                             select: {
                                 tenista: {

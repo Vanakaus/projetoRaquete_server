@@ -7,10 +7,6 @@ import { LimparChaveDTO } from "../../interface/ChavesDTO";
 export class LimparChaveUseCase{
     async execute({ idTorneio, id_ClasseTorneio }: LimparChaveDTO): Promise<any>{
 
-        console.log("Limpar chave");
-        console.log("idTorneio: " + idTorneio);
-        console.log("id_ClasseTorneio: " + id_ClasseTorneio);
-        
         const torneio = await prisma.torneios.findUnique({
             where: {
                 id: idTorneio
@@ -111,37 +107,27 @@ export class LimparChaveUseCase{
             throw new AppError('Erro ao deletar as partidas');
         }
 
-        const classes = await prisma.classeTorneio.findMany({
-            where: {
-                AND: [
-                    {id_torneio: idTorneio},
-                    {cabecasChave: -1}
-                ]
-            }
-        });
         
-        if(classes.length > 0){
-            const torneio = await prisma.torneios.update({
-                where: {
-                    id: idTorneio
-                },
-                data: {
-                    id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)
-                },
-                select: {
-                    status: {
-                        select: {
-                            id: true,
-                            nome: true
-                        }
+        const torneioStatus = await prisma.torneios.update({
+            where: {
+                id: idTorneio
+            },
+            data: {
+                id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)
+            },
+            select: {
+                status: {
+                    select: {
+                        id: true,
+                        nome: true
                     }
                 }
-            });
-
-            if(!torneio){
-                console.log("Erro ao atualizar o status do torneio");
-                throw new AppError('Erro ao atualizar o status do torneio');
             }
+        });
+
+        if(!torneioStatus){
+            console.log("Erro ao atualizar o status do torneio");
+            throw new AppError('Erro ao atualizar o status do torneio');
         }
 
         
