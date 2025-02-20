@@ -3,7 +3,7 @@ import { GerarChaveUseCase } from "./gerarChave";
 import { LimparChaveUseCase } from "./limparChave";
 import { ListarPartidasUseCase } from "./listarPartidas";
 import { AtualizarPlacarUseCase } from "./atualizarPlacar";
-import { AtualizardatasUseCase } from "./atualizarDatas";
+import { AtualizardadosUseCase } from "./atualizarDados";
 import { ListaProximasPartidasUseCase } from "./listaProximasPartidas";
 
 const jwt = require('jsonwebtoken');
@@ -61,6 +61,34 @@ export class ListarChavesController {
 
 
 
+export class AtualizarDadosController {
+    async handle(req: Request, res: Response) {
+        
+        const { novosDados } = req.body;
+        
+
+        const atualizarDadosUseCase = new AtualizardadosUseCase();
+        
+        const result = await atualizarDadosUseCase.execute({ novosDados }) as any;
+
+        if(result.partidasNaoAtualizadas.length > 0){
+            result.status= "error";
+
+            if(result.partidasAtualizadas.length > 0)
+                result.mensagem = "Algumas partidas não foram atualizadas";
+            else
+                result.mensagem = "Nenhuma partida foi atualizada";
+            return res.status(400).json(result);
+        } else {
+            result.status= "success";
+            result.mensagem = "Dados atualizados com sucesso";
+            return res.status(201).json(result);
+        }
+    }
+}
+
+
+
 export class AtualizarPlacarController {
     async handle(req: Request, res: Response) {
         
@@ -84,38 +112,6 @@ export class AtualizarPlacarController {
 }
 
 
-export class AtualizarDatasController {
-    async handle(req: Request, res: Response) {
-        
-        let cpf = '';
-        const { id_jogador, id_campeonato, novasDatas } = req.body;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
-
-        const atualizarDatasUseCase = new AtualizardatasUseCase();
-        
-        const result = await atualizarDatasUseCase.execute({ cpf, id_jogador, id_campeonato, novasDatas }) as any;
-
-        
-        if(result.partidasNaoAtualizadas.length > 0){
-            result.status= "error";
-
-            if(result.partidasAtualizadas.length > 0)
-                result.mensagem = "Algumas partidas não foram encontradas";
-            else
-                result.mensagem = "Nenhuma partida foi encontrada";
-            return res.status(400).json(result);
-        } else {
-            result.status= "success";
-            result.mensagem = "Datas atualizadas com sucesso";
-            return res.status(201).json(result);
-        }
-    }
-}
 
 
 

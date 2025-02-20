@@ -41,16 +41,14 @@ export interface AtualizarPlacarDTO {
 
 
 export interface AtualizarDatasDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
-
-    novasDatas: novaData[];
+    novosDados: novaData[];
 }
 
 export interface novaData {
     id: number;
-    data: Date;
-    id_data: number;
-    id_local: number;
+    classe: string;
+    data: string;
+    hora: string;
+    local: string;
+    resposta: string;
 }
