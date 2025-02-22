@@ -6,7 +6,7 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class AtualizarPlacarUseCase{
-    async execute({ novosPlacares }: AtualizarPlacarDTO): Promise<any>{
+    async execute({ idTorneio, novosPlacares }: AtualizarPlacarDTO): Promise<any>{
 
         console.log("\nResposta: ");
 
@@ -138,6 +138,11 @@ export class AtualizarPlacarUseCase{
                     }
                     
                     partidasAtualizadas.push({ ...novoPlacar, id_vencedor });
+
+
+                    // Verifica se a partida é a final, ou tera uma próxima partida
+                    if(partida.chave === "01:01")
+                        break;
 
 
 
@@ -328,13 +333,105 @@ export class AtualizarPlacarUseCase{
             }
         }
 
+
+        // Verifica se o torneio foi finalizado
+        let finalizado = true;
+        const classeTorneio = await prisma.classeTorneio.findMany({
+            where: {
+                id_torneio: idTorneio
+            },
+            select: {
+                id: true,
+                Inscricao: {
+                    where: {
+                        OR: [
+                            { Partidas1: { some: { chave: "01:01" } } },
+                            { Partidas2: { some: { chave: "01:01" } } }
+                        ]
+                    },
+                    select: {
+                        id: true,
+                        Partidas1: {
+                            where: { chave: "01:01" },
+                            select: { id: true, chave: true, id_vencedor: true }
+                        },
+                        Partidas2: {
+                            where: { chave: "01:01" },
+                            select: { id: true, chave: true, id_vencedor: true }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        // Passa por todas as classes do torneio
+        for(const classe of classeTorneio){
+
+            // Basta uma classe não ter finalizado seu chaveamento, para o torneio não ser finalizado
+            if(finalizado === false)
+                break;
+
+            // Se não tiver inscrições na partida final, o torneio não foi finalizado
+            if(classe.Inscricao.length === 0){
+                finalizado = false;
+                continue;
+            }
+
+            // Verifica se a inscrição está na final pela partida 1 ou 2
+            if(classe.Inscricao[1].Partidas1.length > 0){
+
+                // Verifica se a partida foi finalizada pelo vencedor
+                if(classe.Inscricao[1].Partidas1[0].id_vencedor === -1){
+                    finalizado = false;
+                    break;
+                }
+            }else{
+
+                // Verifica se a partida foi finalizada pelo vencedor
+                if(classe.Inscricao[1].Partidas2[0].id_vencedor === -1){
+                    finalizado = false;
+                    break;}
+            }
+        }
+
+
+
+
+        // Atualiza o status do torneio, de acordo com o resultado
+        let torneio;
+        if(finalizado){
+            torneio = await prisma.torneios.update({
+                where: { id: idTorneio },
+                data: { id_status: Number(process.env.STATUS_FINALIZADO) },
+                select: {
+                    id: true,
+                    nome: true,
+                    status: { select: { id: true, nome: true } }
+                }
+            });
+            
+        }else{
+            torneio = await prisma.torneios.update({
+                where: { id: idTorneio },
+                data: { id_status: Number(process.env.STATUS_EM_ANDAMENTO) },
+                select: {
+                    id: true,
+                    nome: true,
+                    status: { select: { id: true, nome: true } }
+                }
+            });
+        }
+
+
         console.log("Partidas atualizadas: ", partidasAtualizadas.length);
         console.log("Partidas não atualizadas: ", partidasNaoAtualizadas.length);
         console.log("Novas partidas: ", novasPartidas.length);
+        console.log("Torneio: ", torneio);
         
 
 
-        return { partidasAtualizadas, partidasNaoAtualizadas, novasPartidas };
+        return { torneio, partidasAtualizadas, partidasNaoAtualizadas, novasPartidas };
     }
 }
 

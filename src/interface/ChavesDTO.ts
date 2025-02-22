@@ -36,6 +36,7 @@ export interface novoDado {
 
 
 export interface AtualizarPlacarDTO {
+    idTorneio: string;
     novosPlacares: partidaPlacarDTO[];
 }
 

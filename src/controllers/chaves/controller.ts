@@ -92,11 +92,11 @@ export class AtualizarDadosController {
 export class AtualizarPlacarController {
     async handle(req: Request, res: Response) {
         
-        const { novosPlacares } = req.body;
+        const { idTorneio, novosPlacares } = req.body;
 
         const atualizarPlacarUseCase = new AtualizarPlacarUseCase();
         
-        const result = await atualizarPlacarUseCase.execute({ novosPlacares }) as any;
+        const result = await atualizarPlacarUseCase.execute({ idTorneio, novosPlacares }) as any;
         result.status= "success";
 
         if(result.partidasNaoAtualizadas.length){
