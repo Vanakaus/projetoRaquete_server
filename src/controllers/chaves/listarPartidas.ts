@@ -46,6 +46,7 @@ export class ListarPartidasUseCase{
                 Sets: true,
                 inscricao1: {
                     select: {
+                        id: true,
                         tenista1: {
                             select: {
                                 tenista: {

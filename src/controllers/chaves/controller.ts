@@ -92,21 +92,28 @@ export class AtualizarDadosController {
 export class AtualizarPlacarController {
     async handle(req: Request, res: Response) {
         
-        let cpf = '';
-        const { id, id_jogador, novoPS1, novoPS2, novoPT1, novoPT2, id_vencedor } = req.body;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
+        const { novosPlacares } = req.body;
 
         const atualizarPlacarUseCase = new AtualizarPlacarUseCase();
         
-        const result = await atualizarPlacarUseCase.execute({ cpf, id, id_jogador, novoPS1, novoPS2, novoPT1, novoPT2, id_vencedor }) as any;
+        const result = await atualizarPlacarUseCase.execute({ novosPlacares }) as any;
         result.status= "success";
-        result.mensagem = "Placar atualizado com sucesso";
 
+        if(result.partidasNaoAtualizadas.length){
+            
+            if(result.partidasAtualizadas.length)
+                result.mensagem = "Algumas partidas não foram atualizadas";
+            else if(result.partidasNaoAtualizadas.length > 1)
+                result.mensagem = "Não foi possivel atualizar os placares";
+            else
+                result.mensagem = "Não foi possivel atualizar o placar";
+            return res.status(400).json(result);
+
+        }else if(result.partidasAtualizadas.length > 1)
+            result.mensagem = "Placares atualizados com sucesso";
+        else
+            result.mensagem = "Placar atualizado com sucesso";
+        
         return res.status(201).json(result);
     }
 }

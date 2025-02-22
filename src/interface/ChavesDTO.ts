@@ -6,10 +6,12 @@ export interface GerarChaveDTO {
 }
 
 
+
 export interface LimparChaveDTO {
     idTorneio: string;
     id_ClasseTorneio: number;
 }
+
 
 
 export interface ListarChaveDTO {
@@ -17,38 +19,47 @@ export interface ListarChaveDTO {
 }
 
 
-export interface AtualizarChaveDTO {
-    cpf: string;
-    id: string;
-    id_jogador: string;
 
-    data: string;
-    local: string;
+export interface AtualizarDadosDTO {
+    novosDados: novoDado[];
 }
 
-
-export interface AtualizarPlacarDTO {
-    cpf: string;
-    id: number;
-    id_jogador: string;
-
-    novoPS1: [ number, number, number, number, number ];
-    novoPS2: [ number, number, number, number, number ];
-    novoPT1: [ boolean, boolean, boolean, boolean, boolean ];
-    novoPT2: [ boolean, boolean, boolean, boolean, boolean ];
-    id_vencedor: number;
-}
-
-
-export interface AtualizarDatasDTO {
-    novosDados: novaData[];
-}
-
-export interface novaData {
+export interface novoDado {
     id: number;
     classe: string;
     data: string;
     hora: string;
     local: string;
     resposta: string;
+}
+
+
+
+export interface AtualizarPlacarDTO {
+    novosPlacares: partidaPlacarDTO[];
+}
+
+export interface partidaPlacarDTO {
+    id: number;
+    sets: {
+        id: number;
+        tiebreak: boolean;
+        placar: [number, number];
+    }[];
+}
+
+export interface partidaPlacarRespostaDTO extends partidaPlacarDTO {
+    id_vencedor: number;
+}
+export interface novaPartidaPlacarRespostaDTO extends partidaPlacarDTO {
+    chave: string;
+    classe: string;
+    id_vencedor: number;
+    inscricao1: IInscricao | null;
+    inscricao2: IInscricao | null;
+}
+export default interface IInscricao {
+    id: number;
+    tenista1: string;
+    tenista2?: string;
 }

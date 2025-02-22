@@ -1,18 +1,18 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { AtualizarDatasDTO, novaData } from "../../interface/ChavesDTO";
+import { AtualizarDadosDTO, novoDado } from "../../interface/ChavesDTO";
 
 
 
 export class AtualizardadosUseCase{
-    async execute({ novosDados }: AtualizarDatasDTO): Promise<any>{
+    async execute({ novosDados }: AtualizarDadosDTO): Promise<any>{
 
         console.log("\nResposta: ");
 
 
         // Variaveis para armazenar as partidas atualizadas e não atualizadas na resposta
-        const partidasAtualizadas = [] as novaData[];
-        const partidasNaoAtualizadas = [] as novaData[];
+        const partidasAtualizadas = [] as novoDado[];
+        const partidasNaoAtualizadas = [] as novoDado[];
 
         for (const data of novosDados) {
             
