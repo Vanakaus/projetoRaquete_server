@@ -175,7 +175,8 @@ export class AtualizarPlacarUseCase{
                                     id: novaPartidaExiste.id
                                 },
                                 data: {
-                                    id_inscricao: id_vencedor === -1 ? null : id_vencedor
+                                    id_inscricao: id_vencedor === -1 ? null : id_vencedor,
+                                    id_vencedor: -1
                                 },
                                 select: {
                                     id: true,
@@ -208,7 +209,8 @@ export class AtualizarPlacarUseCase{
                                     id: novaPartidaExiste.id
                                 },
                                 data: {
-                                    id_inscricao2: id_vencedor === -1 ? null : id_vencedor
+                                    id_inscricao2: id_vencedor === -1 ? null : id_vencedor,
+                                    id_vencedor: -1
                                 },
                                 select: {
                                     id: true,
