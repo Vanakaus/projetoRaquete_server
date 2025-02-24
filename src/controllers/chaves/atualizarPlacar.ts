@@ -29,12 +29,14 @@ export class AtualizarPlacarUseCase{
                     id_inscricao2: true,
                     inscricao1: {
                         select: {
-                            id_classeTorneio: true
+                            id_classeTorneio: true,
+                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                         }
                     },
                     inscricao2: {
                         select: {
-                            id_classeTorneio: true
+                            id_classeTorneio: true,
+                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                         }
                     },
                 }
@@ -137,7 +139,7 @@ export class AtualizarPlacarUseCase{
                         continue;
                     }
                     
-                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor });
+                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, classe: partida.inscricao1?.classeTorneio.classeRanking.classe.sigla || partida.inscricao2?.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
 
 
                     // Verifica se a partida é a final, ou tera uma próxima partida
@@ -185,7 +187,7 @@ export class AtualizarPlacarUseCase{
                                     inscricao1: {
                                         select: {
                                             id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { nome: true } } } } } },
+                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                             tenista1: { select: { tenista: { select: { nome: true} } } },
                                             tenista2: { select: { tenista: { select: { nome: true} } } }
                                         }
@@ -193,7 +195,7 @@ export class AtualizarPlacarUseCase{
                                     inscricao2: {
                                         select: {
                                             id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { nome: true } } } } } },
+                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                             tenista1: { select: { tenista: { select: { nome: true} } } },
                                             tenista2: { select: { tenista: { select: { nome: true} } } }
                                         }
@@ -219,7 +221,7 @@ export class AtualizarPlacarUseCase{
                                     inscricao1: {
                                         select: {
                                             id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { nome: true } } } } } },
+                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                             tenista1: { select: { tenista: { select: { nome: true} } } },
                                             tenista2: { select: { tenista: { select: { nome: true} } } }
                                         }
@@ -227,7 +229,7 @@ export class AtualizarPlacarUseCase{
                                     inscricao2: {
                                         select: {
                                             id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { nome: true } } } } } },
+                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                             tenista1: { select: { tenista: { select: { nome: true} } } },
                                             tenista2: { select: { tenista: { select: { nome: true} } } }
                                         }
@@ -245,7 +247,19 @@ export class AtualizarPlacarUseCase{
 
 
                         // Adiciona a partida atualizada na resposta
-                        partidasAtualizadas.push({ id: novaPartidaExiste.id, sets: [], id_vencedor: novaPartidaExiste.id_vencedor });
+                        partidasAtualizadas.push({ id: novaPartidaExiste.id, sets: [], id_vencedor: novaPartidaExiste.id_vencedor,
+                            classe: novaPartida?.inscricao1?.classeTorneio.classeRanking.classe.sigla || novaPartida?.inscricao2?.classeTorneio.classeRanking.classe.sigla || "",
+                            inscricao1: novaPartida?.inscricao1 ? {
+                                id: novaPartida?.inscricao1?.id || -1,
+                                tenista1: novaPartida?.inscricao1?.tenista1.tenista.nome || "",
+                                tenista2: novaPartida?.inscricao1?.tenista2?.tenista.nome || undefined
+                            } : null,
+                            inscricao2: novaPartida?.inscricao2 ? {
+                                id: novaPartida?.inscricao2?.id || -1,
+                                tenista1: novaPartida?.inscricao2?.tenista1.tenista.nome || "",
+                                tenista2: novaPartida?.inscricao2?.tenista2?.tenista.nome || undefined
+                            } : null
+                         });
                         
                     }else{
 
