@@ -130,7 +130,7 @@ export class AtualizarTorneioUseCase{
 
 
 
-        if(torneioExiste.status.id < 5){
+        if(torneioExiste.status.id < Number(process.env.STATUS_FINALIZADO)){
             const pontuacoes = await prisma.pontuacoesCampeonato.update({
                 where: {
                     id: torneioExiste.pontuacoes.id
@@ -158,15 +158,8 @@ export class AtualizarTorneioUseCase{
 
 
         
-        if(torneioExiste.status.id < 2){
+        if(torneioExiste.status.id < Number(process.env.STATUS_JOGOS_GERADOS)){
             //  Deleta as classes removidas ( inscrições e classesTorneio )
-            await prisma.inscricao.deleteMany({
-                where: {
-                    id_classeTorneio: {
-                        in: classesDeleta
-                    }
-                }
-            });
 
             await prisma.classeTorneio.deleteMany({
                 where: {

@@ -192,7 +192,7 @@ model Inscricao {
   
   tenista1            TenistasAcademias   @relation("inscricao_tenista", fields: [id_tenistaAcademia], references: [id])
   tenista2            TenistasAcademias?  @relation("inscricao_tenista2", fields: [id_tenistaAcademia2], references: [id])
-  classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id])
+  classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id], onDelete: Cascade)
   Partidas1           Partidas[]          @relation("inscricao1")
   Partidas2           Partidas[]          @relation("inscricao2")
   pontuacaoRanking    pontuacaoRanking[]  @relation("pontuacaoRanking")
@@ -225,8 +225,8 @@ model Partidas {
   horaPartida     String              @default("")
   local           String              @default("")
 
-  inscricao1      Inscricao?          @relation("inscricao1", fields: [id_inscricao], references: [id])
-  inscricao2      Inscricao?          @relation("inscricao2", fields: [id_inscricao2], references: [id])
+  inscricao1      Inscricao?          @relation("inscricao1", fields: [id_inscricao], references: [id], onDelete: Cascade)
+  inscricao2      Inscricao?          @relation("inscricao2", fields: [id_inscricao2], references: [id], onDelete: Cascade)
   Sets Sets[] @relation("sets")
   
   @@map("partidas")
@@ -241,7 +241,7 @@ model  Sets {
   pontTen1        Int
   pontTen2        Int
 
-  partida         Partidas            @relation("sets", fields: [id_partida], references: [id])
+  partida         Partidas            @relation("sets", fields: [id_partida], references: [id], onDelete: Cascade)
     
   @@map("sets")
 }

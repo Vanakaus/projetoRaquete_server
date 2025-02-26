@@ -7,7 +7,7 @@ import { LimparChaveDTO } from "../../interface/ChavesDTO";
 export class LimparChaveUseCase{
     async execute({ idTorneio, id_ClasseTorneio }: LimparChaveDTO): Promise<any>{
 
-        const torneio = await prisma.torneios.findUnique({
+        let torneio = await prisma.torneios.findUnique({
             where: {
                 id: idTorneio
             },
@@ -77,12 +77,8 @@ export class LimparChaveUseCase{
         const chave = await prisma.partidas.deleteMany({
             where: {
                 OR: [
-                    {inscricao1: {
-                            id_classeTorneio: id_ClasseTorneio
-                    }},
-                    {inscricao2: {
-                            id_classeTorneio: id_ClasseTorneio
-                    }}
+                    {inscricao1: { id_classeTorneio: id_ClasseTorneio }},
+                    {inscricao2: { id_classeTorneio: id_ClasseTorneio }}
                 ]
             }
         });
@@ -108,7 +104,7 @@ export class LimparChaveUseCase{
         }
 
         
-        const torneioStatus = await prisma.torneios.update({
+        torneio = await prisma.torneios.update({
             where: {
                 id: idTorneio
             },
@@ -116,6 +112,7 @@ export class LimparChaveUseCase{
                 id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)
             },
             select: {
+                nome: true,
                 status: {
                     select: {
                         id: true,
@@ -125,7 +122,7 @@ export class LimparChaveUseCase{
             }
         });
 
-        if(!torneioStatus){
+        if(!torneio){
             console.log("Erro ao atualizar o status do torneio");
             throw new AppError('Erro ao atualizar o status do torneio');
         }
@@ -135,7 +132,7 @@ export class LimparChaveUseCase{
         console.log(chave);
 
 
-        return { chave, partidas: [], torneio};
+        return { chave, partidas: [], torneio };
     }
 }
 
