@@ -25,8 +25,19 @@ export class GerarPontuacaoUseCase{
             where: { id_torneio: idTorneio },
             select: {
                 id: true,
-                classeRanking: { select: { classe: { select: { id: true, nome: true } } } },
-                // Inscricao: { select: { id: true, tenista1: { select: { tenista: { select: { nome: true } } } }, tenista2: { select: { tenista: { select: { nome: true } } } } } }
+                classeRanking: {
+                    select: {
+                        classe: {
+                            select: {
+                                nome: true,
+                                 sigla: true,
+                                 masculino: true,
+                                 misto: true,
+                                 dupla: true,
+                            }
+                        }
+                    }
+                },
             },
         }) as any;
 
@@ -36,7 +47,7 @@ export class GerarPontuacaoUseCase{
         for (const classe of classes) {
 
             // Cria o array dos resultados
-            classe.resultados = [] as { posicao: string, pontuacao: number, inscricao: { id: number, tenista1: string, tenista2: string | undefined } }[];
+            classe.pontuacao = [] as { posicao: string, pontuacao: number, inscricao: { id: number, tenista1: string, tenista2: string | undefined } }[];
 
             // Lista todas as partidas da classe
             const listaPartidas = await prisma.partidas.findMany({
@@ -92,9 +103,9 @@ export class GerarPontuacaoUseCase{
                 // Verifica se é a chave da final do torneio
                 if(partida.chave.includes("01:")){
                     if(partida.inscricao1?.id === partida.id_vencedor){
-                        classe.resultados.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
                     }else{
-                        classe.resultados.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
                     }
                 }
 
@@ -104,15 +115,15 @@ export class GerarPontuacaoUseCase{
                     
                     // Verifica qual jogador parou neste round
                     if(partida.inscricao1?.id !== partida.id_vencedor)
-                        classe.resultados.push({ posicao, pontuacao, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({ posicao, pontuacao, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
                     else
-                        classe.resultados.push({ posicao, pontuacao, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({ posicao, pontuacao, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
                     
                 else{
 
                     // Adiciona a pontuação de participação para os jogadores que não ganharam nenhuma partida
                     const posicaoSeguinte = Number(partida.chave.split(":")[0]) / 2;
-                    const resultado = classe.resultados.find((r: any) => r.inscricao.id === partida.inscricao1?.id);
+                    const resultado = classe.pontuacao.find((r: any) => r.inscricao.id === partida.inscricao1?.id);
                     if (resultado.posicao === `R${posicaoSeguinte}`) {
                         resultado.posicao = 'P';
                         resultado.pontuacao = pontuacoes.participacao;
@@ -123,7 +134,7 @@ export class GerarPontuacaoUseCase{
             }
 
             // Reordena os resultados por pontuaçã. necessário os resultados de participação
-            classe.resultados.sort((a: any, b: any) => {
+            classe.pontuacao.sort((a: any, b: any) => {
                 if (a.pontuacao > b.pontuacao) return -1;
                 if (a.pontuacao < b.pontuacao) return 1;
                 return 0;

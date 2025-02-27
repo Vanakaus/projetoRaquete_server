@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AtualizarTorneioController, CriarTorneioController, GerarPontuacaoController, LerTorneioController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
+import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 
@@ -13,12 +13,12 @@ const listarStatusController = new ListarStatusController();
 const lerTorneioController = new LerTorneioController();
 const atualizarTorneioController = new AtualizarTorneioController();
 const gerarPontuacaoController = new GerarPontuacaoController();
+const finalizaTorneio = new FinalizaTorneioController();
 
 // const leCampeonatoController = new LeCampeonatoController();
 // const leCampeonatoCriadoController = new LeCampeonatoCriadoController();
 // const listaCampeonatosCriadosController = new ListaCampeonatosCriadosController();
 // const abreFechaInscricoesController = new AbreFechaInscricoesController();
-// const finalizaCampeonato = new FinalizaCampeonatoController();
 // const reabrirCampeonato = new ReabrirCampeonatoController();
 // const listaProximosCampeonatoController = new ListaProximosCampeonatosController();
 
@@ -32,6 +32,7 @@ torneioRoutes.get('/listarAcademia', informativo, verificaJWT, listarTorneiosAca
 torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
 
 torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoController.handle);
+torneioRoutes.post('/finalizarTorneio', informativo, verificaJWT, finalizaTorneio.handle);
 
 
 
@@ -40,7 +41,6 @@ torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoCo
 // torneioRoutes.get('/leCampeonatoCriado', informativo, verificaJWT, leCampeonatoCriadoController.handle);
 
 // torneioRoutes.patch('/abreFechaInscricoes', informativo, verificaJWT, abreFechaInscricoesController.handle);
-// torneioRoutes.patch('/finalizarCampeonato', informativo, verificaJWT, finalizaCampeonato.handle);
 // torneioRoutes.patch('/reabrirCampeonato', informativo, verificaJWT, reabrirCampeonato.handle);
 
 // torneioRoutes.get('/proximosCampeonatos', informativo, listaProximosCampeonatoController.handle);

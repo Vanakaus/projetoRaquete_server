@@ -48,6 +48,19 @@ export interface GerarPontuacaoDTO {
     idTorneio: string;
 }
 
+export interface FinalizarTorneioDTO {
+    idTorneio: string;
+    resultados: {
+        posicao: string;
+        pontuacao: number;
+        inscricao: {
+            id: number;
+            tenista1: string;
+            tenista2?: string;
+        };
+    }[];
+}
+
 
 
 
@@ -74,14 +87,6 @@ export interface AbrirFecharInscricoesDTO {
     id: string;
     id_criador: string;
     abreFecha: boolean;
-}
-
-
-export interface FinalizarCampeonatoDTO {
-    cpf: string;
-    id: string;
-    id_criador: string;
-    cancela: boolean;
 }
 
 

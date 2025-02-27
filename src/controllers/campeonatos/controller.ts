@@ -7,7 +7,7 @@ import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
 import { AtualizarTorneioUseCase } from "./atualizarTorneio";
 import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
-import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
+import { FinalizarTorneioUseCase } from "./finalizarCampeonato";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
 import { ListarStatusUseCase } from "./listarStatus";
@@ -145,6 +145,25 @@ export class GerarPontuacaoController {
 
 
 
+export class FinalizaTorneioController {
+    async handle(req: Request, res: Response) {
+        
+        const { idTorneio, resultados } = req.body;
+        
+        const FinalizarUseCase = new FinalizarTorneioUseCase();
+        
+        const result = await FinalizarUseCase.execute({idTorneio, resultados});
+        result.status= "success";
+        result.mensagem = 'Torneio finalizado com sucesso';
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+
+
 // export class ListaCampeonatosCriadosController {
 //     async handle(req: Request, res: Response) {
         
@@ -213,29 +232,6 @@ export class GerarPontuacaoController {
 //         const result = await AbrirFecharUseCase.execute({id, cpf, id_criador, abreFecha});
 //         result.status= "success";
 //         result.mensagem = `Inscrições ${abreFecha ? 'abertas' : 'fechadas'} com sucesso`;
-
-//         return res.status(201).json(result);
-//     }
-// }
-
-
-
-// export class FinalizaCampeonatoController {
-//     async handle(req: Request, res: Response) {
-        
-//         var cpf = '';
-//         const token = req.headers['x-access-token']
-//         const { id, id_criador, cancela } = req.body;
-        
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpf = decoded.cpf;
-//         });
-
-//         const FinalizarUseCase = new FinalizarCampeonatoUseCase();
-        
-//         const result = await FinalizarUseCase.execute({id, cpf, id_criador, cancela});
-//         result.status= "success";
-//         result.mensagem = `Campeonato ${cancela ? 'cancelado' : 'finalizado'} com sucesso`;
 
 //         return res.status(201).json(result);
 //     }
