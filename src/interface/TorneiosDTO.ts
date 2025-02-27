@@ -9,6 +9,7 @@ export interface LeTorneioDTO {
 }
 
 
+
 export interface CriaTorneioDTO {
     id_academia: string;
     idRanking: number;
@@ -40,6 +41,19 @@ export interface AtualizarTorneioDTO {
     dataInicio: Date;
     dataFim: Date;
 }
+
+
+
+export interface GerarPontuacaoDTO {
+    idTorneio: string;
+}
+
+
+
+
+
+
+
 
 
 export interface ListaCampeonatosCriadosDTO {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AtualizarTorneioController, CriarTorneioController, LerTorneioController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
+import { AtualizarTorneioController, CriarTorneioController, GerarPontuacaoController, LerTorneioController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 
@@ -12,6 +12,7 @@ const listarTorneiosAcademiaController = new ListarTorneiosAcademiaController();
 const listarStatusController = new ListarStatusController();
 const lerTorneioController = new LerTorneioController();
 const atualizarTorneioController = new AtualizarTorneioController();
+const gerarPontuacaoController = new GerarPontuacaoController();
 
 // const leCampeonatoController = new LeCampeonatoController();
 // const leCampeonatoCriadoController = new LeCampeonatoCriadoController();
@@ -24,12 +25,13 @@ const atualizarTorneioController = new AtualizarTorneioController();
 
 
 torneioRoutes.post('/criar', informativo, verificaJWT, criarTorneioController.handle);
+torneioRoutes.patch('/atualizarTorneio', informativo, verificaJWT, atualizarTorneioController.handle);
 
 torneioRoutes.get('/listarStatus', informativo, listarStatusController.handle);
 torneioRoutes.get('/listarAcademia', informativo, verificaJWT, listarTorneiosAcademiaController.handle);
 torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
 
-torneioRoutes.patch('/atualizarTorneio', informativo, verificaJWT, atualizarTorneioController.handle);
+torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoController.handle);
 
 
 

@@ -11,6 +11,7 @@ import { FinalizarCampeonatoUseCase } from "./finalizarCampeonato";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
 import { ListarStatusUseCase } from "./listarStatus";
+import { GerarPontuacaoUseCase } from "./gerarPontuacao";
 
 const jwt = require('jsonwebtoken');
 
@@ -116,6 +117,27 @@ export class AtualizarTorneioController {
         const result = await atualizarTorneioUseCase.execute({ id, id_academia, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }) as any;
         result.status= "success";
         result.mensagem = "Campeonato atualizado com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class GerarPontuacaoController {
+    async handle(req: Request, res: Response) {
+        
+        const gerarPontuacaoUseCase = new GerarPontuacaoUseCase();
+
+        const { idTorneio } = req.query;
+
+        if (typeof idTorneio !== 'string') {
+            return res.status(400).json({ status: "error", mensagem: "IdTorneio inválido" });
+        }
+        
+        const result = await gerarPontuacaoUseCase.execute({ idTorneio }) as any;
+        result.status= "success";
+        result.mensagem = "Listagem de pontuação gerada com sucesso";
 
         return res.status(201).json(result);
     }

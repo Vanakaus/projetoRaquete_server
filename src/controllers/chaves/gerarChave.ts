@@ -26,7 +26,7 @@ export class GerarChaveUseCase{
             throw new AppError('Torneio inválido\n\n\n' + torneio);
         }
 
-        if(torneio.status.id > Number(process.env.STATUS_INSCRICOES_ENCERRADAS)){
+        if(torneio.status.id >= Number(process.env.STATUS_FINALIZADO)){
             console.log("Não é possível gerar chave \nTorneio Status: " + torneio.status);
             throw new AppError('Não é possível gerar chave. Torneio Status: ' + torneio.status.nome);
         }
