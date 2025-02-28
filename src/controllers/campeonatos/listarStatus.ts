@@ -1,6 +1,5 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { ListaTorneiosAcademiaDTO } from "../../interface/TorneiosDTO";
 
 export class ListarStatusUseCase{
     async execute(): Promise<any>{

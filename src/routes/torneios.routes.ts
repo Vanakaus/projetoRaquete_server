@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
+import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarResultadoController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 
@@ -14,6 +14,7 @@ const lerTorneioController = new LerTorneioController();
 const atualizarTorneioController = new AtualizarTorneioController();
 const gerarPontuacaoController = new GerarPontuacaoController();
 const finalizaTorneio = new FinalizaTorneioController();
+const listarResultadoTorneio = new ListarResultadoController();
 
 // const leCampeonatoController = new LeCampeonatoController();
 // const leCampeonatoCriadoController = new LeCampeonatoCriadoController();
@@ -27,9 +28,10 @@ const finalizaTorneio = new FinalizaTorneioController();
 torneioRoutes.post('/criar', informativo, verificaJWT, criarTorneioController.handle);
 torneioRoutes.patch('/atualizarTorneio', informativo, verificaJWT, atualizarTorneioController.handle);
 
+torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
 torneioRoutes.get('/listarStatus', informativo, listarStatusController.handle);
 torneioRoutes.get('/listarAcademia', informativo, verificaJWT, listarTorneiosAcademiaController.handle);
-torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
+torneioRoutes.get('/listarResultado', informativo, listarResultadoTorneio.handle);
 
 torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoController.handle);
 torneioRoutes.post('/finalizarTorneio', informativo, verificaJWT, finalizaTorneio.handle);

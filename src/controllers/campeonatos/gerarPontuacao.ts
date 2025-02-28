@@ -10,7 +10,7 @@ export class GerarPontuacaoUseCase{
 
         // Lista a pontuacao do torneio
         const pontuacoes = await prisma.pontuacoesCampeonato.findFirst({
-            where: { Torneios: { some: { id: idTorneio } } }
+            where: { Torneios: { id: idTorneio } }
         });
 
         if (!pontuacoes) {

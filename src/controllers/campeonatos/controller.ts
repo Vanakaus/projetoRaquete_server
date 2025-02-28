@@ -12,9 +12,9 @@ import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
 import { ListarStatusUseCase } from "./listarStatus";
 import { GerarPontuacaoUseCase } from "./gerarPontuacao";
+import { ListarResultadoUseCase } from "./listarResultado";
 
 const jwt = require('jsonwebtoken');
-
 
 
 
@@ -57,6 +57,7 @@ export class CriarTorneioController {
 }
 
 
+
 export class ListarTorneiosAcademiaController {
     async handle(req: Request, res: Response) {
         
@@ -77,6 +78,7 @@ export class ListarTorneiosAcademiaController {
         return res.status(201).json(result);
     }
 }
+
 
 
 export class LerTorneioController {
@@ -152,13 +154,35 @@ export class FinalizaTorneioController {
         
         const FinalizarUseCase = new FinalizarTorneioUseCase();
         
-        const result = await FinalizarUseCase.execute({idTorneio, resultados});
+        const result = await FinalizarUseCase.execute({ idTorneio, resultados });
         result.status= "success";
         result.mensagem = 'Torneio finalizado com sucesso';
 
         return res.status(201).json(result);
     }
 }
+
+
+
+export class ListarResultadoController {
+    async handle(req: Request, res: Response) {
+        
+        const { idTorneio } = req.query;
+        
+        const FinalizarUseCase = new ListarResultadoUseCase();
+        
+        if (typeof idTorneio !== 'string') {
+            return res.status(400).json({ status: "error", mensagem: "IdTorneio inválido" });
+        }
+        const result = await FinalizarUseCase.execute({ idTorneio });
+        result.status= "success";
+        result.mensagem = 'Resultado listado com sucesso';
+
+        return res.status(201).json(result);
+    }
+}
+
+
 
 
 

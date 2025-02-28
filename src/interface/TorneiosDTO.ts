@@ -63,6 +63,12 @@ export interface FinalizarTorneioDTO {
 
 
 
+export interface ListarResultadoDTO {
+    idTorneio: string;
+}
+
+
+
 
 
 

@@ -31,7 +31,6 @@ export class ListarInscricoesUseCase{
                         }
                     }
                 },
-                pontuacaoRanking: true,
                 classeTorneio: {
                     select: {
                         classeRanking: {
@@ -46,16 +45,7 @@ export class ListarInscricoesUseCase{
                     }
                 },
             },
-            where: {
-                classeTorneio: {
-                    id_torneio: idTorneio
-                }
-            },
-            orderBy: {
-                pontuacaoRanking: {
-                    _count: 'desc'
-                }
-            }
+            where: { classeTorneio: { id_torneio: idTorneio } }
         });
 
 

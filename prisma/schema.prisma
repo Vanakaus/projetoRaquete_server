@@ -137,7 +137,7 @@ model PontuacoesCampeonato {
   r64               Int               @default(05)
   participacao      Int               @default(05)
 
-  Torneios          Torneios[]        @relation("torneio")
+  Torneios          Torneios?         @relation("torneio")
 
   @@map("pontuacoesCampeonato")
 }
@@ -148,7 +148,7 @@ model Torneios {
   id                String            @id @default(uuid())
   id_academia       String
   id_status         Int
-  id_pontuacoes     Int
+  id_pontuacoes     Int               @unique
   nome              String
   descricao         String
   local             String
@@ -195,7 +195,7 @@ model Inscricao {
   classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id], onDelete: Cascade)
   Partidas1           Partidas[]          @relation("inscricao1")
   Partidas2           Partidas[]          @relation("inscricao2")
-  pontuacaoRanking    pontuacaoRanking[]  @relation("pontuacaoRanking")
+  pontuacaoRanking    pontuacaoRanking?   @relation("pontuacaoRanking")
   
   @@map("inscricao")
 }
@@ -204,7 +204,7 @@ model Inscricao {
 
 model pontuacaoRanking {
   id                Int               @id @default(autoincrement())
-  id_inscricao      Int
+  id_inscricao      Int               @unique
   posicao           String
   pontuacao         Int
   data              DateTime          @default(now())
@@ -228,7 +228,7 @@ model Partidas {
 
   inscricao1      Inscricao?          @relation("inscricao1", fields: [id_inscricao], references: [id], onDelete: Cascade)
   inscricao2      Inscricao?          @relation("inscricao2", fields: [id_inscricao2], references: [id], onDelete: Cascade)
-  Sets Sets[] @relation("sets")
+  Sets            Sets[]              @relation("sets")
   
   @@map("partidas")
 }
