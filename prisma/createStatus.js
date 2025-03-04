@@ -12,7 +12,7 @@ export async function CreateStatus() {
   
 
   // ========================================================================================
-  const status = [{ id: 1, status: 'Inscrições Abertas'}, { id: 2, status:'Inscrições Encerradas'}, { id: 3, status:'Jogos Sorteadas'}, { id: 4, status:'Em Andamento'}, { id: 5, status:'Finalizado'}, { id: 6, status:'Cancelado'}];
+  const status = [{ id: 1, status: 'Inscrições Abertas'}, { id: 2, status:'Inscrições Encerradas'}, { id: 3, status:'Jogos Sorteadas'}, { id: 4, status:'Em Andamento'}, { id: 5, status:'Jogos Finalizado'}, { id: 6, status:'Finalizado'}, { id: 7, status:'Cancelado'}];
   // MANTER ORDEM CRESCENTE DOS STATUS DE ACORDO COM A ORDEM DE PPROCESSOS DE UM TORNEIO
   // AO ALTERAR OS STATUS, ALTERAR TAMBEM NAS VARIÁVEIS DE AMBIENTE
   // É UTILIZADO O ID DO STATUS PARA BOQUEAR OU PERMITIR ACESSO A DETERMINADAS AÇÕES

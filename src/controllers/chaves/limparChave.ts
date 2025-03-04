@@ -27,7 +27,7 @@ export class LimparChaveUseCase{
             throw new AppError('Torneio não encontrado');
         }
 
-        if(torneio.status.id === Number(process.env.STATUS_FINALIZADO)){
+        if(torneio.status.id >= Number(process.env.STATUS_FINALIZADO)){
             console.log("Torneio já finalizado");
             throw new AppError('Torneio já finalizado');
         }
