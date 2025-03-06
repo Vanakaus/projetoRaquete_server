@@ -65,7 +65,7 @@ export class GerarPontuacaoUseCase{
             });
 
             // Pega a chave do roubo externo
-            const ultimaChave = listaPartidas[listaPartidas.length - 1].chave;
+            const ultimaChave = listaPartidas[listaPartidas.length - 1].chave.substring(0, 3);
 
             // Percorre as partidas verificando a posição e adicionando os resultados
             for (const partida of listaPartidas) {
@@ -94,7 +94,7 @@ export class GerarPontuacaoUseCase{
                 }
 
                 // Verifica se é a chave do round externo
-                if (partida.chave === ultimaChave) {
+                if (partida.chave.substring(0, 3) === ultimaChave) {
                     posicao = 'P';
                     pontuacao = pontuacoes?.participacao;
                 }
