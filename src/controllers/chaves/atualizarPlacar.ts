@@ -419,7 +419,7 @@ export class AtualizarPlacarUseCase{
         if(finalizado){
             torneio = await prisma.torneios.update({
                 where: { id: idTorneio },
-                data: { id_status: Number(process.env.STATUS_JOGOS_FINALIZADO) },
+                data: { id_status: Number(process.env.STATUS_JOGOS_FINALIZADOS) },
                 select: {
                     id: true,
                     nome: true,

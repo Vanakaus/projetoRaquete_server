@@ -87,7 +87,7 @@ export class AtualizarTorneioUseCase{
                 simples: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.simples : torneioExiste.simples,
                 duplas: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.duplas : torneioExiste.duplas,
                 dataInicio: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? dataInicio : torneioExiste.dataInicio,
-                dataFim: torneioExiste.status.id < Number(process.env.STATUS_JOGOS_FINALIZADO) ? dataFim : torneioExiste.dataFim,
+                dataFim: torneioExiste.status.id < Number(process.env.STATUS_JOGOS_FINALIZADOS) ? dataFim : torneioExiste.dataFim,
             },
             select: {
                 id: true,
