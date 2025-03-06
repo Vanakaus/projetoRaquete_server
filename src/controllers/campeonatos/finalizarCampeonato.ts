@@ -19,21 +19,26 @@ export class FinalizarTorneioUseCase{
             throw new AppError('Torneio não encontrado');
         }
 
-        if( torneio.id_status < Number(process.env.STATUS_TORNEIO_FINALIZADO) ){
+        if( torneio.id_status !== Number(process.env.STATUS_JOGOS_FINALIZADOS) ){
             console.log("Jogos não finalizados");
             throw new AppError('Jogos não finalizados');
         }
 
 
-        // Adiciona a pontuação dos participantes
-        for (const resultado of resultados) {
-            await prisma.pontuacaoRanking.create({
-                data: {
-                    id_inscricao: resultado.inscricao.id,
-                    posicao: resultado.posicao,
-                    pontuacao: resultado.pontuacao,
-                }
-            });
+        // Adiciona a pontuação dos participantes        
+        try {
+            for (const resultado of resultados) {
+                await prisma.pontuacaoRanking.create({
+                    data: {
+                        id_inscricao: resultado.inscricao.id,
+                        posicao: resultado.posicao,
+                        pontuacao: resultado.pontuacao,
+                    }
+                });
+            }
+        } catch (error) {
+            console.log("Erro ao adicionar pontuação dos participantes", error);
+            throw new AppError('Torneio já possui resultados cadastrados');
         }
 
 

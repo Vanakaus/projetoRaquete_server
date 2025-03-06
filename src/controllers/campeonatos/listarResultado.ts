@@ -19,7 +19,7 @@ export class ListarResultadoUseCase{
             throw new AppError('Torneio não encontrado');
         }
 
-        if( torneio.id_status < Number(process.env.STATUS_TORNEIO_FINALIZADO) ){
+        if( torneio.id_status !== Number(process.env.STATUS_FINALIZADO) ){
             console.log("Torneio não finalizado");
             throw new AppError('Torneio não finalizado');
         }
