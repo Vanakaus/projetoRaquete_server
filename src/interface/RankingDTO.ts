@@ -14,3 +14,8 @@ export interface CriaRankingDTO {
     nome: string;
     classes: number[];
 }
+
+
+export interface RankingDTO {
+    id_classeRanking: number;
+}

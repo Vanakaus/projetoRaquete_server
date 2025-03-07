@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ListarRankingUseCase } from "./listarRanking";
 import { CriarRankingUseCase } from "./criarRanking";
 import { ListarRankingClassesUseCase } from "./listarRankingClasses";
+import { RankingUseCase } from "./ranking";
 
 const jwt = require('jsonwebtoken');
 
@@ -56,6 +57,23 @@ export class CriarRankingController {
         const result = await criaRankingUseCase.execute({ id_academia, nome, classes }) as any;
         result.status= "success";
         result.mensagem = "Ranking cadastrado com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class RankingController {
+    async handle(req: Request, res: Response) {
+        
+        const rankingUseCase = new RankingUseCase();
+
+        const id_classeRanking = Number(req.query.id_classeRanking);
+
+        const result = await rankingUseCase.execute({ id_classeRanking }) as any;
+        result.status= "success";
+        result.mensagem = "Ranking listado com sucesso";
 
         return res.status(201).json(result);
     }
