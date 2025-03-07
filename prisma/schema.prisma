@@ -11,7 +11,7 @@ generator client {
 datasource db {
   provider = "sqlite"
   // provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 
@@ -106,8 +106,7 @@ model TenistasAcademias {
 
   academia          Academias         @relation("tenista", fields: [id_academia], references: [id])
   tenista           Tenistas          @relation("tenista", fields: [id_tenista], references: [cpf])
-  Inscricao1        Inscricao[]       @relation("inscricao_tenista")
-  Inscricao2        Inscricao[]       @relation("inscricao_tenista2")
+  TennistasInscricao TennistasInscricao[] @relation("tenista")
 
   @@map("tenistasAcademias")
 }
@@ -125,7 +124,7 @@ model Status {
 
 
 
-model PontuacoesCampeonato {
+model PontuacoesTorneio {
   id                Int               @id @default(autoincrement())
   vencedor          Int               @default(100)
   r1                Int               @default(70)
@@ -139,7 +138,7 @@ model PontuacoesCampeonato {
 
   Torneios          Torneios?         @relation("torneio")
 
-  @@map("pontuacoesCampeonato")
+  @@map("pontuacoesTorneio")
 }
 
 
@@ -161,10 +160,10 @@ model Torneios {
 
   academia          Academias         @relation("torneio", fields: [id_academia], references: [id])
   status            Status            @relation("torneio", fields: [id_status], references: [id])
-  pontuacoes        PontuacoesCampeonato @relation("torneio", fields: [id_pontuacoes], references: [id])
+  pontuacoes        PontuacoesTorneio @relation("torneio", fields: [id_pontuacoes], references: [id])
   ClasseTorneio     ClasseTorneio[] @relation("classe")
 
-  @@map("campeonatos")
+  @@map("torneios")
 }
 
 
@@ -186,18 +185,28 @@ model ClasseTorneio {
 
 model Inscricao {
   id                  Int                 @id @default(autoincrement())
-  id_tenistaAcademia  Int
-  id_tenistaAcademia2 Int?
   id_classeTorneio    Int
   
-  tenista1            TenistasAcademias   @relation("inscricao_tenista", fields: [id_tenistaAcademia], references: [id])
-  tenista2            TenistasAcademias?  @relation("inscricao_tenista2", fields: [id_tenistaAcademia2], references: [id])
   classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id], onDelete: Cascade)
-  Partidas1           Partidas[]          @relation("inscricao1")
-  Partidas2           Partidas[]          @relation("inscricao2")
   pontuacaoRanking    pontuacaoRanking?   @relation("pontuacaoRanking")
+  TennistasInscricao  TennistasInscricao[] @relation("inscricao")
+  InscricaoPartida    InscricaoPartida[] @relation("inscricao")
   
   @@map("inscricao")
+}
+
+
+
+model TennistasInscricao {
+  id                  Int                 @id @default(autoincrement())
+  id_inscricao        Int
+  id_tenistaAcademia  Int
+  ordem               Int
+  
+  tenistas            TenistasAcademias   @relation("tenista", fields: [id_tenistaAcademia], references: [id], onDelete: Cascade)
+  inscricao           Inscricao           @relation("inscricao", fields: [id_inscricao], references: [id], onDelete: Cascade)
+  
+  @@map("tennistasInscricao")
 }
 
 
@@ -218,19 +227,30 @@ model pontuacaoRanking {
 
 model Partidas {
   id              Int                 @id @default(autoincrement())
-  id_inscricao    Int?
-  id_inscricao2   Int?
   chave           String
   id_vencedor     Int                 @default(-1)
   dataPartida     String              @default("")
   horaPartida     String              @default("")
   local           String              @default("")
 
-  inscricao1      Inscricao?          @relation("inscricao1", fields: [id_inscricao], references: [id], onDelete: Cascade)
-  inscricao2      Inscricao?          @relation("inscricao2", fields: [id_inscricao2], references: [id], onDelete: Cascade)
   Sets            Sets[]              @relation("sets")
+  InscricaoPartida InscricaoPartida[] @relation("inscricao")
   
   @@map("partidas")
+}
+
+
+
+model InscricaoPartida {
+  id              Int                 @id @default(autoincrement())
+  id_partida      Int
+  id_inscricao    Int
+  ordem           Int
+
+  partida         Partidas            @relation("inscricao", fields: [id_partida], references: [id], onDelete: Cascade)
+  inscricao       Inscricao           @relation("inscricao", fields: [id_inscricao], references: [id], onDelete: Cascade)
+  
+  @@map("inscricaoPartida")
 }
 
 
