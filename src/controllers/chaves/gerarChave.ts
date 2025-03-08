@@ -257,7 +257,7 @@ export class GerarChaveUseCase{
                     }
                 },
                 id_vencedor: true,
-                Sets: true,
+                sets: true,
                 dataPartida: true,
                 horaPartida: true,
                 local: true,

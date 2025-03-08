@@ -36,7 +36,7 @@ model Academias {
   classes             Classes[]               @relation("classe")
   ranking             Ranking[]               @relation("ranking")
   tenistasAcademias   TenistasAcademias[]     @relation("tenista")
-  Torneios            Torneios[]              @relation("torneio")
+  torneios            Torneios[]              @relation("torneio")
   User                User[]                  @relation("admin")
 
   @@map("academias")
@@ -81,7 +81,7 @@ model ClasseRanking {
 
   classe            Classes           @relation("classe", fields: [id_classe], references: [id])
   ranking           Ranking           @relation("ranking", fields: [id_ranking], references: [id])
-  ClasseTorneio     ClasseTorneio[]   @relation("classe")
+  classeTorneio     ClasseTorneio[]   @relation("classe")
 
   @@map("classeRanking")
 }
@@ -92,7 +92,7 @@ model Tenistas {
   cpf               String            @id
   nome              String
 
-  TenistasAcademias TenistasAcademias[] @relation("tenista")
+  tenistasAcademias TenistasAcademias[] @relation("tenista")
 
   @@map("tenistas")
 }
@@ -106,7 +106,7 @@ model TenistasAcademias {
 
   academia          Academias         @relation("tenista", fields: [id_academia], references: [id])
   tenista           Tenistas          @relation("tenista", fields: [id_tenista], references: [cpf])
-  TenistasInscricao TenistasInscricao[] @relation("tenista")
+  tenistasInscricao TenistasInscricao[] @relation("tenista")
 
   @@map("tenistasAcademias")
 }
@@ -117,7 +117,7 @@ model Status {
   id                Int               @id @default(autoincrement())
   nome              String
 
-  Torneios          Torneios[]        @relation("torneio")
+  torneios          Torneios[]        @relation("torneio")
 
   @@map("status")
 }
@@ -136,7 +136,7 @@ model PontuacoesTorneio {
   r64               Int               @default(05)
   participacao      Int               @default(05)
 
-  Torneios          Torneios?         @relation("torneio")
+  torneios          Torneios?         @relation("torneio")
 
   @@map("pontuacoesTorneio")
 }
@@ -161,7 +161,7 @@ model Torneios {
   academia          Academias         @relation("torneio", fields: [id_academia], references: [id])
   status            Status            @relation("torneio", fields: [id_status], references: [id])
   pontuacoes        PontuacoesTorneio @relation("torneio", fields: [id_pontuacoes], references: [id])
-  ClasseTorneio     ClasseTorneio[] @relation("classe")
+  classeTorneio     ClasseTorneio[] @relation("classe")
 
   @@map("torneios")
 }
@@ -176,7 +176,7 @@ model ClasseTorneio {
 
   classeRanking     ClasseRanking     @relation("classe", fields: [id_classeRanking], references: [id])
   torneio           Torneios          @relation("classe", fields: [id_torneio], references: [id])
-  Inscricao         Inscricao[]       @relation("inscricao")
+  inscricao         Inscricao[]       @relation("inscricao")
 
   @@map("classeTorneio")
 }
@@ -189,8 +189,8 @@ model Inscricao {
   
   classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id], onDelete: Cascade)
   pontuacaoRanking    pontuacaoRanking?   @relation("pontuacaoRanking")
-  TenistasInscricao   TenistasInscricao[] @relation("inscricao")
-  InscricaoPartida    InscricaoPartida[] @relation("inscricao")
+  tenistasInscricao   TenistasInscricao[] @relation("inscricao")
+  inscricaoPartida    InscricaoPartida[] @relation("inscricao")
   
   @@map("inscricao")
 }
@@ -233,8 +233,8 @@ model Partidas {
   horaPartida     String              @default("")
   local           String              @default("")
 
-  Sets            Sets[]              @relation("sets")
-  InscricaoPartida InscricaoPartida[] @relation("inscricao")
+  sets            Sets[]              @relation("sets")
+  inscricaoPartida InscricaoPartida[] @relation("inscricao")
   
   @@map("partidas")
 }

@@ -1,4 +1,3 @@
-import { Inscricao } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { ListaInscricoesDTO } from "../../interface/InscricaoUsersDTO";
@@ -13,7 +12,7 @@ export class ListarInscricoesUseCase{
         const inscricoes = await prisma.inscricao.findMany({
             select: {
                 id: true,
-                TenistasInscricao: {
+                tenistasInscricao: {
                     select: { 
                         tenistaAcademia: {
                             select: { tenista: { select: { nome: true } } }

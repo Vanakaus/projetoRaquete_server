@@ -46,10 +46,10 @@ export class ListarResultadoUseCase{
                         }
                     }
                 },
-                Inscricao: {
+                inscricao: {
                     select: {
                         id: true,
-                        TenistasInscricao: {
+                        tenistasInscricao: {
                             select: {
                                 tenistaAcademia: {
                                     select: { tenista: { select: { nome: true } } }

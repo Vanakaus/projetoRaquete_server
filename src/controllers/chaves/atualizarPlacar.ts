@@ -358,7 +358,7 @@ export class AtualizarPlacarUseCase{
             },
             select: {
                 id: true,
-                Inscricao: {
+                inscricao: {
                     where: {
                         OR: [
                             { Partidas1: { some: { chave: "01:01" } } },
@@ -389,23 +389,23 @@ export class AtualizarPlacarUseCase{
                 break;
 
             // Se não tiver inscrições na partida final, o torneio não foi finalizado
-            if(classe.Inscricao.length === 0){
+            if(classe.inscricao.length === 0){
                 finalizado = false;
                 continue;
             }
 
             // Verifica se a inscrição está na final pela partida 1 ou 2
-            if(classe.Inscricao[1].Partidas1.length > 0){
+            if(classe.inscricao[1].Partidas1.length > 0){
 
                 // Verifica se a partida foi finalizada pelo vencedor
-                if(classe.Inscricao[1].Partidas1[0].id_vencedor === -1){
+                if(classe.inscricao[1].Partidas1[0].id_vencedor === -1){
                     finalizado = false;
                     break;
                 }
             }else{
 
                 // Verifica se a partida foi finalizada pelo vencedor
-                if(classe.Inscricao[1].Partidas2[0].id_vencedor === -1){
+                if(classe.inscricao[1].Partidas2[0].id_vencedor === -1){
                     finalizado = false;
                     break;}
             }

@@ -43,7 +43,7 @@ export class ListarTorneiosAcademiaUseCase{
                         r1: true
                     }
                 },
-                ClasseTorneio: {
+                classeTorneio: {
                     select: {
                         id: true,
                         cabecasChave: true,
@@ -69,7 +69,7 @@ export class ListarTorneiosAcademiaUseCase{
                         },
                         _count: {
                             select: {
-                                Inscricao: true
+                                inscricao: true
                             }
                         }
                     },

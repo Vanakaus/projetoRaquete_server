@@ -16,7 +16,7 @@ export class RankingUseCase{
         // Trazendo todas as pontuações de cada tenista no ano escolhido
         const ranking = await prisma.tenistasAcademias.findMany({
             where: {
-                TenistasInscricao: { some: { inscricao: { classeTorneio: { id_classeRanking } } } },
+                tenistasInscricao: { some: { inscricao: { classeTorneio: { id_classeRanking } } } },
             },
             select: {
                 id: true,
@@ -26,7 +26,7 @@ export class RankingUseCase{
                         nome: true
                     }
                 },
-                TenistasInscricao: {
+                tenistasInscricao: {
                     select: {
                         inscricao: {
                             select: {
@@ -50,10 +50,10 @@ export class RankingUseCase{
         for(const pessoa of ranking){
 
             // Calcula a pontuação de cada tenista
-            pessoa.pontuacao = pessoa.TenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0);
+            pessoa.pontuacao = pessoa.tenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0);
             
             // Deleta os campos TenistasInscricoes para não poluir o JSON de resposta
-            delete pessoa.TenistasInscricao;
+            delete pessoa.tenistasInscricao;
         }
 
 

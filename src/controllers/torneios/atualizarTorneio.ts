@@ -32,7 +32,7 @@ export class AtualizarTorneioUseCase{
                 status: {
                     select: { id: true }
                 },
-                ClasseTorneio: {
+                classeTorneio: {
                     select: {
                         classeRanking: {
                             select: {
@@ -102,7 +102,7 @@ export class AtualizarTorneioUseCase{
                 dataFim: true,
                 pontuacoes: true,
                 status: true,
-                ClasseTorneio: {
+                classeTorneio: {
                     select: {
                         id: true,
                         classeRanking: {
@@ -200,7 +200,7 @@ export class AtualizarTorneioUseCase{
                     const novaClasse = await prisma.classeRanking.create({
                         data: {
                             id_classe: classesAdiciona[i],
-                            id_ranking: torneioExiste.ClasseTorneio[0].classeRanking.id_ranking
+                            id_ranking: torneioExiste.classeTorneio[0].classeRanking.id_ranking
                         }
                     });
 

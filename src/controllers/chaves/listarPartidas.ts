@@ -29,10 +29,16 @@ export class ListarPartidasUseCase{
 
         const partidas = await prisma.partidas.findMany({
             where: {
-                OR: [
-                    { inscricao1: { classeTorneio: { id_torneio: idTorneio } } },
-                    { inscricao2: { classeTorneio: { id_torneio: idTorneio } } }
-            ]},
+                inscricaoPartida: {
+                    some: {
+                        inscricao: {
+                            classeTorneio: {
+                                id_torneio: idTorneio
+                            }
+                        }
+                    }
+                }
+            },                
             orderBy: {
                 chave: 'asc'
             },
@@ -43,79 +49,43 @@ export class ListarPartidasUseCase{
                 dataPartida: true,
                 horaPartida: true,
                 local: true,
-                Sets: true,
-                inscricao1: {
+                sets: true,
+                inscricaoPartida: {
                     select: {
-                        id: true,
-                        tenista1: {
+                        ordem: true,
+                        inscricao: {
                             select: {
-                                tenista: {
+                                id: true,
+                                tenistasInscricao: {
                                     select: {
-                                        nome: true
-                                    }
-                                }
-                            }
-                        },
-                        tenista2: {
-                            select: {
-                                tenista: {
-                                    select: {
-                                        nome: true
-                                    }
-                                }
-                            }
-                        },
-                        classeTorneio: {
-                            select: {
-                                classeRanking: {
-                                    select: {
-                                        classe: {
+                                        tenistaAcademia: {        
                                             select: {
-                                                sigla: true
+                                                tenista: {
+                                                    select: {
+                                                        nome: true
+                                                    }
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            }
-                        },
-                    }
-                },
-                inscricao2: {
-                    select: {
-                        id: true,
-                        tenista1: {
-                            select: {
-                                tenista: {
+                                },
+                                classeTorneio: {
                                     select: {
-                                        nome: true
-                                    }
-                                }
-                            }
-                        },
-                        tenista2: {
-                            select: {
-                                tenista: {
-                                    select: {
-                                        nome: true
-                                    }
-                                }
-                            }
-                        },
-                        classeTorneio: {
-                            select: {
-                                classeRanking: {
-                                    select: {
-                                        classe: {
+                                        classeRanking: {
                                             select: {
-                                                sigla: true
+                                                classe: {
+                                                    select: {
+                                                        sigla: true
+                                                    }
+                                                }
                                             }
                                         }
                                     }
-                                }
+                                },
                             }
-                        },
+                        }
                     }
-                },
+                }
             }
         });
 
