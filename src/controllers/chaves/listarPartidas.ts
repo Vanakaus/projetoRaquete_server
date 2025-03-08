@@ -49,7 +49,14 @@ export class ListarPartidasUseCase{
                 dataPartida: true,
                 horaPartida: true,
                 local: true,
-                sets: true,
+                sets: {
+                    select: {
+                        id: true,
+                        tiebreak: true,
+                        pontTen1: true,
+                        pontTen2: true
+                    }
+                },
                 inscricaoPartida: {
                     select: {
                         ordem: true,
@@ -67,7 +74,8 @@ export class ListarPartidasUseCase{
                                                 }
                                             }
                                         }
-                                    }
+                                    },
+                                    orderBy: { ordem: 'asc' }
                                 },
                                 classeTorneio: {
                                     select: {
@@ -84,7 +92,8 @@ export class ListarPartidasUseCase{
                                 },
                             }
                         }
-                    }
+                    },
+                    orderBy: { ordem: 'asc' }
                 }
             }
         });
