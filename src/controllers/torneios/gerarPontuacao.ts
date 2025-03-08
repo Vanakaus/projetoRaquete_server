@@ -9,7 +9,7 @@ export class GerarPontuacaoUseCase{
         console.log("\nResposta: ");
 
         // Lista a pontuacao do torneio
-        const pontuacoes = await prisma.pontuacoesCampeonato.findFirst({
+        const pontuacoes = await prisma.pontuacoesTorneio.findFirst({
             where: { Torneios: { id: idTorneio } }
         });
 
@@ -51,15 +51,13 @@ export class GerarPontuacaoUseCase{
 
             // Lista todas as partidas da classe
             const listaPartidas = await prisma.partidas.findMany({
-                where: { OR: [
-                    { inscricao1: { classeTorneio: { id: classe.id } } },
-                    { inscricao2: { classeTorneio: { id: classe.id } } },
-                    ]},
+                where: {
+                    InscricaoPartida: { some: { inscricao: { id_classeTorneio: classe.id } } }
+                },
                 select: {
                     chave: true,
                     id_vencedor: true,
-                    inscricao1: { select: { id: true, tenista1: { select: { tenista: { select: { nome: true } } } }, tenista2: { select: { tenista: { select: { nome: true } } } } } },
-                    inscricao2: { select: { id: true, tenista1: { select: { tenista: { select: { nome: true } } } }, tenista2: { select: { tenista: { select: { nome: true } } } } } }
+                    InscricaoPartida: { select: { inscricao: { select: { TenistasInscricao: { select: { tenistas: { select: { tenista: { select: { nome: true } } } } } } } } } },
                 },
                 orderBy: { chave: 'asc' }
             });

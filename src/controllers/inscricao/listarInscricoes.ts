@@ -9,27 +9,17 @@ export class ListarInscricoesUseCase{
     async execute({ idTorneio}: ListaInscricoesDTO): Promise<any>{
         
         
-        // Busca todos os campeonatos que o jogador está inscrito
+        // Busca todos os incritos no torneio
         const inscricoes = await prisma.inscricao.findMany({
             select: {
                 id: true,
-                tenista1: {
-                    select: {
-                        tenista: {
-                            select: {
-                                nome: true
-                            }
+                TenistasInscricao: {
+                    select: { 
+                        tenistaAcademia: {
+                            select: { tenista: { select: { nome: true } } }
                         }
-                    }
-                },
-                tenista2: {
-                    select: {
-                        tenista: {
-                            select: {
-                                nome: true
-                            }
-                        }
-                    }
+                    },
+                    orderBy: { ordem: 'asc' }
                 },
                 classeTorneio: {
                     select: {

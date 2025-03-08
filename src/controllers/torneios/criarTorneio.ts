@@ -98,7 +98,7 @@ export class CriaCampeonatoUseCase{
 
 
         // Adiciona as pontuações
-        const pontuacaoCampeonato = await prisma.pontuacoesCampeonato.create({
+        const pontuacaoCampeonato = await prisma.pontuacoesTorneio.create({
             data: {
                 ...pontuacao
             }

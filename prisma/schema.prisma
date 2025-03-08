@@ -106,7 +106,7 @@ model TenistasAcademias {
 
   academia          Academias         @relation("tenista", fields: [id_academia], references: [id])
   tenista           Tenistas          @relation("tenista", fields: [id_tenista], references: [cpf])
-  TennistasInscricao TennistasInscricao[] @relation("tenista")
+  TenistasInscricao TenistasInscricao[] @relation("tenista")
 
   @@map("tenistasAcademias")
 }
@@ -189,7 +189,7 @@ model Inscricao {
   
   classeTorneio       ClasseTorneio       @relation("inscricao", fields: [id_classeTorneio], references: [id], onDelete: Cascade)
   pontuacaoRanking    pontuacaoRanking?   @relation("pontuacaoRanking")
-  TennistasInscricao  TennistasInscricao[] @relation("inscricao")
+  TenistasInscricao   TenistasInscricao[] @relation("inscricao")
   InscricaoPartida    InscricaoPartida[] @relation("inscricao")
   
   @@map("inscricao")
@@ -197,16 +197,16 @@ model Inscricao {
 
 
 
-model TennistasInscricao {
+model TenistasInscricao {
   id                  Int                 @id @default(autoincrement())
   id_inscricao        Int
   id_tenistaAcademia  Int
   ordem               Int
   
-  tenistas            TenistasAcademias   @relation("tenista", fields: [id_tenistaAcademia], references: [id], onDelete: Cascade)
+  tenistaAcademia     TenistasAcademias   @relation("tenista", fields: [id_tenistaAcademia], references: [id], onDelete: Cascade)
   inscricao           Inscricao           @relation("inscricao", fields: [id_inscricao], references: [id], onDelete: Cascade)
   
-  @@map("tennistasInscricao")
+  @@map("tenistasInscricao")
 }
 
 

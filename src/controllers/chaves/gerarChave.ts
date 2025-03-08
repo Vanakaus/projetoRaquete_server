@@ -66,7 +66,7 @@ export class GerarChaveUseCase{
 
 
 
-        // Busca todos os incritos no campeonato
+        // Busca todos os incritos no Torneio
         const inscricoes = await prisma.inscricao.findMany({
             select: {
                 id: true,
@@ -135,7 +135,7 @@ export class GerarChaveUseCase{
         for(qtdPartidas; qtdPartidas < qtdInscritos; qtdPartidas = qtdPartidas * 2);
 
 
-        console.log("Quantidade de inscritos no campeonato: " + qtdInscritos);
+        console.log("Quantidade de inscritos no torneio: " + qtdInscritos);
         console.log("Quantidade total de inscritos possíveis: " + qtdPartidas--);
 
         console.log("\nInsrcrições: ");

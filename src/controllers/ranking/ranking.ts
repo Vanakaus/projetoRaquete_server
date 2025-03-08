@@ -15,10 +15,9 @@ export class RankingUseCase{
         // Lista todos os tenistas que já se inscreveram em torneios da classe de ranking
         // Trazendo todas as pontuações de cada tenista no ano escolhido
         const ranking = await prisma.tenistasAcademias.findMany({
-            where: { OR: [
-                { Inscricao1: { some: { classeTorneio: { classeRanking: { id: id_classeRanking } } } } },
-                { Inscricao2: { some: { classeTorneio: { classeRanking: { id: id_classeRanking } } } } },
-            ] },
+            where: {
+                TenistasInscricao: { some: { inscricao: { classeTorneio: { id_classeRanking } } } },
+            },
             select: {
                 id: true,
                 tenista: {
@@ -27,8 +26,21 @@ export class RankingUseCase{
                         nome: true
                     }
                 },
-                Inscricao1: { select: { pontuacaoRanking: true }, where: { pontuacaoRanking: { AND: [ { data: { gte: inicioAno } }, { data: { lte: fimAno } } ] } } },
-                Inscricao2: { select: { pontuacaoRanking: true }, where: { pontuacaoRanking: { AND: [ { data: { gte: inicioAno } }, { data: { lte: fimAno } } ] } } },
+                TenistasInscricao: {
+                    select: {
+                        inscricao: {
+                            select: {
+                                pontuacaoRanking: {
+                                    select: {
+                                        pontuacao: true,
+                                        data: true
+                                    },
+                                }
+                            }
+                        }
+                    },
+                    where: { inscricao: { pontuacaoRanking: { data: { gte: inicioAno, lte: fimAno } } } }
+                }
             }
         }) as any;
 
@@ -38,11 +50,10 @@ export class RankingUseCase{
         for(const pessoa of ranking){
 
             // Calcula a pontuação de cada tenista
-            pessoa.pontuacao = pessoa.Inscricao1.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0) + pessoa.Inscricao2.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0);
+            pessoa.pontuacao = pessoa.TenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0);
             
-            // Deleta os campos Inscricao1 e Inscricao2 para não poluir o JSON de resposta
-            delete pessoa.Inscricao1;
-            delete pessoa.Inscricao2;
+            // Deleta os campos TenistasInscricoes para não poluir o JSON de resposta
+            delete pessoa.TenistasInscricao;
         }
 
 

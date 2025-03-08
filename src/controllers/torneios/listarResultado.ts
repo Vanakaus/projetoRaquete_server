@@ -49,8 +49,13 @@ export class ListarResultadoUseCase{
                 Inscricao: {
                     select: {
                         id: true,
-                        tenista1: { select: { tenista: { select: { nome: true } } } },
-                        tenista2: { select: { tenista: { select: { nome: true } } } },
+                        TenistasInscricao: {
+                            select: {
+                                tenistaAcademia: {
+                                    select: { tenista: { select: { nome: true } } }
+                                }
+                            }
+                        },
                         pontuacaoRanking: {
                             select: {
                                 posicao: true,

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarResultadoController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/campeonatos/controller";
+import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarResultadoController, ListarStatusController, ListarTorneiosAcademiaController } from "../controllers/torneios/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 

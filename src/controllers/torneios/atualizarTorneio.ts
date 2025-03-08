@@ -131,7 +131,7 @@ export class AtualizarTorneioUseCase{
 
 
         if(torneioExiste.status.id < Number(process.env.STATUS_FINALIZADO)){
-            const pontuacoes = await prisma.pontuacoesCampeonato.update({
+            const pontuacoes = await prisma.pontuacoesTorneio.update({
                 where: {
                     id: torneioExiste.pontuacoes.id
                 },

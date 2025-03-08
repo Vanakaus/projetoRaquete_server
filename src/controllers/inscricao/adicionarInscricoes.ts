@@ -24,7 +24,7 @@ export class AdicionarInscricoesUseCase{
         }
 
 
-        // Verifica se o torneio existe e se as inscrições estão abertas (status campeonato)
+        // Verifica se o torneio existe e se as inscrições estão abertas (status torneio)
         const torneioExiste = await prisma.torneios.findFirst({
             where: {
                 id: id_torneio
@@ -47,6 +47,13 @@ export class AdicionarInscricoesUseCase{
         let falha = false;
         let sucesso = false;
         const inscricoes = [];
+
+        // Calcula a faixa de datas para buscar as pontuações dos tenistas
+        const anoAtual = new Date().getFullYear();
+        const inicioAno = new Date(anoAtual, 0, 1);
+        const fimAno = new Date(anoAtual, 11, 31);
+
+
 
         // Passa por todas as inscriçõesClasse
         for (let i = 0; i < inscricaoClasse.length; i++) {
@@ -219,21 +226,76 @@ export class AdicionarInscricoesUseCase{
                 const inscricaoExiste = await prisma.inscricao.findFirst({
                     where: {
                         id_classeTorneio,
-                        id_tenistaAcademia,
-                        id_tenistaAcademia2: duplas ? id_tenistaAcademia2 : null
+                        TenistasInscricao: {
+                            some: {
+                                OR: [
+                                    { id_tenistaAcademia: id_tenistaAcademia },
+                                    { id_tenistaAcademia: id_tenistaAcademia2 }
+                                ]
+                            }
+                        },
+                    },
+                    select: {
+                        id: true,
+                        TenistasInscricao: {
+                            select: { id_tenistaAcademia: true, },
+                            where: { 
+                                OR: [
+                                    { id_tenistaAcademia: id_tenistaAcademia },
+                                    { id_tenistaAcademia: id_tenistaAcademia2 }
+                                ]
+                            }
+                        }
                     }
                 });
 
 
                 if(inscricaoExiste){
-                    console.log("Inscrição repetida");
-                    sucesso = true;
-                    inscricoes.push({
-                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
-                        sucesso: true,
-                        repetido: true,
-                        mensagem: `Inscrição repetida`
-                    });
+                    if(duplas){
+
+                        // Caso seja dupla, verifica se a dupla já está inscrita na classe, ou se apenas um dos jogadores já está inscrito
+                        if(inscricaoExiste.TenistasInscricao.length === 1){
+                            if(inscricaoExiste.TenistasInscricao[0].id_tenistaAcademia === id_tenistaAcademia){
+                                console.log("Jogador 1 já inscrito no torneio");
+                                sucesso = true;
+                                inscricoes.push({
+                                    jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                                    sucesso: true,
+                                    repetido: true,
+                                    mensagem: `Jogador 1 já inscrito no torneio`
+                                });
+                            }
+                            if(inscricaoExiste.TenistasInscricao[0].id_tenistaAcademia === id_tenistaAcademia2){
+                                console.log("Jogador 2 já inscrito no torneio");
+                                sucesso = true;
+                                inscricoes.push({
+                                    jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                                    sucesso: true,
+                                    repetido: true,
+                                    mensagem: `Jogador 2 já inscrito no torneio`
+                                });
+                            }
+                        }else if(inscricaoExiste.TenistasInscricao.length === 2){
+                            console.log("Dupla já inscrita no torneio");
+                            sucesso = true;
+                            inscricoes.push({
+                                jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                                sucesso: true,
+                                repetido: true,
+                                mensagem: `Dupla já inscrita no torneio`
+                            });
+                        }
+
+                    }else{
+                        console.log("Jogador já inscrito no torneio");
+                        sucesso = true;
+                        inscricoes.push({
+                            jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                            sucesso: true,
+                            repetido: true,
+                            mensagem: `Jogador já inscrito no torneio`
+                        });
+                    }
                     continue;
                 }
 
@@ -241,9 +303,7 @@ export class AdicionarInscricoesUseCase{
                 // Cria a inscrição
                 const novaInscricao = await prisma.inscricao.create({
                     data: {
-                        id_classeTorneio,
-                        id_tenistaAcademia: id_tenistaAcademia,
-                        id_tenistaAcademia2: duplas ? id_tenistaAcademia2 : null,
+                        id_classeTorneio
                     }
                 });
 
@@ -257,30 +317,65 @@ export class AdicionarInscricoesUseCase{
                         mensagem: `Erro adicionar inscrição`
                     });
                     continue;
-                }else{
+                }
 
-                    const pontuacao = await prisma.pontuacaoRanking.findMany({
-                        where: {
-                            OR: [
-                                {inscricao: {   id_tenistaAcademia: {   in: duplas ? [id_tenistaAcademia, id_tenistaAcademia2] : [id_tenistaAcademia]   }   }},
-                                {inscricao: {   id_tenistaAcademia2: {  in: duplas ? [id_tenistaAcademia, id_tenistaAcademia2] : [id_tenistaAcademia]   }   }}
-                        ]},
-                        select: {
-                            pontuacao: true
-                        },
+                // Adiciona os tenistas à inscrição
+                let novaInscricaoTenista;
+                if(duplas){
+                    novaInscricaoTenista = await prisma.tenistasInscricao.createMany({
+                        data: [
+                            { id_inscricao: novaInscricao.id, id_tenistaAcademia, ordem: 1 },
+                            { id_inscricao: novaInscricao.id, id_tenistaAcademia: id_tenistaAcademia2, ordem: 2 }
+                        ]
                     });
-
-
-                    sucesso = true;
-                    inscricoes.push({
-                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
-                        sucesso: true,
-                        repetido: false,
-                        mensagem: `Inscrição adicionada com sucesso`,
-                        pontuacao: pontuacao.reduce((acc, cur) => acc + cur.pontuacao, 0),
-                        siglaClasse: sigla?.classeRanking.classe.sigla
+                }else{
+                    novaInscricaoTenista = await prisma.tenistasInscricao.create({
+                        data: {
+                            id_inscricao: novaInscricao.id, id_tenistaAcademia, ordem: 1
+                        }
                     });
                 }
+
+                if(!novaInscricaoTenista){
+                    console.log(`Erro ao adicionar ${duplas ? 'dupla' : 'tenista'} à inscrição`);
+
+                    await prisma.inscricao.delete({
+                        where: { id: novaInscricao.id }
+                    });
+
+                    falha = true;
+                    inscricoes.push({
+                        jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                        sucesso: false,
+                        repetido: false,
+                        mensagem: `Erro adicionar ${duplas ? 'dupla' : 'tenista'} à inscrição`
+                    });
+                    continue;
+                }
+
+
+                const pontuacao = await prisma.pontuacaoRanking.findMany({
+                    where: {
+                        OR: [
+                            {inscricao: {   TenistasInscricao: {  some: { id_tenistaAcademia }   }   }},
+                            {inscricao: {   TenistasInscricao: {  some: { id_tenistaAcademia: id_tenistaAcademia2 }   }   }}
+                        ],
+                        data: { gte: inicioAno, lte: fimAno }
+                    },
+                    select: {
+                        pontuacao: true
+                    },
+                });
+
+                sucesso = true;
+                inscricoes.push({
+                    jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
+                    sucesso: true,
+                    repetido: false,
+                    mensagem: `Inscrição adicionada com sucesso`,
+                    pontuacao: pontuacao.reduce((acc, cur) => acc + cur.pontuacao, 0),
+                    siglaClasse: sigla?.classeRanking.classe.sigla
+                });
             }
         }
 

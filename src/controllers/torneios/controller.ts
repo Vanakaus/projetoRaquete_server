@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { CriaCampeonatoUseCase } from "./criaCampeonato";
+import { CriaCampeonatoUseCase } from "./criarTorneio";
 import { ListarTorneiosAcademiaUseCase } from "./listarTorneiosAcademia";
 import { LerTorneioUseCase } from "./leTorneio";
 import { ListaCampeonatosCriadosUseCase } from "./listaCampeonatosCriados";
 import { LeCampeonatoCriadoUseCase } from "./leCampeonatoCriado";
 import { AtualizarTorneioUseCase } from "./atualizarTorneio";
 import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
-import { FinalizarTorneioUseCase } from "./finalizarCampeonato";
+import { FinalizarTorneioUseCase } from "./finalizarTorneio";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
 import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
 import { ListarStatusUseCase } from "./listarStatus";
