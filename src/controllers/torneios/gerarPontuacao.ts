@@ -57,7 +57,7 @@ export class GerarPontuacaoUseCase{
                 select: {
                     chave: true,
                     id_vencedor: true,
-                    inscricaoPartida: { select: { inscricao: { select: { tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } } } } } },
+                    inscricaoPartida: { select: { inscricao: { select: { id: true, tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } } } } } },
                 },
                 orderBy: { chave: 'asc' }
             });
@@ -100,10 +100,26 @@ export class GerarPontuacaoUseCase{
 
                 // Verifica se é a chave da final do torneio
                 if(partida.chave.includes("01:")){
-                    if(partida.inscricao1?.id === partida.id_vencedor){
-                        classe.pontuacao.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
+                    if(partida.inscricaoPartida[0].inscricao.id === partida.id_vencedor){
+                        classe.pontuacao.push({
+                            posicao,
+                            pontuacao: pontuacoes.vencedor,
+                            inscricao: {
+                                id: partida.inscricaoPartida[0].inscricao.id,
+                                tenista1: partida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                tenista2: partida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome
+                            }
+                        });
                     }else{
-                        classe.pontuacao.push({ posicao, pontuacao: pontuacoes.vencedor, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({
+                            posicao,
+                            pontuacao: pontuacoes.vencedor,
+                            inscricao: {
+                                id: partida.inscricaoPartida[1].inscricao.id,
+                                tenista1: partida.inscricaoPartida[1].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                tenista2: partida.inscricaoPartida[1].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome
+                            }
+                        });
                     }
                 }
 
@@ -112,16 +128,32 @@ export class GerarPontuacaoUseCase{
                 if(partida.id_vencedor !== -1)
                     
                     // Verifica qual jogador parou neste round
-                    if(partida.inscricao1?.id !== partida.id_vencedor)
-                        classe.pontuacao.push({ posicao, pontuacao, inscricao: { id: partida.inscricao1?.id, tenista1: partida.inscricao1?.tenista1.tenista.nome, tenista2: partida.inscricao1?.tenista2?.tenista.nome } });
+                    if(partida.inscricaoPartida[0].inscricao.id !== partida.id_vencedor)
+                        classe.pontuacao.push({
+                            posicao,
+                            pontuacao,
+                            inscricao: {
+                                id: partida.inscricaoPartida[0].inscricao.id,
+                                tenista1: partida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                tenista2: partida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome
+                            }
+                        });
                     else
-                        classe.pontuacao.push({ posicao, pontuacao, inscricao: { id: partida.inscricao2?.id, tenista1: partida.inscricao2?.tenista1.tenista.nome, tenista2: partida.inscricao2?.tenista2?.tenista.nome } });
+                        classe.pontuacao.push({
+                            posicao,
+                            pontuacao,
+                            inscricao: {
+                                id: partida.inscricaoPartida[1].inscricao.id,
+                                tenista1: partida.inscricaoPartida[1].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                tenista2: partida.inscricaoPartida[1].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome
+                            }
+                        });
                     
                 else{
 
                     // Adiciona a pontuação de participação para os jogadores que não ganharam nenhuma partida
                     const posicaoSeguinte = Number(partida.chave.split(":")[0]) / 2;
-                    const resultado = classe.pontuacao.find((r: any) => r.inscricao.id === partida.inscricao1?.id);
+                    const resultado = classe.pontuacao.find((r: any) => r.inscricao.id === partida.inscricaoPartida[0].inscricao.id);
                     if (resultado.posicao === `R${posicaoSeguinte}`) {
                         resultado.posicao = 'P';
                         resultado.pontuacao = pontuacoes.participacao;
