@@ -45,11 +45,11 @@ export interface AtualizarTorneioDTO {
 
 
 export interface GerarPontuacaoDTO {
-    idTorneio: string;
+    id_torneio: string;
 }
 
 export interface FinalizarTorneioDTO {
-    idTorneio: string;
+    id_torneio: string;
     resultados: {
         posicao: string;
         pontuacao: number;
@@ -64,7 +64,7 @@ export interface FinalizarTorneioDTO {
 
 
 export interface ListarResultadoDTO {
-    idTorneio: string;
+    id_torneio: string;
 }
 
 

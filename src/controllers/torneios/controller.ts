@@ -131,13 +131,13 @@ export class GerarPontuacaoController {
         
         const gerarPontuacaoUseCase = new GerarPontuacaoUseCase();
 
-        const { idTorneio } = req.query;
+        const { id_torneio } = req.query;
 
-        if (typeof idTorneio !== 'string') {
+        if (typeof id_torneio !== 'string') {
             return res.status(400).json({ status: "error", mensagem: "IdTorneio inválido" });
         }
         
-        const result = await gerarPontuacaoUseCase.execute({ idTorneio }) as any;
+        const result = await gerarPontuacaoUseCase.execute({ id_torneio }) as any;
         result.status= "success";
         result.mensagem = "Listagem de pontuação gerada com sucesso";
 
@@ -150,11 +150,11 @@ export class GerarPontuacaoController {
 export class FinalizaTorneioController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio, resultados } = req.body;
+        const { id_torneio, resultados } = req.body;
         
         const FinalizarUseCase = new FinalizarTorneioUseCase();
         
-        const result = await FinalizarUseCase.execute({ idTorneio, resultados });
+        const result = await FinalizarUseCase.execute({ id_torneio, resultados });
         result.status= "success";
         result.mensagem = 'Torneio finalizado com sucesso';
 
@@ -167,14 +167,14 @@ export class FinalizaTorneioController {
 export class ListarResultadoController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio } = req.query;
+        const { id_torneio } = req.query;
         
         const FinalizarUseCase = new ListarResultadoUseCase();
         
-        if (typeof idTorneio !== 'string') {
+        if (typeof id_torneio !== 'string') {
             return res.status(400).json({ status: "error", mensagem: "IdTorneio inválido" });
         }
-        const result = await FinalizarUseCase.execute({ idTorneio });
+        const result = await FinalizarUseCase.execute({ id_torneio });
         result.status= "success";
         result.mensagem = 'Resultado listado com sucesso';
 

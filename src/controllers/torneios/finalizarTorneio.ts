@@ -3,12 +3,12 @@ import { AppError } from "../../errors/AppErrors";
 import { FinalizarTorneioDTO } from "../../interface/TorneiosDTO";
 
 export class FinalizarTorneioUseCase{
-    async execute({ idTorneio, resultados }: FinalizarTorneioDTO): Promise<any>{
+    async execute({ id_torneio, resultados }: FinalizarTorneioDTO): Promise<any>{
 
         // Busca o campeonato caso seja do criador
         let torneio = await prisma.torneios.findUnique({
             where: {
-                id: idTorneio
+                id: id_torneio
             }
         });
 
@@ -44,7 +44,7 @@ export class FinalizarTorneioUseCase{
 
         // Atualiza o status do torneio
         await prisma.torneios.update({
-            where: { id: idTorneio },
+            where: { id: id_torneio },
             data: { id_status: Number(process.env.STATUS_FINALIZADO) }
         });
         

@@ -5,12 +5,12 @@ import { ListarChaveDTO } from "../../interface/ChavesDTO";
 
 
 export class ListarPartidasUseCase{
-    async execute({ idTorneio }: ListarChaveDTO): Promise<any>{
+    async execute({ id_torneio }: ListarChaveDTO): Promise<any>{
 
         
         const torneio = await prisma.torneios.findUnique({
             where: {
-                id: idTorneio
+                id: id_torneio
             }
         });
 
@@ -24,7 +24,7 @@ export class ListarPartidasUseCase{
 
 1
         console.log("Listando jogos do torneio: ");
-        console.log("\tID: " + idTorneio);
+        console.log("\tID: " + id_torneio);
         console.log("\tNome: " + torneio.nome);
 
         const partidas = await prisma.partidas.findMany({
@@ -33,7 +33,7 @@ export class ListarPartidasUseCase{
                     some: {
                         inscricao: {
                             classeTorneio: {
-                                id_torneio: idTorneio
+                                id_torneio: id_torneio
                             }
                         }
                     }

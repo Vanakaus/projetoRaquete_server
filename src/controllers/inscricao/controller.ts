@@ -39,9 +39,9 @@ export class ListarInscricoesController {
 
         const listarInscricoesUseCase = new ListarInscricoesUseCase();
         
-        const { idTorneio } = req.query as any;
+        const { id_torneio } = req.query as any;
         
-        const result = await listarInscricoesUseCase.execute({ idTorneio }) as any;
+        const result = await listarInscricoesUseCase.execute({ id_torneio }) as any;
         result.status= "success";
         result.mensagem = "Inscrições listadas com sucesso";
 

@@ -13,11 +13,11 @@ const jwt = require('jsonwebtoken');
 export class GerarChaveController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio, idClasseTorneio, numCabecas } = req.body;
+        const { id_torneio, id_classeTorneio, numCabecas } = req.body;
 
         const gerarChaveUseCase = new GerarChaveUseCase();
         
-        const result = await gerarChaveUseCase.execute({ idTorneio, idClasseTorneio, numCabecas }) as any;
+        const result = await gerarChaveUseCase.execute({ id_torneio, id_classeTorneio, numCabecas }) as any;
         result.status= "success";
         result.mensagem = "Jogos gerados com sucesso";
 
@@ -30,11 +30,11 @@ export class GerarChaveController {
 export class LimparChaveController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio, id_ClasseTorneio } = req.body;
+        const { id_torneio, id_classeTorneio } = req.body;
 
         const limparChaveUseCase = new LimparChaveUseCase();
         
-        const result = await limparChaveUseCase.execute({ idTorneio, id_ClasseTorneio }) as any;
+        const result = await limparChaveUseCase.execute({ id_torneio, id_classeTorneio }) as any;
         result.status= "success";
         result.mensagem = "Jogos deletados com sucesso";
 
@@ -47,11 +47,11 @@ export class LimparChaveController {
 export class ListarChavesController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio } = req.query as any;
+        const { id_torneio } = req.query as any;
 
         const listarPartidasUseCase = new ListarPartidasUseCase();
         
-        const result = await listarPartidasUseCase.execute({ idTorneio }) as any;
+        const result = await listarPartidasUseCase.execute({ id_torneio }) as any;
         result.status= "success";
         result.mensagem = "Partidas listadas com sucesso";
 
@@ -92,11 +92,11 @@ export class AtualizarDadosController {
 export class AtualizarPlacarController {
     async handle(req: Request, res: Response) {
         
-        const { idTorneio, novosPlacares } = req.body;
+        const { id_torneio, novosPlacares } = req.body;
 
         const atualizarPlacarUseCase = new AtualizarPlacarUseCase();
         
-        const result = await atualizarPlacarUseCase.execute({ idTorneio, novosPlacares }) as any;
+        const result = await atualizarPlacarUseCase.execute({ id_torneio, novosPlacares }) as any;
         result.status= "success";
 
         if(result.partidasNaoAtualizadas.length){

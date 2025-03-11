@@ -5,11 +5,11 @@ import { LimparChaveDTO } from "../../interface/ChavesDTO";
 
 
 export class LimparChaveUseCase{
-    async execute({ idTorneio, id_ClasseTorneio }: LimparChaveDTO): Promise<any>{
+    async execute({ id_torneio, id_classeTorneio }: LimparChaveDTO): Promise<any>{
 
         let torneio = await prisma.torneios.findUnique({
             where: {
-                id: idTorneio
+                id: id_torneio
             },
             select: {
                 nome: true,
@@ -37,7 +37,7 @@ export class LimparChaveUseCase{
         
         let classeTorneio = await prisma.classeTorneio.findUnique({
             where: {
-                id: id_ClasseTorneio
+                id: id_classeTorneio
             },
             select: {
                 cabecasChave: true,
@@ -76,10 +76,13 @@ export class LimparChaveUseCase{
 
         const chave = await prisma.partidas.deleteMany({
             where: {
-                OR: [
-                    {inscricao1: { id_classeTorneio: id_ClasseTorneio }},
-                    {inscricao2: { id_classeTorneio: id_ClasseTorneio }}
-                ]
+                inscricaoPartida: {
+                    some: {
+                        inscricao: {
+                            id_classeTorneio: id_classeTorneio
+                        }
+                    }
+                }
             }
         });
 
@@ -87,7 +90,7 @@ export class LimparChaveUseCase{
         if(chave.count){
             const classeTorneio = await prisma.classeTorneio.update({
                 where: {
-                    id: id_ClasseTorneio
+                    id: id_classeTorneio
                 },
                 data: {
                     cabecasChave: -1
@@ -106,7 +109,7 @@ export class LimparChaveUseCase{
         
         torneio = await prisma.torneios.update({
             where: {
-                id: idTorneio
+                id: id_torneio
             },
             data: {
                 id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)

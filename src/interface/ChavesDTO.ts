@@ -1,21 +1,21 @@
 
 export interface GerarChaveDTO {
-    idTorneio: string;
-    idClasseTorneio: number;
+    id_torneio: string;
+    id_classeTorneio: number;
     numCabecas: number;
 }
 
 
 
 export interface LimparChaveDTO {
-    idTorneio: string;
-    id_ClasseTorneio: number;
+    id_torneio: string;
+    id_classeTorneio: number;
 }
 
 
 
 export interface ListarChaveDTO {
-    idTorneio: string;
+    id_torneio: string;
 }
 
 
@@ -36,7 +36,7 @@ export interface novoDado {
 
 
 export interface AtualizarPlacarDTO {
-    idTorneio: string;
+    id_torneio: string;
     novosPlacares: partidaPlacarDTO[];
 }
 

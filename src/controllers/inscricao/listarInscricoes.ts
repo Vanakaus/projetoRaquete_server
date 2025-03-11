@@ -5,7 +5,7 @@ import { ListaInscricoesDTO } from "../../interface/InscricaoUsersDTO";
 
 
 export class ListarInscricoesUseCase{
-    async execute({ idTorneio}: ListaInscricoesDTO): Promise<any>{
+    async execute({ id_torneio}: ListaInscricoesDTO): Promise<any>{
         
         
         // Busca todos os incritos no torneio
@@ -34,7 +34,7 @@ export class ListarInscricoesUseCase{
                     }
                 },
             },
-            where: { classeTorneio: { id_torneio: idTorneio } }
+            where: { classeTorneio: { id_torneio: id_torneio } }
         });
 
 

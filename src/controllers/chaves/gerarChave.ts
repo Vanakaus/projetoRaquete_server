@@ -6,12 +6,12 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class GerarChaveUseCase{
-    async execute({ idTorneio, idClasseTorneio, numCabecas}: GerarChaveDTO): Promise<any>{
+    async execute({ id_torneio, id_classeTorneio, numCabecas}: GerarChaveDTO): Promise<any>{
 
         // Verifica se o torneio existe e qual seu status
         let torneio = await prisma.torneios.findUnique({
             where: {
-                id: idTorneio
+                id: id_torneio
             },
             select: {
                 status: true
@@ -36,7 +36,7 @@ export class GerarChaveUseCase{
         // Verifica se a classe do torneio existe, e se possui jogos gerados
         const classe = await prisma.classeTorneio.findUnique({
             where: {
-                id: idClasseTorneio
+                id: id_classeTorneio
             },
             select: {
                 cabecasChave: true,
@@ -74,7 +74,7 @@ export class GerarChaveUseCase{
                 id_tenistaAcademia2: true
             },
             where: {
-                id_classeTorneio: idClasseTorneio
+                id_classeTorneio: id_classeTorneio
             },
             orderBy: {
                 id: 'asc'
@@ -264,8 +264,8 @@ export class GerarChaveUseCase{
             },
             where: {
                 OR: [
-                    { inscricao1: { id_classeTorneio: idClasseTorneio } },
-                    { inscricao2: { id_classeTorneio: idClasseTorneio } }
+                    { inscricao1: { id_classeTorneio: id_classeTorneio } },
+                    { inscricao2: { id_classeTorneio: id_classeTorneio } }
                 ]
             },
             orderBy: {
@@ -278,7 +278,7 @@ export class GerarChaveUseCase{
         // Atualiza a classe do torneio para informar que as chaves foram geradas com o número de cabeças de chave
         const classeTorneio = await prisma.classeTorneio.update({
             where: {
-                id: idClasseTorneio
+                id: id_classeTorneio
             },
             data: {
                 cabecasChave: numCabecas
@@ -293,7 +293,7 @@ export class GerarChaveUseCase{
         // Verifica se há classes sem jogos gerados
         const torneioClasseEmBranco = await prisma.classeTorneio.findFirst({
             where: {
-                id_torneio: idTorneio,
+                id_torneio: id_torneio,
                 cabecasChave: -1
             }
         });
@@ -304,7 +304,7 @@ export class GerarChaveUseCase{
         if(!torneioClasseEmBranco){
             torneio = await prisma.torneios.update({
                 where: {
-                    id: idTorneio
+                    id: id_torneio
                 },
                 data: {
                     id_status: Number(process.env.STATUS_JOGOS_GERADOS)

@@ -14,7 +14,7 @@ export interface AdicionarInscricoesDTO {
 
 
 export interface ListaInscricoesDTO {
-    idTorneio: string;
+    id_torneio: string;
 }
 
 export interface ListaInscricoesCampeonatoDTO {

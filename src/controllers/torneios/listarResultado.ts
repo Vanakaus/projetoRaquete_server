@@ -3,12 +3,12 @@ import { AppError } from "../../errors/AppErrors";
 import { ListarResultadoDTO } from "../../interface/TorneiosDTO";
 
 export class ListarResultadoUseCase{
-    async execute( { idTorneio }: ListarResultadoDTO): Promise<any>{
+    async execute( { id_torneio }: ListarResultadoDTO): Promise<any>{
 
         // Busca o campeonato caso seja do criador
         let torneio = await prisma.torneios.findUnique({
             where: {
-                id: idTorneio
+                id: id_torneio
             }
         });
 
@@ -28,7 +28,7 @@ export class ListarResultadoUseCase{
         // Lista os resultados do torneio agrupados por classe
         const resultados = await prisma.classeTorneio.findMany({
             where: {
-                id_torneio: idTorneio
+                id_torneio: id_torneio
             },
             select: {
                 id: true,
@@ -68,7 +68,7 @@ export class ListarResultadoUseCase{
         });
 
         
-        console.log(`Resultados do torneio ${idTorneio} listados com sucesso`);
+        console.log(`Resultados do torneio ${id_torneio} listados com sucesso`);
 
 
         return { resultados };

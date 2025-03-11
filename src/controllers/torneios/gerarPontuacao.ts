@@ -4,13 +4,13 @@ import { GerarPontuacaoDTO } from "../../interface/TorneiosDTO";
 
 
 export class GerarPontuacaoUseCase{
-    async execute({ idTorneio }: GerarPontuacaoDTO): Promise<any>{
+    async execute({ id_torneio }: GerarPontuacaoDTO): Promise<any>{
 
         console.log("\nResposta: ");
 
         // Lista a pontuacao do torneio
         const pontuacoes = await prisma.pontuacoesTorneio.findFirst({
-            where: { torneios: { id: idTorneio } }
+            where: { torneios: { id: id_torneio } }
         });
 
         if (!pontuacoes) {
@@ -22,7 +22,7 @@ export class GerarPontuacaoUseCase{
 
         // Lista todas as partidas agrupando por classeTorneio e ordenadas por chave
         const classes = await prisma.classeTorneio.findMany({
-            where: { id_torneio: idTorneio },
+            where: { id_torneio: id_torneio },
             select: {
                 id: true,
                 classeRanking: {

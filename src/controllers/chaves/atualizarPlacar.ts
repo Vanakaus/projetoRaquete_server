@@ -6,7 +6,7 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class AtualizarPlacarUseCase{
-    async execute({ idTorneio, novosPlacares }: AtualizarPlacarDTO): Promise<any>{
+    async execute({ id_torneio, novosPlacares }: AtualizarPlacarDTO): Promise<any>{
 
         console.log("\nResposta: ");
 
@@ -25,20 +25,22 @@ export class AtualizarPlacarUseCase{
                 },
                 select: {
                     chave: true,
-                    id_inscricao: true,
-                    id_inscricao2: true,
-                    inscricao1: {
+                    inscricaoPartida: {
                         select: {
-                            id_classeTorneio: true,
-                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                        }
-                    },
-                    inscricao2: {
-                        select: {
-                            id_classeTorneio: true,
-                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                        }
-                    },
+                            inscricao: {
+                                select: {
+                                    id: true,
+                                    classeTorneio: {
+                                        select: {
+                                            id: true,
+                                            classeRanking: { select: { classe: { select: { sigla: true } } } }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        orderBy: { ordem: "asc" }
+                    }
                 }
             });
 
@@ -118,9 +120,9 @@ export class AtualizarPlacarUseCase{
                 if(novoPlacar.sets.indexOf(set) === novoPlacar.sets.length - 1){
 
                     if(id_vencedor > 0)
-                        id_vencedor = partida.id_inscricao || -1;
+                        id_vencedor = partida.inscricaoPartida[0].inscricao.id || -1;
                     else if(id_vencedor < 0)
-                        id_vencedor = partida.id_inscricao2 || -1;
+                        id_vencedor = partida.inscricaoPartida[1].inscricao.id || -1;
                     else
                         id_vencedor = -1;
 
@@ -139,7 +141,7 @@ export class AtualizarPlacarUseCase{
                         continue;
                     }
                     
-                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, classe: partida.inscricao1?.classeTorneio.classeRanking.classe.sigla || partida.inscricao2?.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
+                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, classe: partida.inscricaoPartida[0].inscricao.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
 
 
                     // Verifica se a partida é a final, ou tera uma próxima partida
@@ -156,87 +158,95 @@ export class AtualizarPlacarUseCase{
                     // Verifica se a próxima partida já existe
                     const novaPartidaExiste = await prisma.partidas.findFirst({
                         where: {
-                            AND: {
-                                OR: [
-                                    { inscricao1: { id_classeTorneio: partida.inscricao1?.id_classeTorneio || partida.inscricao2?.id_classeTorneio } },
-                                    { inscricao2: { id_classeTorneio: partida.inscricao2?.id_classeTorneio || partida.inscricao1?.id_classeTorneio } }
-                                ],
-                                chave: novaChave
-                            }
-                        }
+                            inscricaoPartida: {
+                                some: {
+                                    inscricao: {
+                                        id_classeTorneio: partida.inscricaoPartida[0].inscricao.classeTorneio.id
+                                    }
+                                }
+                            },
+                            chave: novaChave
+                        },
+                        select: { id: true }
                     });
+
+                    // Variavel para verificar qual jogador será atualizado
+                    let jogador = 0;
 
                     if(novaPartidaExiste){
 
                         // Verifica qual o jogador que será atualizado
-                        if(Number(partida.chave.substring(3, 5)) % 2 === 1){
+                        if(Number(partida.chave.substring(3, 5)) % 2 === 1)
+                            jogador = 1;
+                        else if(Number(partida.chave.substring(3, 5)) % 2 === 0)
+                            jogador = 2;
 
-                            // Atualiza jogador 1
-                            novaPartida = await prisma.partidas.update({
-                                where: {
-                                    id: novaPartidaExiste.id
-                                },
-                                data: {
-                                    id_inscricao: id_vencedor === -1 ? null : id_vencedor,
-                                    id_vencedor: -1
-                                },
-                                select: {
-                                    id: true,
-                                    chave: true,
-                                    id_vencedor: true,
-                                    inscricao1: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                    inscricao2: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                }
-                            });
 
-                        }else if(Number(partida.chave.substring(3, 5)) % 2 === 0){
 
-                            // Atualiza jogador 2
-                            novaPartida = await prisma.partidas.update({
-                                where: {
-                                    id: novaPartidaExiste.id
-                                },
-                                data: {
-                                    id_inscricao2: id_vencedor === -1 ? null : id_vencedor,
-                                    id_vencedor: -1
-                                },
-                                select: {
-                                    id: true,
-                                    chave: true,
-                                    id_vencedor: true,
-                                    inscricao1: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
+                        // Atualiza a inscrição do jogador na partida
+                        const inscricao = await prisma.inscricaoPartida.findFirst({
+                            where: {
+                                id_partida: novaPartidaExiste.id,
+                                ordem: jogador
+                            }
+                        });
+
+                        if(!inscricao){
+                            if(id_vencedor !== -1)
+                                await prisma.inscricaoPartida.create({
+                                    data: {
+                                        id_partida: novaPartidaExiste.id,
+                                        id_inscricao: id_vencedor,
+                                        ordem: jogador
+                                    }
+                                });
+                        }else{
+                            if(id_vencedor !== -1)
+                                await prisma.inscricaoPartida.update({
+                                    where: {
+                                        id: inscricao.id
                                     },
-                                    inscricao2: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                }
-                            });
+                                    data: {
+                                        id_inscricao: id_vencedor
+                                    }
+                                });
+                            else
+                                await prisma.inscricaoPartida.delete({
+                                    where: {
+                                        id: inscricao.id
+                                    }
+                                });
                         }
+
+
+                        // Atualiza a partida
+                        novaPartida = await prisma.partidas.update({
+                            where: {
+                                id: novaPartidaExiste.id
+                            },
+                            data: {
+                                id_vencedor: -1
+                            },
+                            select: {
+                                id: true,
+                                chave: true,
+                                id_vencedor: true,
+                                inscricaoPartida: {
+                                    select: {
+                                        ordem: true,
+                                        inscricao: {
+                                            select: {
+                                                id: true,
+                                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
+                                                tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } }
+                                            }
+                                        }
+                                    },
+                                    orderBy: { ordem: "asc" }
+                                },
+                            }
+                        });
+
 
                         // Deleta os sets da partida atualizada
                         const setsDeleta = await prisma.sets.deleteMany({
@@ -247,99 +257,84 @@ export class AtualizarPlacarUseCase{
 
 
                         // Adiciona a partida atualizada na resposta
-                        partidasAtualizadas.push({ id: novaPartidaExiste.id, sets: [], id_vencedor: novaPartidaExiste.id_vencedor,
-                            classe: novaPartida?.inscricao1?.classeTorneio.classeRanking.classe.sigla || novaPartida?.inscricao2?.classeTorneio.classeRanking.classe.sigla || "",
-                            inscricao1: novaPartida?.inscricao1 ? {
-                                id: novaPartida?.inscricao1?.id || -1,
-                                tenista1: novaPartida?.inscricao1?.tenista1.tenista.nome || "",
-                                tenista2: novaPartida?.inscricao1?.tenista2?.tenista.nome || undefined
+                        partidasAtualizadas.push({ id: novaPartida.id, sets: [], id_vencedor: novaPartida.id_vencedor,
+                            classe: novaPartida?.inscricaoPartida[0]?.inscricao.classeTorneio.classeRanking.classe.sigla || "",
+                            inscricao1: novaPartida?.inscricaoPartida[0]?.ordem === 1 ? {
+                                id: novaPartida.inscricaoPartida[0].inscricao.id,
+                                tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome || "",
+                                tenista2: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
                             } : null,
-                            inscricao2: novaPartida?.inscricao2 ? {
-                                id: novaPartida?.inscricao2?.id || -1,
-                                tenista1: novaPartida?.inscricao2?.tenista1.tenista.nome || "",
-                                tenista2: novaPartida?.inscricao2?.tenista2?.tenista.nome || undefined
+                            inscricao2: novaPartida?.inscricaoPartida[1]?.ordem === 2 ? {
+                                id: novaPartida.inscricaoPartida[1].inscricao.id,
+                                tenista1: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome || "",
+                                tenista2: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
+                            } : 
+                            novaPartida?.inscricaoPartida[0]?.ordem === 2 ? {
+                                id: novaPartida.inscricaoPartida[0].inscricao.id,
+                                tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome || "",
+                                tenista2: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
                             } : null
                          });
                         
-                    }else{
+                    }else if(id_vencedor !== -1){
 
                         // Verifica qual jogador será adicionado na nova partida
-                        if( Number(partida.chave.substring(3, 5)) % 2 === 1){
-                            novaPartida = await prisma.partidas.create({
-                                data: {
-                                    chave: novaChave,
-                                    id_inscricao: id_vencedor === -1 ? null : id_vencedor
-                                },
-                                select: {
-                                    id: true,
-                                    chave: true,
-                                    id_vencedor: true,
-                                    inscricao1: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                    inscricao2: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                }
-                            });
+                        if( Number(partida.chave.substring(3, 5)) % 2 === 1)
+                            jogador = 1;
+                        else if( Number(partida.chave.substring(3, 5)) % 2 === 0)
+                            jogador = 2;
 
-                        }else if( Number(partida.chave.substring(3, 5)) % 2 === 0){
-                            novaPartida = await prisma.partidas.create({
-                                data: {
-                                    chave: novaChave,
-                                    id_inscricao2: id_vencedor === -1 ? null : id_vencedor
-                                },
-                                select: {
-                                    id: true,
-                                    chave: true,
-                                    id_vencedor: true,
-                                    inscricao1: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                    inscricao2: {
-                                        select: {
-                                            id: true,
-                                            classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
-                                            tenista1: { select: { tenista: { select: { nome: true} } } },
-                                            tenista2: { select: { tenista: { select: { nome: true} } } }
-                                        }
-                                    },
-                                }
-                            });
-                        }
 
+                        novaPartida = await prisma.partidas.create({
+                            data: {
+                                chave: novaChave,
+                                inscricaoPartida: {
+                                    create: {
+                                        ordem: jogador,
+                                        inscricao: { connect: { id: id_vencedor } }
+                                    }
+                                }
+                            },
+                            select: {
+                                id: true,
+                                chave: true,
+                                id_vencedor: true,
+                                inscricaoPartida: {
+                                    select: {
+                                        ordem: true,
+                                        inscricao: {
+                                            select: {
+                                                id: true,
+                                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
+                                                tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
 
                         // Adiciona a nova partida na resposta
                         if(novaPartida)
                             novasPartidas.push({
                                 id: novaPartida.id,
                                 chave: novaPartida.chave,
-                                classe: novaPartida.inscricao1?.classeTorneio.classeRanking.classe.sigla || novaPartida.inscricao2?.classeTorneio.classeRanking.classe.sigla || "",
+                                classe: novaPartida.inscricaoPartida[0]?.inscricao.classeTorneio.classeRanking.classe.sigla || "",
                                 id_vencedor: novaPartida.id_vencedor || -1,
-                                inscricao1: novaPartida.inscricao1 ? {
-                                    id: novaPartida.inscricao1.id,
-                                    tenista1: novaPartida.inscricao1.tenista1.tenista.nome,
-                                    tenista2: novaPartida.inscricao1.tenista2?.tenista.nome || undefined
+                                inscricao1: novaPartida.inscricaoPartida[0].ordem === 1 ? {
+                                    id: novaPartida.inscricaoPartida[0].inscricao.id,
+                                    tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                    tenista2: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
                                 } : null,
-                                inscricao2: novaPartida.inscricao2 ? {
-                                    id: novaPartida.inscricao2.id,
-                                    tenista1: novaPartida.inscricao2.tenista1.tenista.nome,
-                                    tenista2: novaPartida.inscricao2.tenista2?.tenista.nome || undefined
+                                inscricao2: novaPartida.inscricaoPartida[1].ordem === 2 ? {
+                                    id: novaPartida.inscricaoPartida[1].inscricao.id,
+                                    tenista1: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                    tenista2: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
+                                } : 
+                                novaPartida.inscricaoPartida[0].ordem === 2 ? {
+                                    id: novaPartida.inscricaoPartida[0].inscricao.id,
+                                    tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
+                                    tenista2: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
                                 } : null,
                                 sets: []
                             });
@@ -354,26 +349,20 @@ export class AtualizarPlacarUseCase{
         let finalizado = true;
         const classeTorneio = await prisma.classeTorneio.findMany({
             where: {
-                id_torneio: idTorneio
+                id_torneio: id_torneio
             },
             select: {
                 id: true,
                 inscricao: {
-                    where: {
-                        OR: [
-                            { Partidas1: { some: { chave: "01:01" } } },
-                            { Partidas2: { some: { chave: "01:01" } } }
-                        ]
-                    },
+                    where: { inscricaoPartida: { some: { partida: { chave: "01:01" } } } },
                     select: {
                         id: true,
-                        Partidas1: {
-                            where: { chave: "01:01" },
-                            select: { id: true, chave: true, id_vencedor: true }
-                        },
-                        Partidas2: {
-                            where: { chave: "01:01" },
-                            select: { id: true, chave: true, id_vencedor: true }
+                        inscricaoPartida: {
+                            select: {
+                                partida: {
+                                    select: { id_vencedor: true }
+                                }
+                            }
                         }
                     }
                 }
@@ -384,33 +373,18 @@ export class AtualizarPlacarUseCase{
         // Passa por todas as classes do torneio
         for(const classe of classeTorneio){
 
-            // Basta uma classe não ter finalizado seu chaveamento, para o torneio não ser finalizado
-            if(finalizado === false)
-                break;
-
             // Se não tiver inscrições na partida final, o torneio não foi finalizado
-            if(classe.inscricao.length === 0){
+            if(classe.inscricao.length !== 2){
                 finalizado = false;
-                continue;
+                break;
             }
 
-            // Verifica se a inscrição está na final pela partida 1 ou 2
-            if(classe.inscricao[1].Partidas1.length > 0){
-
-                // Verifica se a partida foi finalizada pelo vencedor
-                if(classe.inscricao[1].Partidas1[0].id_vencedor === -1){
-                    finalizado = false;
-                    break;
-                }
-            }else{
-
-                // Verifica se a partida foi finalizada pelo vencedor
-                if(classe.inscricao[1].Partidas2[0].id_vencedor === -1){
-                    finalizado = false;
-                    break;}
+            // Verifica se a partida foi finalizada, possui um vencedor
+            if(classe.inscricao[1].inscricaoPartida[0].partida.id_vencedor === -1){
+                finalizado = false;
+                break;
             }
         }
-
 
 
 
@@ -418,7 +392,7 @@ export class AtualizarPlacarUseCase{
         let torneio;
         if(finalizado){
             torneio = await prisma.torneios.update({
-                where: { id: idTorneio },
+                where: { id: id_torneio },
                 data: { id_status: Number(process.env.STATUS_JOGOS_FINALIZADOS) },
                 select: {
                     id: true,
@@ -429,7 +403,7 @@ export class AtualizarPlacarUseCase{
             
         }else{
             torneio = await prisma.torneios.update({
-                where: { id: idTorneio },
+                where: { id: id_torneio },
                 data: { id_status: Number(process.env.STATUS_EM_ANDAMENTO) },
                 select: {
                     id: true,
