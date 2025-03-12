@@ -29,8 +29,8 @@ torneioRoutes.post('/criar', informativo, verificaJWT, criarTorneioController.ha
 torneioRoutes.patch('/atualizarTorneio', informativo, verificaJWT, atualizarTorneioController.handle);
 
 torneioRoutes.get('/ler', informativo, verificaJWT, lerTorneioController.handle);
+torneioRoutes.get('/listar', informativo, verificaJWT, listarTorneiosAcademiaController.handle);
 torneioRoutes.get('/listarStatus', informativo, listarStatusController.handle);
-torneioRoutes.get('/listarAcademia', informativo, verificaJWT, listarTorneiosAcademiaController.handle);
 torneioRoutes.get('/listarResultado', informativo, listarResultadoTorneio.handle);
 
 torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoController.handle);
