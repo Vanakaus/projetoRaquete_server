@@ -13,12 +13,7 @@ export class ListarRankingController {
         
         const listarRankingUseCase = new ListarRankingUseCase();
         
-        const token = req.headers['x-access-token']
-
-        var id_academia = '';
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
-            id_academia = decoded.id_academia;
-        });
+        const { id_academia } = req.body;
 
         const result = await listarRankingUseCase.execute({ id_academia }) as any;
         return res.status(201).json(result);

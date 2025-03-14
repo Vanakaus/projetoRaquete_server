@@ -13,11 +13,11 @@ const criarRankingController  = new CriarRankingController();
 const rankingController  = new RankingController();
 
 
-rankingRoutes.get('/listar', informativo, verificaJWT, listarRankingController.handle);
-rankingRoutes.get('/listarClasses', informativo, verificaJWT, listarRankingClassesController.handle);
+rankingRoutes.get('/listar', informativo, listarRankingController.handle);
+rankingRoutes.get('/listarClasses', informativo, listarRankingClassesController.handle);
 rankingRoutes.post('/criar', informativo, verificaJWT, criarRankingController.handle);
 
-rankingRoutes.get('/ranking', informativo, verificaJWT, rankingController.handle);
+rankingRoutes.get('/ranking', informativo, rankingController.handle);
 
 
 export { rankingRoutes };

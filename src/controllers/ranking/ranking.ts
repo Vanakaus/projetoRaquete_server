@@ -50,7 +50,7 @@ export class RankingUseCase{
         for(const pessoa of ranking){
 
             // Calcula a pontuação de cada tenista
-            pessoa.pontuacao = pessoa.tenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.pontuacaoRanking.pontuacao, 0);
+            pessoa.pontuacao = pessoa.tenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.inscricao.pontuacaoRanking.pontuacao, 0);
             
             // Deleta os campos TenistasInscricoes para não poluir o JSON de resposta
             delete pessoa.tenistasInscricao;
