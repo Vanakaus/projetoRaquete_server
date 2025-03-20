@@ -14,7 +14,7 @@ const listaInscricoesCampeonatoController = new ListaInscricoesCampeonatoControl
 
 
 inscricaoRoutes.post('/adicionar', informativo, verificaJWT, adicionarInscricoesController.handle);
-inscricaoRoutes.get('/listar', informativo, verificaJWT, listarInscricoesController.handle);
+inscricaoRoutes.get('/listar', informativo, listarInscricoesController.handle);
 
 // inscricaoRoutes.get('/listaInscricoesCampeonato', informativo, verificaJWT, listaInscricoesCampeonatoController.handle);
 
