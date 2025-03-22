@@ -10,6 +10,17 @@ export class AtualizarPlacarUseCase{
 
         console.log("\nResposta: ");
 
+        const torneioExiste = await prisma.torneios.findUnique({
+            where: { id: id_torneio },
+            select: { id_status: true }
+        });
+
+        if(!torneioExiste)
+            throw new AppError("Torneio não encontrado", 404);
+
+        if(torneioExiste.id_status !== Number(process.env.STATUS_FINALIZADO))
+            throw new AppError("Torneio não finalizado", 400);
+
         // Variaveis para armazenar as partidas atualizadas e não atualizadas na resposta
         const partidasAtualizadas = [] as partidaPlacarRespostaDTO[];
         const partidasNaoAtualizadas = [] as partidaPlacarDTO[];
@@ -389,29 +400,15 @@ export class AtualizarPlacarUseCase{
 
 
         // Atualiza o status do torneio, de acordo com o resultado
-        let torneio;
-        if(finalizado){
-            torneio = await prisma.torneios.update({
-                where: { id: id_torneio },
-                data: { id_status: Number(process.env.STATUS_JOGOS_FINALIZADOS) },
-                select: {
-                    id: true,
-                    nome: true,
-                    status: { select: { id: true, nome: true } }
-                }
-            });
-            
-        }else{
-            torneio = await prisma.torneios.update({
-                where: { id: id_torneio },
-                data: { id_status: Number(process.env.STATUS_EM_ANDAMENTO) },
-                select: {
-                    id: true,
-                    nome: true,
-                    status: { select: { id: true, nome: true } }
-                }
-            });
-        }
+        const torneio = await prisma.torneios.update({
+            where: { id: id_torneio },
+            data: { id_status: (finalizado ? Number(process.env.STATUS_JOGOS_FINALIZADOS) : Number(process.env.STATUS_EM_ANDAMENTO)) },
+            select: {
+                id: true,
+                nome: true,
+                status: { select: { id: true, nome: true } }
+            }
+        });
 
 
         console.log("Partidas atualizadas: ", partidasAtualizadas.length);
