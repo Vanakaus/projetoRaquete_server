@@ -7,9 +7,27 @@ export class RankingUseCase{
     async execute( { id_classeRanking }: RankingDTO ): Promise<any>{
 
         // Calcula a faixa de datas para buscar as pontuações dos tenistas
-        const anoAtual = new Date().getFullYear();
-        const inicioAno = new Date(anoAtual, 0, 1);
-        const fimAno = new Date(anoAtual, 11, 31);
+        let anoAtual = new Date().getFullYear();
+        let inicioAno = new Date(anoAtual, 0, 1);
+        let fimAno = new Date(anoAtual, 11, 31);
+
+
+        // Verifica se já houve algum torneio neste ano
+        const resultado = await prisma.pontuacaoRanking.findFirst({
+            where: {
+                data: { gte: inicioAno},
+                inscricao: { classeTorneio: { id_classeRanking } }
+            }
+        });
+
+        if(!resultado){
+            anoAtual--;
+            inicioAno = new Date(anoAtual, 0, 1);
+            fimAno = new Date(anoAtual, 11, 31);
+        }
+
+
+        console.log(`Buscando ranking de tenistas da classe ${id_classeRanking} do ano ${anoAtual}`);
 
         
         // Lista todos os tenistas que já se inscreveram em torneios da classe de ranking

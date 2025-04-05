@@ -18,8 +18,8 @@ export class AtualizarPlacarUseCase{
         if(!torneioExiste)
             throw new AppError("Torneio não encontrado", 404);
 
-        if(torneioExiste.id_status !== Number(process.env.STATUS_FINALIZADO))
-            throw new AppError("Torneio não finalizado", 400);
+        if(torneioExiste.id_status >= Number(process.env.STATUS_FINALIZADO))
+            throw new AppError("Torneio já finalizado", 400);
 
         // Variaveis para armazenar as partidas atualizadas e não atualizadas na resposta
         const partidasAtualizadas = [] as partidaPlacarRespostaDTO[];

@@ -22,7 +22,7 @@ export class ListarPartidasUseCase{
             throw new AppError('Torneio não encontrado\n\n\n' + torneio);
         }
 
-1
+        
         console.log("Listando jogos do torneio: ");
         console.log("\tID: " + id_torneio);
         console.log("\tNome: " + torneio.nome);
