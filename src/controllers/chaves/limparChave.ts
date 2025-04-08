@@ -135,7 +135,7 @@ export class LimparChaveUseCase{
         console.log(chave);
 
 
-        return { chave, partidas: [], torneio };
+        return { chave, torneio };
     }
 }
 

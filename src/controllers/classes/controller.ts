@@ -21,6 +21,9 @@ export class ListarClassesController {
         });
 
         const result = await listarClassesUseCase.execute({ id_academia }) as any;
+        result.status= "success";
+        result.mensagem = "Classes listadas com sucesso";
+        
         return res.status(201).json(result);
     }
 }

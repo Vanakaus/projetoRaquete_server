@@ -5,7 +5,7 @@ export interface listarRankingDTO {
 
 
 export interface listarRankingClassesDTO {
-    idRanking: number;
+    id_ranking: number;
 }
 
 

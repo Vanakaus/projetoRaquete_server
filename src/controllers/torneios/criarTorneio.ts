@@ -6,10 +6,10 @@ import { CriaTorneioDTO } from "../../interface/TorneiosDTO";
 
 
 export class CriaCampeonatoUseCase{
-    async execute({ id_academia, idRanking, nome, descricao = "", local = "", sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}: CriaTorneioDTO): Promise<User>{
+    async execute({ id_academia, id_ranking, nome, descricao = "", local = "", sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}: CriaTorneioDTO): Promise<User>{
 
         console.log("CriaCampeonatoUseCase");
-        console.log({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim});
+        console.log({ id_academia, id_ranking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim});
 
 
         console.log("\nResposta: ");
@@ -34,7 +34,7 @@ export class CriaCampeonatoUseCase{
         const rankingExiste = await prisma.ranking.findFirst({
             where: {
                 id_academia,
-                id: idRanking
+                id: id_ranking
             }
         });
 
@@ -51,7 +51,7 @@ export class CriaCampeonatoUseCase{
             let classeExiste = await prisma.classeRanking.findFirst({
                 where: {
                     id_classe: classes[i],
-                    id_ranking: idRanking
+                    id_ranking
                 }
             }) as any;
 
@@ -71,7 +71,7 @@ export class CriaCampeonatoUseCase{
                 const novaClasse = await prisma.classeRanking.create({
                     data: {
                         id_classe: classes[i],
-                        id_ranking: idRanking
+                        id_ranking
                     }
                 });
 

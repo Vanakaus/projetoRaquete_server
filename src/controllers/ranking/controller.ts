@@ -3,6 +3,7 @@ import { ListarRankingUseCase } from "./listarRanking";
 import { CriarRankingUseCase } from "./criarRanking";
 import { ListarRankingClassesUseCase } from "./listarRankingClasses";
 import { RankingUseCase } from "./ranking";
+import { AppError } from "../../errors/AppErrors";
 
 const jwt = require('jsonwebtoken');
 
@@ -13,9 +14,26 @@ export class ListarRankingController {
         
         const listarRankingUseCase = new ListarRankingUseCase();
         
-        const { id_academia } = req.body;
+        var id_academia = req.query.id_academia as string;
+
+        if (id_academia == undefined) {
+
+            const token = req.headers['x-access-token']
+
+            jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+                id_academia = decoded.id_academia;
+            });
+        }
+
+
+        if (!id_academia) {
+            throw new AppError("ID da academia não informado", 400);
+        }
 
         const result = await listarRankingUseCase.execute({ id_academia }) as any;
+        result.status= "success";
+        result.mensagem = "Ranking listado com sucesso";
+        
         return res.status(201).json(result);
     }
 }
@@ -27,9 +45,12 @@ export class ListarRankingClassesController {
         
         const listarRankingClassesUseCase = new ListarRankingClassesUseCase();
         
-        const idRanking = Number(req.query.idRanking);
+        const id_ranking = Number(req.query.idRanking);
 
-        const result = await listarRankingClassesUseCase.execute({ idRanking }) as any;
+        const result = await listarRankingClassesUseCase.execute({ id_ranking }) as any;
+        result.status= "success";
+        result.mensagem = "Ranking listado com sucesso";
+        
         return res.status(201).json(result);
     }
 }

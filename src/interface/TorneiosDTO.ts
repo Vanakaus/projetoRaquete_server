@@ -12,7 +12,7 @@ export interface LeTorneioDTO {
 
 export interface CriaTorneioDTO {
     id_academia: string;
-    idRanking: number;
+    id_ranking: number;
     nome: string;
     descricao?: string;
     local?: string;

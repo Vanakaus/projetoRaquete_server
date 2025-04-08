@@ -4,7 +4,7 @@ import { prisma } from "../../prisma/client";
 
 
 export class ListarRankingClassesUseCase{
-    async execute( {idRanking}: listarRankingClassesDTO ): Promise<any>{
+    async execute( {id_ranking}: listarRankingClassesDTO ): Promise<any>{
 
         const rankingClasses = await prisma.classeRanking.findMany({
             select: {
@@ -22,7 +22,7 @@ export class ListarRankingClassesUseCase{
                 }
             },
             where: {
-                id_ranking: idRanking
+                id_ranking
             }
 
         });

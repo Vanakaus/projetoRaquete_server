@@ -38,7 +38,7 @@ export class ListarStatusController {
 export class CriarTorneioController {
     async handle(req: Request, res: Response) {
         
-        const { idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim } = req.body;
+        const { id_ranking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim } = req.body;
         const token = req.headers['x-access-token']
 
         var id_academia = '';
@@ -48,7 +48,7 @@ export class CriarTorneioController {
 
         const criaCampeonatoUseCase = new CriaCampeonatoUseCase();
         
-        const result = await criaCampeonatoUseCase.execute({ id_academia, idRanking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}) as any;
+        const result = await criaCampeonatoUseCase.execute({ id_academia, id_ranking, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classes, dataInicio, dataFim}) as any;
         result.status= "success";
         result.mensagem = "Campeonato criado com sucesso";
 

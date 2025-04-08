@@ -12,7 +12,7 @@ export class ListarRankingUseCase{
                 nome: true
             },
             where: {
-                id_academia: id_academia
+                id_academia
             }
 
         });
