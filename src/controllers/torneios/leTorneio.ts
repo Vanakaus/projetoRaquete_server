@@ -19,7 +19,6 @@ export class LerTorneioUseCase{
                 simples: true,
                 duplas: true,
                 sets: true,
-                tiebreak: true,
                 dataInicio: true,
                 dataFim: true,
 

@@ -17,7 +17,6 @@ export interface CriaTorneioDTO {
     descricao?: string;
     local?: string;
     sets: number;
-    tiebreak: boolean;
     modalidade: { simples: boolean, duplas: boolean };
     pontuacao: { participacao: number, r32: number, r16: number, r8: number, r4: number, r2: number, r1: number, vencedor: number };
     classes: number[];
@@ -33,7 +32,6 @@ export interface AtualizarTorneioDTO {
     descricao: string;
     local: string;
     sets: number;
-    tiebreak: boolean;
     modalidade: { simples: boolean, duplas: boolean };
     pontuacao: { participacao: number, r32: number, r16: number, r8: number, r4: number, r2: number, r1: number, vencedor: number };
     classesDeleta: number[];

@@ -69,7 +69,7 @@ export class GerarChaveUseCase{
 
 
         // Verifica se o número de cabeças de chave é um valor válido
-        if(numCabecas !== 2 && numCabecas !==   4){
+        if(numCabecas !== 0 && numCabecas !== 2 && numCabecas !==   4){
             console.log("Número de cabeças de chave inválido");
             throw new AppError('Número de cabeças de chave inválido');
         }
@@ -266,7 +266,7 @@ export class GerarChaveUseCase{
                 });
             }
             else
-                partidas[index].inscricoes.push = {...partidas[i].inscricoes[0], ordem: chaves[i] % 2 === 1 ? 1 : 2};
+                partidas[index].inscricoes.push({...partidas[i].inscricoes[0], ordem: chaves[i] % 2 === 1 ? 1 : 2});
         }
 
 

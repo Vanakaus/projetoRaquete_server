@@ -6,7 +6,7 @@ import { AtualizarTorneioDTO } from "../../interface/TorneiosDTO";
 
 
 export class AtualizarTorneioUseCase{
-    async execute({ id, id_academia, nome, descricao, local, sets, tiebreak, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }: AtualizarTorneioDTO): Promise<any>{
+    async execute({ id, id_academia, nome, descricao, local, sets, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }: AtualizarTorneioDTO): Promise<any>{
 
         console.log("Atualizando campeonato: " + id);
 
@@ -21,7 +21,6 @@ export class AtualizarTorneioUseCase{
             },
             select: {
                 sets: true,
-                tiebreak: true,
                 simples: true,
                 duplas: true,
                 dataInicio: true,
@@ -83,7 +82,6 @@ export class AtualizarTorneioUseCase{
                 descricao,
                 local,
                 sets: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? sets : torneioExiste.sets,
-                tiebreak: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? tiebreak : torneioExiste.tiebreak,
                 simples: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.simples : torneioExiste.simples,
                 duplas: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.duplas : torneioExiste.duplas,
                 dataInicio: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? dataInicio : torneioExiste.dataInicio,
@@ -95,7 +93,6 @@ export class AtualizarTorneioUseCase{
                 descricao: true,
                 local: true,
                 sets: true,
-                tiebreak: true,
                 simples: true,
                 duplas: true,
                 dataInicio: true,

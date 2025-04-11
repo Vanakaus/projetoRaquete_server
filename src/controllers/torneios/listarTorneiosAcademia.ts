@@ -20,7 +20,6 @@ export class ListarTorneiosAcademiaUseCase{
                 simples: true,
                 duplas: true,
                 sets: true,
-                tiebreak: true,
                 dataInicio: true,
                 dataFim: true,
 

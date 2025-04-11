@@ -154,7 +154,6 @@ model Torneios {
   simples           Boolean
   duplas            Boolean
   sets              Int
-  tiebreak          Boolean
   dataInicio        DateTime
   dataFim           DateTime
 
