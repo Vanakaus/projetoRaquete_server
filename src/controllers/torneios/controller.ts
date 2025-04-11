@@ -134,7 +134,7 @@ export class GerarPontuacaoController {
         const { id_torneio } = req.query;
 
         if (typeof id_torneio !== 'string') {
-            return res.status(400).json({ status: "error", mensagem: "IdTorneio inválido" });
+            return res.status(400).json({ status: "error", mensagem: "Id_torneio inválido" });
         }
         
         const result = await gerarPontuacaoUseCase.execute({ id_torneio }) as any;

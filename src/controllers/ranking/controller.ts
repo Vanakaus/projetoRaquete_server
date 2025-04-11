@@ -45,7 +45,7 @@ export class ListarRankingClassesController {
         
         const listarRankingClassesUseCase = new ListarRankingClassesUseCase();
         
-        const id_ranking = Number(req.query.idRanking);
+        const id_ranking = Number(req.query.id_ranking);
 
         const result = await listarRankingClassesUseCase.execute({ id_ranking }) as any;
         result.status= "success";

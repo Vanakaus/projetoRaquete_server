@@ -12,7 +12,7 @@
 # Sumário
 * [**Introdução**](#introdução)
 * [**Instalação**](#instalação)
-* [**Variáveis de ambiente**](#variaveis-de-ambiente)
+* [**Variáveis de ambiente**](#variáveis-de-ambiente)
 * [**Banco de dados**](#banco-de-dados)
 * [**Processo**](#processo)
 * [**Funcionalidades**](#funcionalidades)

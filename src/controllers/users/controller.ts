@@ -30,7 +30,7 @@ export class LoginUserController {
         
         // Gera o token JWT
         const token = jwt.sign({ login, id_academia: result.id_academia }, process.env.JWT_SECRET, {
-            expiresIn: '1h'
+            expiresIn: '4h'
         });
 
 

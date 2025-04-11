@@ -246,8 +246,9 @@ export class GerarChaveUseCase{
 
         // Verifica se há e adiciona as partidas resultantes de confrontos com BYEs
         roundStr = formataNumero(roundInt / 2) + ":";
+        const partidasLength = partidas.length;
 
-        for(let i = 0; i < partidas.length; i++){
+        for(let i = 0; i < partidasLength; i++){
 
             // Verifica se o jogo tem apenas um inscrito (BYE)
             if(partidas[i].inscricoes.length !== 1) continue;

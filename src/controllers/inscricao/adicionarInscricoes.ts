@@ -29,13 +29,15 @@ export class AdicionarInscricoesUseCase{
                 id: id_torneio
             },
             select: {
-                status: true
+                status: true,
+                dataInicio: true,
             }
         });
 
         if(!torneioExiste){
             console.log("Torneio não encontrado");
             new AppError('Erro ao realizar inscrição');
+            return;
         } else if(torneioExiste.status.id >= Number(process.env.STATUS_INSCRICOES_ENCERRADAS)){
             console.log("Inscrições fechadas");
             new AppError('Erro ao realizar inscrição');
@@ -49,18 +51,18 @@ export class AdicionarInscricoesUseCase{
 
         // Calcula a faixa de datas para buscar as pontuações dos tenistas
         const anoAtual = new Date().getFullYear();
-        const inicioAno = new Date(anoAtual, 0, 1);
-        const fimAno = new Date(anoAtual, 11, 31);
+        let inicioAno = new Date(anoAtual, 0, 1);
+        let fimAno = new Date(anoAtual, 11, 31);
 
-
+        
 
         // Passa por todas as inscriçõesClasse
         for (let i = 0; i < inscricaoClasse.length; i++) {
 
             // Variáveis de dados
             const duplas = inscricaoClasse[i].duplas;
-                const id_classeTorneio = inscricaoClasse[i].id_classeTorneio;
-                const sigla = await prisma.classeTorneio.findFirst({
+            const id_classeTorneio = inscricaoClasse[i].id_classeTorneio;
+            const sigla = await prisma.classeTorneio.findFirst({
                 where: {    id: id_classeTorneio    },
                 select: {   classeRanking: {    select: {   classe: {   select: {   sigla: true  }   }   }   }   }
             });
@@ -69,13 +71,31 @@ export class AdicionarInscricoesUseCase{
             const classeExiste = await prisma.classeTorneio.findFirst({
                 where: {
                     id: id_classeTorneio
-                }
+                },
+                select: { classeRanking: { select: { id: true } } }
             });
 
             if(!classeExiste){
                 console.log("Classe não encontrada");
                 falha = true;
                 continue;
+            }
+
+            
+            // Verifica se já houve algum torneio neste ano para esta classe, para buscar a pontuação da inscrição mais a frente
+            inicioAno = new Date(anoAtual, 0, 1);
+            const resultado = await prisma.pontuacaoRanking.findFirst({
+                where: {
+                    data: { gte: inicioAno, lte: torneioExiste.dataInicio },
+                    inscricao: { classeTorneio: { id_classeRanking: classeExiste.classeRanking.id } }
+                }
+            });
+
+            if(resultado){
+                fimAno = torneioExiste.dataInicio;
+            } else{
+                inicioAno = new Date(anoAtual-1, 0, 1);
+                fimAno = new Date(anoAtual-1, 11, 31);
             }
             
 
@@ -353,12 +373,14 @@ export class AdicionarInscricoesUseCase{
                 }
 
 
-                const pontuacao = await prisma.pontuacaoRanking.findMany({
+
+                // Busca a pontuação do tenista na classe no ano atual, ou no ano passado caso não haja pontuação no ano atual
+                let pontuacoes = await prisma.pontuacaoRanking.findMany({
                     where: {
-                        OR: [
-                            {inscricao: {   tenistasInscricao: {  some: { id_tenistaAcademia }   }   }},
-                            {inscricao: {   tenistasInscricao: {  some: { id_tenistaAcademia: id_tenistaAcademia2 }   }   }}
-                        ],
+                        inscricao: { 
+                            tenistasInscricao: { some: { id_tenistaAcademia: id_tenistaAcademia } },
+                            classeTorneio: { id_classeRanking: classeExiste.classeRanking.id }
+                        },
                         data: { gte: inicioAno, lte: fimAno }
                     },
                     select: {
@@ -366,13 +388,38 @@ export class AdicionarInscricoesUseCase{
                     },
                 });
 
+                // Soma a pontuação do tenista
+                let pontuacao = pontuacoes.reduce((acc: number, pontuacao: any) => acc + pontuacao.pontuacao, 0);
+
+                
+                // Se for dupla, repete o processo para o segundo jogador
+                if(duplas){
+                    pontuacoes = await prisma.pontuacaoRanking.findMany({
+                        where: {
+                            inscricao: { 
+                                tenistasInscricao: { some: { id_tenistaAcademia: id_tenistaAcademia2 } },
+                                classeTorneio: { id_classeRanking: classeExiste.classeRanking.id }
+                            },
+                            data: { gte: inicioAno, lte: fimAno }
+                        },
+                        select: {
+                            pontuacao: true
+                        },
+                    });
+
+                    pontuacao += pontuacoes.reduce((acc: number, pontuacao: any) => acc + pontuacao.pontuacao, 0);
+                }
+
+
+
+                // Adiciona a pontuação da inscrição
                 sucesso = true;
                 inscricoes.push({
                     jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                     sucesso: true,
                     repetido: false,
                     mensagem: `Inscrição adicionada com sucesso`,
-                    pontuacao: pontuacao.reduce((acc, cur) => acc + cur.pontuacao, 0),
+                    pontuacao: pontuacao,
                     siglaClasse: sigla?.classeRanking.classe.sigla
                 });
             }

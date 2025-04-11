@@ -337,7 +337,7 @@ export class AtualizarPlacarUseCase{
                                     tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
                                     tenista2: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
                                 } : null,
-                                inscricao2: novaPartida.inscricaoPartida[1].ordem === 2 ? {
+                                inscricao2: novaPartida.inscricaoPartida[1]?.ordem === 2 ? {
                                     id: novaPartida.inscricaoPartida[1].inscricao.id,
                                     tenista1: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome,
                                     tenista2: novaPartida.inscricaoPartida[1].inscricao.tenistasInscricao[1]?.tenistaAcademia.tenista.nome || undefined
