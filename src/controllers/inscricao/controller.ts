@@ -1,50 +1,47 @@
 import { Request, Response } from "express";
-import { CriaInscricaoUseCase } from "./criaInscricao";
-import { ListaInscricoesUseCase } from "./listaInscricoes";
+import { ListarInscricoesUseCase } from "./listarInscricoes";
 import { ListaInscricoesCampeonatoUseCase } from "./listaInscricoesCampeonato";
+import { AdicionarInscricoesUseCase } from "./adicionarInscricoes";
 
 const jwt = require('jsonwebtoken');
 
 
 
-export class CriaInscricaoController {
+export class AdicionarInscricoesController {
     async handle(req: Request, res: Response) {
         
-        var cpf = '';
-        const { id_campeonato, id_jogador } = req.body;
-        const token = req.headers['x-access-token']
+        const adicionarInscricoesUseCase = new AdicionarInscricoesUseCase();
 
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
+        const { id_torneio, inscricaoClasse } = req.body as any;
+        const token = req.headers['x-access-token']
+        
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
         });
 
 
-        const criaInscricaoUseCase = new CriaInscricaoUseCase();
         
-        const result = await criaInscricaoUseCase.execute({ cpf, id_campeonato, id_jogador }) as any;
+        const result = await adicionarInscricoesUseCase.execute({ id_academia, id_torneio, inscricaoClasse }) as any;
         result.status= "success";
-        result.mensagem = "Inscrição realizada com sucesso";
+        result.mensagem = result.sucesso ?
+                            result.falha ? "Inscrição realizada com falhas"
+                                : "Inscrição realizada com sucesso"
+                        : "Inscrição não realizada";
 
         return res.status(201).json(result);
     }
 }
 
 
-export class ListaInscricoesController {
+export class ListarInscricoesController {
     async handle(req: Request, res: Response) {
+
+        const listarInscricoesUseCase = new ListarInscricoesUseCase();
         
-        var cpf = '';
-        const { id_jogador } = req.query as any;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
-
-        const listaInscricoesUseCase = new ListaInscricoesUseCase();
+        const { id_torneio } = req.query as any;
         
-        const result = await listaInscricoesUseCase.execute({ cpf, id_jogador }) as any;
+        const result = await listarInscricoesUseCase.execute({ id_torneio }) as any;
         result.status= "success";
         result.mensagem = "Inscrições listadas com sucesso";
 

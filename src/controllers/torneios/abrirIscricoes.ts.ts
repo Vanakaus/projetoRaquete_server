@@ -1,9 +1,12 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { FinalizarCampeonatoDTO } from "../../interface/CampeonatoUsersDTO";
+import { AbrirFecharInscricoesDTO } from "../../interface/TorneiosDTO";
 
-export class FinalizarCampeonatoUseCase{
-    async execute({id, cpf, id_criador, cancela}: FinalizarCampeonatoDTO): Promise<any>{
+export class AbreFechaInscricoesUseCase{
+    async execute({id, cpf, id_criador, abreFecha}: AbrirFecharInscricoesDTO): Promise<any>{
+        console.log("Cpf: ", cpf);
+        console.log("Id: ", id);
+        console.log("Id_criador: ", id_criador);
 
         if(cpf !== id_criador){
             console.log("CPF não corresponde ao token");
@@ -40,22 +43,20 @@ export class FinalizarCampeonatoUseCase{
             throw new AppError('CPF não corresponde ao criador');
         }
 
-        if(cancela){
-
-            if (campeonato.id_status === 6){
-                console.log("Campeonato já está cancelado");
-                throw new AppError('Campeonato já está cancelado');
-            }
-
-        } else {
-
-            if (campeonato.id_status !== 4){
-                console.log("Ação indisponível");
-                throw new AppError('Ação indisponível');
-            }
-
+        if(campeonato.id_status !== 1 && campeonato.id_status !== 2){
+            console.log("Ação indisponível");
+            throw new AppError('Ação indisponível');
         }
 
+        if(campeonato.id_status === 1 && abreFecha){
+            console.log("Campeonato já está aberto");
+            throw new AppError('Campeonato já está aberto');
+        }
+
+        if(campeonato.id_status === 2 && !abreFecha){
+            console.log("Campeonato já está fechado");
+            throw new AppError('Campeonato já está fechado');
+        }
 
         // Atualiza o status do campeonato
         campeonato = await prisma.campeonatos.update({
@@ -63,13 +64,13 @@ export class FinalizarCampeonatoUseCase{
                 id
             },
             data: {
-                id_status: cancela ? 6 : 5
+                id_status: abreFecha ? 1 : 2
             },
             select: {
-                id: true, 
-                id_criador: true, 
-                id_status: true, 
+                id: true,
+                id_criador: true,
                 nome: true,
+                id_status: true,
                 status: {
                     select: {
                         id: true,
@@ -79,7 +80,7 @@ export class FinalizarCampeonatoUseCase{
             }
         });
         
-        console.log(`Campeonato ${campeonato.nome} ${cancela ? 'cancelado' : 'finalizado'} com sucesso`);
+        console.log(`Campeonato ${campeonato.nome} aberto com sucesso`);
 
         return {campeonato};
     }

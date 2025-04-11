@@ -19,6 +19,31 @@ export class VerificaJWTController {
 
 
 
+export class LoginUserController {
+    async handle(req: Request, res: Response) {
+        
+        const { login, senha } = req.body;
+        const loginUserUseCase = new LoginUserUseCase();
+        
+        // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
+        const result = await loginUserUseCase.execute({ login, senha }) as any;
+        
+        // Gera o token JWT
+        const token = jwt.sign({ login, id_academia: result.id_academia }, process.env.JWT_SECRET, {
+            expiresIn: '4h'
+        });
+
+
+        result.status= "success";
+        result.mensagem = "Login efetuado com sucesso";
+        result.JWT = token;
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
 export class CriaUserController {
     async handle(req: Request, res: Response) {
         
@@ -41,33 +66,6 @@ export class ListUserController {
         const listUserUseCase = new ListUserUseCase();
         
         const result = await listUserUseCase.execute();
-        return res.status(201).json(result);
-    }
-}
-
-
-
-export class LoginUserController {
-    async handle(req: Request, res: Response) {
-        
-        const { email, senha } = req.body;
-        const loginUserUseCase = new LoginUserUseCase();
-        
-        // Busca o usuário no banco de dados e adiciona campos ao objeto retornado
-        const result = await loginUserUseCase.execute({ email, senha }) as any;
-
-        
-        // Gera o token JWT
-        const cpf = result.cpf;
-        const token = jwt.sign({ cpf }, process.env.JWT_SECRET, {
-            expiresIn: '10h'
-        });
-
-
-        result.status= "success";
-        result.mensagem = "Login efetuado com sucesso";
-        result.JWT = token;
-
         return res.status(201).json(result);
     }
 }

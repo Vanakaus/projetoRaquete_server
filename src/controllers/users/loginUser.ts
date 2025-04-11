@@ -5,22 +5,15 @@ import { verificaSenha } from "../../services/hashPassword";
 import crypto from 'crypto';
 
 export class LoginUserUseCase{
-    async execute({email, senha}: LoginUserDTO){
+    async execute({login, senha}: LoginUserDTO){
 
         const user = await prisma.user.findFirst({
-            where: { email },
+            where: { login },
             select: {
-                cpf: true,
-                username: true,
+                login: true,
                 nome: true,
-                sobrenome: false,
-                email: false,
                 senha: false,
-                dataNascimento: false,
-                telefone: true,
-                celular: true,
-                cargo: true,
-                rank: false
+                id_academia: true,
             }
         });
 
@@ -31,20 +24,20 @@ export class LoginUserUseCase{
         }
 
         const userSenha = await prisma.user.findFirst({
-            where: { email },
+            where: { login },
             select: { senha: true }
         });
 
 
         if (!process.env.SECRET_KEY || !process.env.SECRET_IV) 
-            throw new AppError('Erro na autenticação\nFavor entrar em contato com o suporte');
+            throw new AppError('Erro nas chaves de autenticação\nFavor entrar em contato com o suporte');
 
         try {
             const decipher = crypto.createDecipheriv('aes-128-cbc', process.env.SECRET_KEY, process.env.SECRET_IV);
             senha = decipher.update(senha, 'hex', 'utf8');
             senha += decipher.final('utf8');
         } catch (error) {
-            throw new AppError('Erro na autenticação\nFavor entrar em contato com o suporte');
+            throw new AppError('Erro criptografia da autenticação\nFavor entrar em contato com o suporte');
         }
 
 

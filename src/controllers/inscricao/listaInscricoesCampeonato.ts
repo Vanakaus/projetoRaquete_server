@@ -1,4 +1,3 @@
-import { Inscricao } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
 import { ListaInscricoesCampeonatoDTO } from "../../interface/InscricaoUsersDTO";

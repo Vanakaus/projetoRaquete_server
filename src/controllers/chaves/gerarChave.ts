@@ -6,255 +6,344 @@ import formataNumero from "../../functions/formatarNumero";
 
 
 export class GerarChaveUseCase{
-    async execute({cpf, id_jogador, id_campeonato}: GerarChaveDTO): Promise<any>{
-
-        if(cpf !== id_jogador){
-            console.log("CPF não corresponde ao token");
-            throw new AppError('CPF não corresponde ao token\nRefaça o login');
-        }
-        
-        
-        let campeonato = await prisma.campeonatos.findUnique({
-            where: {
-                id: id_campeonato
-            },
-            select: {
-                id: true,
-                id_criador: true,
-                status: true
-            }
-        });
-
+    async execute({ id_torneio, id_classeTorneio, numCabecas}: GerarChaveDTO): Promise<any>{
 
         console.log("\nResposta: ");
 
-        if(!campeonato){
-            console.log("Campeonato não encontrado");
-            throw new AppError('Campeonato não encontrado\n\n\n' + campeonato);
+        // Verifica se o torneio existe e qual seu status
+        let torneio = await prisma.torneios.findUnique({
+            where: {
+                id: id_torneio
+            },
+            select: {
+                status: true,
+                nome: true,
+            }
+        }) as any;        
+
+
+        if(!torneio){
+            console.log("Torneio não encontrado");
+            throw new AppError('Torneio inválido\n\n\n' + torneio);
+        }
+
+        if(torneio.status.id >= Number(process.env.STATUS_JOGOS_FINALIZADOS)){
+            console.log("Não é possível gerar chave \nTorneio Status: " + torneio.status);
+            throw new AppError('Não é possível gerar chave. Torneio Status: ' + torneio.status.nome);
         }
 
 
-        if(campeonato.id_criador !== id_jogador){
-            console.log("Você não é o dono do campeonato");
-            throw new AppError('Você não é o dono do campeonato\n\n\n' + campeonato);
+
+        // Verifica se a classe do torneio existe, e se possui partidas gerados
+        const classe = await prisma.classeTorneio.findUnique({
+            where: {
+                id: id_classeTorneio
+            },
+            select: {
+                cabecasChave: true,
+                classeRanking: {
+                    select: {
+                        id: true,
+                        classe: {
+                            select: {
+                                id: true,
+                                nome: true,
+                                dupla: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if(!classe){
+            console.log("Classe não encontrada");
+            throw new AppError('Classe inválida');
+        }
+
+        if(classe.cabecasChave !== -1){
+            console.log("Partidas já geradas para esta classe");
+            throw new AppError('Partidas já geradas para esta classe');
         }
 
 
-        if(campeonato.status.id !== 2){
-            console.log("Não é possível gerar chave \nCampeonato Status: " + campeonato.status);
-            throw new AppError('Não é possível gerar chave \nCampeonato Status: ' + campeonato.status);
+
+        // Verifica se o número de cabeças de chave é um valor válido
+        if(numCabecas !== 0 && numCabecas !== 2 && numCabecas !==   4){
+            console.log("Número de cabeças de chave inválido");
+            throw new AppError('Número de cabeças de chave inválido');
         }
 
 
 
-        // Busca todos os incritos no campeonato por ordem do rank do jogador
+        // Busca todos os incritos no Torneio
         const inscricoes = await prisma.inscricao.findMany({
             select: {
                 id: true,
-                id_campeonato: true,
-                id_jogador: true,
-                dataInscricao: true,
-                jogador: {
+                tenistasInscricao: {
                     select: {
-                        username: true,
-                        nome: true,
-                        sobrenome: true,
-                        rank: true
+                        id_tenistaAcademia: true,
+                        tenistaAcademia: { select: { tenista: { select: { nome: true } } } },
                     }
                 }
             },
             where: {
-                id_campeonato
-            },
-            orderBy: {
-                jogador: {
-                    rank: 'desc'
-                }
+                id_classeTorneio
             }
-        });
-
-        const qtdInscritos = inscricoes.length;
-        let qtdPartidas = 2;
-
-        for(qtdPartidas; qtdPartidas < qtdInscritos; qtdPartidas = qtdPartidas * 2);
+        }) as any[];
 
 
-        console.log("Resposta: ");
-        console.log("Quantidade de inscritos no campeonato: " + qtdInscritos);
-        console.log("Quantidade total de inscritos possíveis: " + qtdPartidas--);
 
-        // console.log("/n/nInsrcrições: ");
-        // console.log(inscricoes);
-        console.log("\n\n");
+        // Calcula qual o tamanho da chave
+        let numInscritos = inscricoes.length;
+        let roundStr = '00:';
+        let roundInt = 0;
 
-
-        console.log("\nChaves: ");
-        for(let i = 0; i < qtdPartidas/2; i++){
-
-            let chave = (i % 2 === 0) ?
-            formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil((i + 1)/2)) :
-            formataNumero((qtdPartidas + 1) / 2) + ":" + formataNumero(Math.ceil(qtdPartidas/4 + i/2));
-
-            const placar1 = await prisma.placar.create({});
-            const placar2 = await prisma.placar.create({});
-
-            // console.log("Chave: ", chave);
-            // console.log("\tJogador 1:");
-            // console.log("\t\tID: " + inscricoes[i].id);
-            // console.log("\t\tApelido: " + inscricoes[i].jogador.username);
-            // console.log("\t\tNome: " + inscricoes[i].jogador.nome + " " + inscricoes[i].jogador.sobrenome);
-            // console.log("\t\tRank: " + inscricoes[i].jogador.rank);
-
-
-            if(qtdPartidas - i < qtdInscritos){
-
-                // console.log("\tJogador 2:");
-                // console.log("\t\tID: " + inscricoes[qtdPartidas - i].id);
-                // console.log("\t\tApelido: " + inscricoes[qtdPartidas - i].jogador.username);
-                // console.log("\t\tNome: " + inscricoes[qtdPartidas - i].jogador.nome + " " + inscricoes[qtdPartidas - i].jogador.sobrenome);
-                // console.log("\t\tRank: " + inscricoes[qtdPartidas - i].jogador.rank);
-
-
-                const partida = await prisma.partidas.create({
-                    data: {
-                        id_campeonato,
-                        chave,
-                        id_jogador1: inscricoes[i].id,
-                        id_jogador2: inscricoes[qtdPartidas - i].id,
-                        id_pontuacao1: placar1.id,
-                        id_pontuacao2: placar2.id
-                    }
-                });
-            } else {
-
-                // console.log("\tJogador 2:");
-                // console.log("\t\tID: ");
-                // console.log("\t\tApelido: ");
-                // console.log("\t\tNome: ");
-                // console.log("\t\tRank: ");
-
-
-                var partida = await prisma.partidas.create({
-                    data: {
-                        id_campeonato,
-                        chave,
-                        id_jogador1: inscricoes[i].id,
-                        id_vencedor: inscricoes[i].id,
-                        id_pontuacao1: placar1.id,
-                        id_pontuacao2: placar2.id
-                    }
-                });
-
-
-                const placar1Aux = await prisma.placar.create({});
-                const placar2Aux = await prisma.placar.create({});
-
-                const novaChave = formataNumero( Number(partida.chave.substring(0, 2)) / 2 ) + ":" + formataNumero( Math.ceil(Number(partida.chave.substring(3, 5)) / 2) );
-
-                partida = await prisma.partidas.create({
-                    data: {
-                        id_campeonato,
-                        chave: novaChave,
-                        id_jogador1: inscricoes[i].id,
-                        id_pontuacao1: placar1Aux.id,
-                        id_pontuacao2: placar2Aux.id
-                    }
-                });
-            }
-            // console.log("\n\n");
+        if(numInscritos < 3){
+            roundInt = 1;
+            roundStr = '01:';
+        }else if(numInscritos < 5){
+            roundInt = 2;
+            roundStr = '02:';
+        }else if(numInscritos < 9){
+            roundInt = 4;
+            roundStr = '04:';
+        }else if(numInscritos < 17){
+            roundInt = 8;
+            roundStr = '08:';
+        }else if(numInscritos < 33){
+            roundInt = 16;
+            roundStr = '16:';
+        }else if(numInscritos < 65){
+            roundInt = 32;
+            roundStr = '32:';
         }
 
 
-        const partidas = await  await prisma.partidas.findMany({
-            select: {
-                id: true,
-                id_campeonato: true,
-                chave: true,
-                id_jogador1: true,
-                id_jogador2: true,
-                id_vencedor: true,
-                dataPartida: true,
-                id_data: true,
-                id_local: true,
-                placar1: true,
-                placar2: true,
-                campeonato: {
-                    select: {
-                        nome: true,
-                        sets: true
-                    }
-                },
-                data: {
-                    select: {
-                        id: true,
-                        horario: true
-                    }
-                },
-                quadra: {
-                    select: {
-                        id: true,
-                        nome: true
-                    }
-                },
-                jogador1: {
-                    select: {
-                        jogador: {
-                            select: {
-                                username: true,
-                                nome: true,
-                                sobrenome: true,
-                                rank: true
-                            }
-                        }
-                    }
-                },
-                jogador2: {
-                    select: {
-                        jogador: {
-                            select: {
-                                username: true,
-                                nome: true,
-                                sobrenome: true,
-                                rank: true
-                            }
-                        }
-                    }
-                }
-            },
+
+        // Verifica se o número de cabeças de chave é compatível com o número de inscritos (numCabecas <= roundInt)
+        if(numCabecas > roundInt){
+            console.log("Número de cabeças de chave maior que o número de inscritos");
+            throw new AppError('Número de cabeças é incompatível com a quantidade de inscritos');
+        }
+
+
+        
+        // Calcula a faixa inicial da data para buscar as pontuações dos tenistas
+        let inicioAno = new Date(new Date().getFullYear(), 0, 1);
+
+
+
+        // Verifica se já houve algum torneio neste ano
+        const resultado = await prisma.pontuacaoRanking.findFirst({
             where: {
-                id_campeonato
-            },
-            orderBy: {
-                chave: 'asc'
+                data: { gte: inicioAno },
+                inscricao: { classeTorneio: { id_classeRanking: classe.classeRanking.id } }
             }
         });
 
-        console.log("\n\Jogos geradas com sucesso: ", partidas.length);
+        if(!resultado)
+            inicioAno = new Date(inicioAno.getFullYear()-1, 0, 1);
 
 
 
-        campeonato = await prisma.campeonatos.update({
+        // Adiciona a pontuacao de cada jogador
+        for(let i = 0; i < inscricoes.length; i++){
+
+            // Soma a pontuação do primeiro tenista
+            let pontuacao = await prisma.pontuacaoRanking.aggregate({
+                where: {
+                    inscricao: {
+                        tenistasInscricao: { some: {id_tenistaAcademia: inscricoes[i].tenistasInscricao[0].id_tenistaAcademia } },
+                        classeTorneio: { classeRanking: { id: classe.classeRanking.id } }
+                    },
+                    data: { gte: inicioAno, lte: new Date() },
+                },
+                _sum: {
+                    pontuacao: true
+                }
+            });
+
+            // Adiciona a pontuação e exclui o id do tenista
+            inscricoes[i].pontuacao = pontuacao._sum.pontuacao || 0;
+            delete inscricoes[i].tenistasInscricao[0].id_tenistaAcademia;
+
+
+            // Caso seja uma dupla, soma a pontuação do segundo tenista
+            if(classe.classeRanking.classe.dupla){
+
+                pontuacao = await prisma.pontuacaoRanking.aggregate({
+                    where: {
+                        inscricao: {
+                            tenistasInscricao: { some: {id_tenistaAcademia: inscricoes[i].tenistasInscricao[1].id_tenistaAcademia } },
+                            classeTorneio: { classeRanking: { id: classe.classeRanking.id } }
+                        },
+                        data: { gte: inicioAno, lte: new Date() },
+                    },
+                    _sum: {
+                        pontuacao: true
+                    }
+                });
+
+                // Adiciona a pontuação e exclui o id do tenista
+                inscricoes[i].pontuacao += pontuacao._sum.pontuacao || 0;
+                delete inscricoes[i].tenistasInscricao[1].id_tenistaAcademia;
+            }
+        }
+
+
+        
+        // Ordena os inscritos por pontuação
+        inscricoes.sort((a: { pontuacao: number; }, b: { pontuacao: number; }) => {
+            return b.pontuacao - a.pontuacao;
+        });
+
+        
+
+        // Manter os cabecas de chave em ordem e embaralhar os demais jogadores
+        const demaisJogadores = inscricoes.slice(numCabecas).sort(() => Math.random() - 0.5);
+
+        // Substitui os demais jogadores em ordem pela ordem aleatória
+        inscricoes.splice(numCabecas, demaisJogadores.length, ...demaisJogadores);
+
+
+
+        // Cria e alimenta o array de partidas com a estrutura { chave, inscricoes }
+        // Utiliza 3 loops para alimentar o array de partidas, um para os cabecas de chave, um para os mandantes e um para os oponentes
+        const partidas = [];
+        const chaves = [];
+        let j=numCabecas;
+
+
+        // Loop para os cabeças de chave
+        for(let i = 0; i < numCabecas; i++){
+            switch (i){
+                case 0: chaves.push(1); break;
+                case 1: chaves.push(roundInt); break;
+                case 2: chaves.push(roundInt/2); break;
+                case 3: chaves.push((roundInt/2)+1); break;
+            }
+
+            partidas.push({ id: -1, chave: roundStr + formataNumero(chaves[i]), inscricoes: [{...inscricoes[i], ordem: 1}] });
+        }
+
+
+        // Loop para os demais mandantes
+        for(let i = 1; i <= roundInt; i++){
+
+            if(chaves.includes(i)) continue;
+
+            chaves.push(i);
+            partidas.push({ id: -1, chave: roundStr + formataNumero(i), inscricoes: [{...inscricoes[j++], ordem: 1}] });
+        }
+
+
+        // Loop para os oponentes
+        for(let i = partidas.length-1; i >= 0 && j < inscricoes.length; i--){
+            partidas[i].inscricoes.push({...inscricoes[j++], ordem: 2});
+        }
+
+
+        // Verifica se há e adiciona as partidas resultantes de confrontos com BYEs
+        roundStr = formataNumero(roundInt / 2) + ":";
+        const partidasLength = partidas.length;
+
+        for(let i = 0; i < partidasLength; i++){
+
+            // Verifica se o jogo tem apenas um inscrito (BYE)
+            if(partidas[i].inscricoes.length !== 1) continue;
+
+            const novaChave = roundStr + formataNumero(Math.round(chaves[i] / 2));
+            
+            const index = partidas.findIndex(jogo => jogo.chave === novaChave);
+            if(index === -1){
+                partidas.push({
+                    id: -1,
+                    chave: novaChave,
+                    inscricoes: [
+                        {...partidas[i].inscricoes[0], ordem: chaves[i] % 2 === 1 ? 1 : 2}
+                    ]
+                });
+            }
+            else
+                partidas[index].inscricoes.push({...partidas[i].inscricoes[0], ordem: chaves[i] % 2 === 1 ? 1 : 2});
+        }
+
+
+
+        // Cria as partidas no banco de dados
+        for( const jogo of partidas){
+
+            // Cria a partida
+            const partida = await prisma.partidas.create({
+                data: {
+                    chave: jogo.chave
+                }
+            });
+
+            jogo.id = partida.id;
+
+            // Cria a conexão entre a partida e as inscrições
+            for(const inscricao of jogo.inscricoes){
+                if(!inscricao) continue;
+                
+                await prisma.inscricaoPartida.create({
+                    data: {
+                        id_partida: partida.id,
+                        id_inscricao: inscricao.id,
+                        ordem: inscricao.ordem,
+                    }
+                });
+            }
+        }
+
+        
+        
+        // Atualiza a classe do torneio para informar que as chaves foram geradas com o número de cabeças de chave
+        const classeTorneio = await prisma.classeTorneio.update({
             where: {
-                id: id_campeonato
+                id: id_classeTorneio
             },
             data: {
-                id_status: 3
-            },
-            select: {
-                id: true,
-                id_criador: true,
-                id_status: true,
-                nome: true,
-                status: {
-                    select: {
-                        id: true,
-                        nome: true
-                    }
-                }
+                cabecasChave: numCabecas
+            }
+        });
+        
+        
+        console.log("\n\nPartidas geradas com sucesso: ", partidas.length);
+
+
+
+        // Verifica se há classes sem partidas gerados
+        const torneioClasseEmBranco = await prisma.classeTorneio.findFirst({
+            where: {
+                id_torneio: id_torneio,
+                cabecasChave: -1
             }
         });
 
 
-        return {partidas, campeonato};
+
+        // Se não houver classes sem partidas geradas, atualiza o status do torneio para "Inscrições Encerradas"
+        if(!torneioClasseEmBranco){
+            torneio = await prisma.torneios.update({
+                where: {
+                    id: id_torneio
+                },
+                data: {
+                    id_status: Number(process.env.STATUS_JOGOS_GERADOS)
+                },
+                select: {
+                    status: {
+                        select: {
+                            id: true,
+                            nome: true
+                        }
+                    }
+                }
+            });
+        }
+
+        return { torneio, partidas };
     }
 }

@@ -6,7 +6,7 @@ export function informativo(req: e.Request, res: e.Response, next: NextFunction)
     console.log('\n');
     console.log('ROTA CHAMADA:');
     console.log(`Tipo: ${req.method}`);
-    console.log(`URL: ${req.url}`);
+    console.log(`URL: ${req.originalUrl}`);
 
     const body = JSON.stringify(req.body).replace(/"senha":"[^"]*"/g, '"senha":"******"')
                                             .replace(/"novaSenha":"[^"]*"/g, '"novaSenha":"******"')

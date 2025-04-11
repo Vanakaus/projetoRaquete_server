@@ -1,15 +1,12 @@
-const { PrismaClient } = require('@prisma/client');
-const { faker } = require('@faker-js/faker');
-const { genSalt } = require('bcryptjs');
-const { hash } = require('bcryptjs');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-async function main() {
+export async function CreateAdmin() {
 
   // Verifica se o usuario admin ja foi criado, caso sim, não faz nada
   const adminExists = await prisma.user.findUnique({
     where: {
-      cpf: '12345678900',
+      login: 'admin',
     },
   });
 
@@ -19,29 +16,22 @@ async function main() {
 
   // Cria a senha encriptada
   const saltGenerated = await genSalt(10);
-  const senha = await hash('adminadmin', saltGenerated);
+  const senha = await hash('admin', saltGenerated);
   
   // Cria o usuario admin
   await prisma.user.create({
     data: {
-      cpf: '12345678900',
-      username: 'adm',
-      email: 'admin@admin',
+      login: 'admin',
+      nome: 'Admin',
       senha: senha,
-      cargo: 'admin',
-      nome: 'Administrador',
-      sobrenome: 'admin',
-      dataNascimento: faker.date.past(30, new Date(2000, 0, 1)),
-      telefone: '123456789',
-      celular: '123456789',
-      rank: 0,
+      id_academia: 'academiaAdministradora',
     },
   });
 }
 
 
 
-main()
+CreateAdmin()
   .catch((e) => {
     throw e;
   })

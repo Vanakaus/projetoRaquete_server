@@ -1,14 +1,20 @@
 
-export interface CriaInscricaoDTO {
-    cpf: string;
-    id_campeonato: string;
-    id_jogador: string;
+export interface AdicionarInscricoesDTO {
+    id_academia: string;
+    id_torneio: string;
+    inscricaoClasse: {
+        id_classeTorneio: number;
+        duplas: boolean;
+        inscricaoJogador: {
+            cpf: string;
+            nome: string;
+        }[];
+    }[];
 }
 
 
 export interface ListaInscricoesDTO {
-    cpf: string;
-    id_jogador: string;
+    id_torneio: string;
 }
 
 export interface ListaInscricoesCampeonatoDTO {

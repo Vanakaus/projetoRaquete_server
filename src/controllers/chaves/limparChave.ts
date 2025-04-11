@@ -5,75 +5,117 @@ import { LimparChaveDTO } from "../../interface/ChavesDTO";
 
 
 export class LimparChaveUseCase{
-    async execute({cpf, id_jogador, id_campeonato}: LimparChaveDTO): Promise<any>{
+    async execute({ id_torneio, id_classeTorneio }: LimparChaveDTO): Promise<any>{
 
-        if(cpf !== id_jogador){
-            console.log("CPF não corresponde ao token");
-            throw new AppError('CPF não corresponde ao token\nRefaça o login');
-        }
-        
-        
-        let campeonato = await prisma.campeonatos.findUnique({
+        let torneio = await prisma.torneios.findUnique({
             where: {
-                id: id_campeonato
+                id: id_torneio
             },
             select: {
-                id: true,
-                id_criador: true,
                 nome: true,
-                status: true,
+                status: {
+                    select: {
+                        id: true,
+                        nome: true
+                    }
+                }
+            },
+        });
+
+        if(!torneio){
+            console.log("Torneio não encontrado");
+            throw new AppError('Torneio não encontrado');
+        }
+
+        if(torneio.status.id >= Number(process.env.STATUS_FINALIZADO)){
+            console.log("Torneio já finalizado");
+            throw new AppError('Torneio já finalizado');
+        }
+
+
+
+        
+        let classeTorneio = await prisma.classeTorneio.findUnique({
+            where: {
+                id: id_classeTorneio
+            },
+            select: {
+                cabecasChave: true,
+                classeRanking: {
+                    select: {
+                        classe: {
+                            select: {
+                                id: true,
+                                nome: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
 
         console.log("\nResposta: ");
 
-        if(!campeonato){
-            console.log("Campeonato não encontrado");
-            throw new AppError('Campeonato não encontrado\n\n\n' + campeonato);
+        if(!classeTorneio){
+            console.log("Classe de torneio não encontrada");
+            throw new AppError('Classe de torneio não encontrada');
+        }
+
+        if(classeTorneio.cabecasChave === -1){
+            console.log("Não há partidas para limpar");
+            throw new AppError('Não há partidas para limpar');
         }
 
 
-        if(campeonato.id_criador !== id_jogador){
-            console.log("Você não é o dono do campeonato");
-            throw new AppError('Você não é o dono do campeonato\n\n\n' + campeonato);
-        }
+
+        console.log("Deletando as partidas: ");
+        console.log("\tTorineio: " + torneio.nome);
+        console.log("\tClasse: " + classeTorneio.classeRanking.classe.nome);
 
 
-        if(campeonato.status.id !== 3 && campeonato.status.id !== 4){
-            console.log("Não é possível limpar os jogos \nCampeonato Status: " + campeonato.status);
-            throw new AppError('Não é possível limpar os jogos \nCampeonato Status: ' + campeonato.status);
-        }
-
-
-1
-        console.log("Deletando inscrições do campeonato: ");
-        console.log("\tID: " + id_campeonato);
-        console.log("\tNome: " + campeonato.nome);
-        const inscricoes = await prisma.partidas.deleteMany({
+        const chave = await prisma.partidas.deleteMany({
             where: {
-                id_campeonato
+                inscricaoPartida: {
+                    some: {
+                        inscricao: {
+                            id_classeTorneio: id_classeTorneio
+                        }
+                    }
+                }
             }
         });
 
+
+        if(chave.count){
+            const classeTorneio = await prisma.classeTorneio.update({
+                where: {
+                    id: id_classeTorneio
+                },
+                data: {
+                    cabecasChave: -1
+                }
+            });
+
+            if(!classeTorneio){
+                console.log("Erro ao atualizar a classe de torneio");
+                throw new AppError('Erro ao atualizar a classe de torneio');
+            }
+        } else{
+            console.log("Erro ao deletar as partidas");
+            throw new AppError('Erro ao deletar as partidas');
+        }
+
         
-        console.log("\n\nInscrições deletadas com sucesso");
-        console.log(inscricoes);
-        console.log("\n\n");
-
-
-        campeonato = await prisma.campeonatos.update({
+        torneio = await prisma.torneios.update({
             where: {
-                id: id_campeonato
+                id: id_torneio
             },
             data: {
-                id_status: 2
+                id_status: Number(process.env.STATUS_INSCRICOES_ENCERRADAS)
             },
             select: {
-                id: true,
-                id_criador: true,
                 nome: true,
-                id_status: true,
                 status: {
                     select: {
                         id: true,
@@ -83,8 +125,17 @@ export class LimparChaveUseCase{
             }
         });
 
+        if(!torneio){
+            console.log("Erro ao atualizar o status do torneio");
+            throw new AppError('Erro ao atualizar o status do torneio');
+        }
 
-        return {inscricoes, partidas:[], campeonato};
+        
+        console.log("\nPartidas deletadas com sucesso");
+        console.log(chave);
+
+
+        return { chave, torneio };
     }
 }
 

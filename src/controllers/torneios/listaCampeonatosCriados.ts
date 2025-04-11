@@ -1,21 +1,18 @@
-import { Inscricao } from "@prisma/client";
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { ListaInscricoesDTO } from "../../interface/InscricaoUsersDTO";
+import { ListaCampeonatosCriadosDTO } from "../../interface/TorneiosDTO";
 
+export class ListaCampeonatosCriadosUseCase{
+    async execute({cpf, id_criador}: ListaCampeonatosCriadosDTO): Promise<any>{
 
-
-export class ListaInscricoesUseCase{
-    async execute({cpf, id_jogador}: ListaInscricoesDTO): Promise<any>{
-
-        if(cpf !== id_jogador){
+        if(cpf !== id_criador){
             console.log("CPF não corresponde ao token");
             throw new AppError('CPF não corresponde ao token\nRefaça o login');
         }
-        
-        
-        // Busca todos os campeonatos que o jogador está inscrito
-        const inscricoes = await prisma.campeonatos.findMany({
+
+
+        // Busca todos os campeonatos criados pelo usuário
+        const campeonatos = await prisma.campeonatos.findMany({
             select: {
                 id: true,
                 nome: true,
@@ -23,6 +20,7 @@ export class ListaInscricoesUseCase{
                 classe: true,
                 numJogadores: true,
                 premiacao: true,
+                sets: true,
                 local: true,
                 status: true,
                 dataInicio: true,
@@ -42,30 +40,22 @@ export class ListaInscricoesUseCase{
                 },
             },
             where: {
-                inscricoes: {
-                    some: {
-                        id_jogador: cpf
-                    }
-                }
+                id_criador
             },
             orderBy: {
                 dataInicio: 'asc'
             }
         });
 
+        console.log("Resposta: ");
 
-        console.log("\nResposta: ");
-
-        if(!inscricoes){
-            console.log("Sem inscrições realizadas");
-            console.log(inscricoes);
-            throw new AppError('Sem inscrições realizadas\n\n\n' + inscricoes);
-            
+        if (campeonatos.length === 0) {
+            console.log("Sem Campeonatos criados pelo usuário");
+            throw new AppError('Sem Campeonatos criados pelo usuário\n\n\n' + campeonatos);
         }
 
-        console.log("Inscrições listadas: " + inscricoes.length);
+        console.log(campeonatos.length + " Campeonatos Listados com sucesso");
         
-
-        return inscricoes;
+        return campeonatos;
     }
 }

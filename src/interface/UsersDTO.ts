@@ -14,7 +14,7 @@ export interface CriaUserDTO {
 }
 
 export interface LoginUserDTO {
-    email: string;
+    login: string;
     senha: string;
 }
 

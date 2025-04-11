@@ -1,57 +1,69 @@
 
 export interface GerarChaveDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
+    id_torneio: string;
+    id_classeTorneio: number;
+    numCabecas: number;
 }
+
 
 
 export interface LimparChaveDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
+    id_torneio: string;
+    id_classeTorneio: number;
 }
+
 
 
 export interface ListarChaveDTO {
-    id_campeonato: string;
+    id_torneio: string;
 }
 
 
-export interface AtualizarChaveDTO {
-    cpf: string;
-    id: string;
-    id_jogador: string;
 
+export interface AtualizarDadosDTO {
+    novosDados: novoDado[];
+}
+
+export interface novoDado {
+    id: number;
+    classe: string;
     data: string;
+    hora: string;
     local: string;
+    resposta: string;
 }
+
 
 
 export interface AtualizarPlacarDTO {
-    cpf: string;
-    id: number;
-    id_jogador: string;
+    id_torneio: string;
+    novosPlacares: partidaPlacarDTO[];
+}
 
-    novoPS1: [ number, number, number, number, number ];
-    novoPS2: [ number, number, number, number, number ];
-    novoPT1: [ boolean, boolean, boolean, boolean, boolean ];
-    novoPT2: [ boolean, boolean, boolean, boolean, boolean ];
+export interface partidaPlacarDTO {
+    id: number;
+    sets: {
+        id: number;
+        tiebreak: boolean;
+        placar: [number, number];
+    }[];
+}
+
+export interface partidaPlacarRespostaDTO extends partidaPlacarDTO {
     id_vencedor: number;
+    classe: string;
+    inscricao1: IInscricao | null;
+    inscricao2: IInscricao | null;
 }
-
-
-export interface AtualizarDatasDTO {
-    cpf: string;
-    id_jogador: string;
-    id_campeonato: string;
-
-    novasDatas: novaData[];
+export interface novaPartidaPlacarRespostaDTO extends partidaPlacarDTO {
+    chave: string;
+    classe: string;
+    id_vencedor: number;
+    inscricao1: IInscricao | null;
+    inscricao2: IInscricao | null;
 }
-
-export interface novaData {
+export default interface IInscricao {
     id: number;
-    data: Date;
-    id_data: number;
-    id_local: number;
+    tenista1: string;
+    tenista2?: string;
 }
