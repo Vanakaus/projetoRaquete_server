@@ -108,7 +108,7 @@ export class AtualizarTorneioController {
         
         const atualizarTorneioUseCase = new AtualizarTorneioUseCase();
 
-        const { id, nome, descricao, local, sets, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim } = req.body;
+        const { id, nome, descricao, local, sets, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim } = req.body;
         const token = req.headers['x-access-token']
 
         var id_academia = '';
@@ -116,7 +116,7 @@ export class AtualizarTorneioController {
             id_academia = decoded.id_academia;
         });
         
-        const result = await atualizarTorneioUseCase.execute({ id, id_academia, nome, descricao, local, sets, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }) as any;
+        const result = await atualizarTorneioUseCase.execute({ id, id_academia, nome, descricao, local, sets, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }) as any;
         result.status= "success";
         result.mensagem = "Campeonato atualizado com sucesso";
 

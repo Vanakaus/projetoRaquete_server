@@ -6,7 +6,7 @@ import { AtualizarTorneioDTO } from "../../interface/TorneiosDTO";
 
 
 export class AtualizarTorneioUseCase{
-    async execute({ id, id_academia, nome, descricao, local, sets, modalidade, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }: AtualizarTorneioDTO): Promise<any>{
+    async execute({ id, id_academia, nome, descricao, local, sets, pontuacao, classesDeleta, classesAdiciona, dataInicio, dataFim }: AtualizarTorneioDTO): Promise<any>{
 
         console.log("Atualizando campeonato: " + id);
 
@@ -82,8 +82,6 @@ export class AtualizarTorneioUseCase{
                 descricao,
                 local,
                 sets: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? sets : torneioExiste.sets,
-                simples: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.simples : torneioExiste.simples,
-                duplas: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.duplas : torneioExiste.duplas,
                 dataInicio: torneioExiste.status.id < Number(process.env.STATUS_EM_ANDAMENTO) ? dataInicio : torneioExiste.dataInicio,
                 dataFim: torneioExiste.status.id < Number(process.env.STATUS_JOGOS_FINALIZADOS) ? dataFim : torneioExiste.dataFim,
             },
@@ -223,6 +221,43 @@ export class AtualizarTorneioUseCase{
                 });
             }
 
+        }
+
+
+        // simples: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.simples : torneioExiste.simples,
+        // duplas: torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS) ? modalidade.duplas : torneioExiste.duplas,
+
+        if(torneioExiste.status.id < Number(process.env.STATUS_INSCRICOES_ENCERRADAS)){
+
+        const classesTorneio = await prisma.classeTorneio.findMany({
+            where: {
+                id_torneio: torneio.id
+            },
+            select: {
+                classeRanking: {
+                    select: {
+                        classe: {
+                            select: {
+                                dupla: true,
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const simples = classesTorneio.filter((classe) => classe.classeRanking.classe.dupla == false);
+        const duplas = classesTorneio.filter((classe) => classe.classeRanking.classe.dupla == true);
+
+        await prisma.torneios.update({
+            where: {
+                id: torneio.id
+            },
+            data: {
+                simples: simples.length > 0 ? true : false,
+                duplas: duplas.length > 0 ? true : false
+            }
+        });
         }
 
 
