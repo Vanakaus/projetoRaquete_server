@@ -45,7 +45,10 @@ export class FinalizarTorneioUseCase{
         // Atualiza o status do torneio
         await prisma.torneios.update({
             where: { id: id_torneio },
-            data: { id_status: Number(process.env.STATUS_FINALIZADO) }
+            data: {
+                id_status: Number(process.env.STATUS_FINALIZADO),
+                dataFim: torneio.dataFim < new Date() ? new Date() : torneio.dataFim,
+            }
         });
         
         console.log(`Torneio finalizado com sucesso \n${resultados.length} resultados adicionados com sucesso`);
