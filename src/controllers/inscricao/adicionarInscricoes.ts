@@ -103,10 +103,17 @@ export class AdicionarInscricoesUseCase{
             for (let j = 0; j < inscricaoClasse[i].inscricaoJogador.length; duplas ? j+=2 : j++) {
                 
                 // Variaveis de dados
-                const jogador = inscricaoClasse[i].inscricaoJogador[j];
-                const jogador2 = inscricaoClasse[i].inscricaoJogador[j+1];
+                let jogador = inscricaoClasse[i].inscricaoJogador[j];
+                let jogador2 = inscricaoClasse[i].inscricaoJogador[j+1];
                 let id_tenistaAcademia = 0;
                 let id_tenistaAcademia2 = 0;
+
+                if(duplas){
+                    if(inscricaoClasse[i].inscricaoJogador[j+1].nome < inscricaoClasse[i].inscricaoJogador[j].nome){
+                        jogador = inscricaoClasse[i].inscricaoJogador[j+1];
+                        jogador2 = inscricaoClasse[i].inscricaoJogador[j];
+                    }
+                }
 
 
                 // Verifica se o jogador existe, caso não exista tenta cadastrar, caso não consiga passa para o próximo
@@ -131,7 +138,7 @@ export class AdicionarInscricoesUseCase{
                             jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                             sucesso: false,
                             repetido: false,
-                            mensagem: `Erro ao cadastrar jogador 1(${jogador.nome}) no sistema`
+                            mensagem: `Erro ao cadastrar jogador ${jogador.nome} no sistema`
                          });
                         continue;
                     }
@@ -163,7 +170,7 @@ export class AdicionarInscricoesUseCase{
                             jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                             sucesso: false,
                             repetido: false,
-                            mensagem: `Erro ao adicionar jogador 1(${jogador.nome}) na academia`
+                            mensagem: `Erro ao adicionar jogador ${jogador.nome} na academia`
                          });
                         continue;
                     }else{
@@ -198,7 +205,7 @@ export class AdicionarInscricoesUseCase{
                                 jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                                 sucesso: false,
                                 repetido: false,
-                                mensagem: `Erro ao cadastrar jogador 2(${jogador2.nome}) no sistema`
+                                mensagem: `Erro ao cadastrar jogador ${jogador2.nome} no sistema`
                             });
                             continue;
                         }
@@ -227,7 +234,7 @@ export class AdicionarInscricoesUseCase{
                                 jogador: jogador.nome + (duplas ? ` e ${jogador2.nome}` : ''),
                                 sucesso: false,
                                 repetido: false,
-                                mensagem: `Erro ao adicionar jogador 2(${jogador2.nome}) na academia`
+                                mensagem: `Erro ao adicionar jogador ${jogador2.nome} na academia`
                             });
                             continue;
                         } else{

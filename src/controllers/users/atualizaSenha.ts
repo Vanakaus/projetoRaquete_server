@@ -1,20 +1,18 @@
 import { prisma } from "../../prisma/client";
-import { AtualizaPasswordDTO } from "../../interface/UsersDTO";
+import { AtualizaSenhaDTO } from "../../interface/UsersDTO";
 import { AppError } from "../../errors/AppErrors";
 import { hashSenha, verificaSenha } from "../../services/hashPassword";
 
 
 
-export class AtualizaPasswordUseCase{
-    async execute({ cpf, email, senha, novaSenha}: AtualizaPasswordDTO): Promise<any>{
+export class AtualizaSenhaUseCase{
+    async execute({ login, novaSenha}: AtualizaSenhaDTO): Promise<any>{
         
+        console.log("AtualizaPasswordUseCase")
+        console.log({ login, novaSenha })
+
         const userExiste = await prisma.user.findFirst({
-            where: {
-                AND: {
-                    cpf,
-                    email
-                }
-            }
+            where: { login },
         });
 
 
@@ -25,29 +23,29 @@ export class AtualizaPasswordUseCase{
             throw new AppError('Usuário não encontrado');
         }
 
-        if(!await verificaSenha(senha, userExiste.senha)){
-            console.log("Senha incorreta");
-            throw new AppError('Senha incorreta');
-        }
+        // if(!await verificaSenha(senha, userExiste.senha)){
+        //     console.log("Senha incorreta");
+        //     throw new AppError('Senha incorreta');
+        // }
 
-        if(await verificaSenha(novaSenha, userExiste.senha)){
-            console.log("Senhas igual a anterior");
-            throw new AppError('Senha igual a anterior');
-        }
+        // if(await verificaSenha(novaSenha, userExiste.senha)){
+        //     console.log("Senhas igual a anterior");
+        //     throw new AppError('Senha igual a anterior');
+        // }
         
 
         novaSenha = await hashSenha(novaSenha);
 
         const user = await prisma.user.update({
-            where: { cpf },
+            where: { login },
             data: {
                 senha: novaSenha
             },
             select: {
-                username: true,
+                login: true,
                 nome: true,
-                sobrenome: true,
-                email: true
+                senha: false,
+                id_academia: true,
             }
         });
 
