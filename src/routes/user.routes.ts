@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { CriaUserController, ListUserController, LoginUserController, AtualizaPasswordController, AtualizaUserController, VerificaJWTController } from "../controllers/users/controller";
+import { AtualizaSenhaController, CriaAcademiaController, CriaUsuarioController, LoginUserController, VerificaJWTController } from "../controllers/users/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 
@@ -10,12 +10,15 @@ const userRoutes = Router();
 const loginUserController  = new LoginUserController();
 const verificaJWTController  = new VerificaJWTController();
 
-const criaUserController  = new CriaUserController();
-const listUserController  = new ListUserController();
-const atualizaUserController  = new AtualizaUserController();
-const atualizaPasswordController  = new AtualizaPasswordController();
+const criaAcademiaController  = new CriaAcademiaController();
+const criaUsuarioController  = new CriaUsuarioController();
+const atualizaSenhaController  = new AtualizaSenhaController();
 
 
+
+userRoutes.post('/cadastrarAcademia', informativo, criaAcademiaController.handle);
+userRoutes.post('/cadastrarUsuario', informativo, criaUsuarioController.handle);
+userRoutes.patch('/atualizarSenha', informativo, verificaJWT, atualizaSenhaController.handle);
 
 userRoutes.post('/login', informativo, loginUserController.handle);
 userRoutes.get('/verificaJWT', informativo, verificaJWT, verificaJWTController.handle);

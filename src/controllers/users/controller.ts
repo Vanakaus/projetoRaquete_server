@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { CriaUserUseCase } from "./criaUser";
-import { ListUserUseCase } from "./listUsers";
 import { LoginUserUseCase } from "./loginUser";
-import { AtualizaUserUseCase } from "./atualizaUser";
-import { AtualizaPasswordUseCase } from "./atualizaPassword";
+import { AtualizaSenhaUseCase } from "./atualizaSenha";
+import { CriaAcademiaUseCase } from "./criaAcademia";
+import { CriaUsuarioUseCase } from "./criaUsuario";
 
 const jwt = require('jsonwebtoken');
 
@@ -44,13 +43,29 @@ export class LoginUserController {
 
 
 
-export class CriaUserController {
+export class CriaAcademiaController {
     async handle(req: Request, res: Response) {
         
-        const { cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular } = req.body;
-        const criaUserUseCase = new CriaUserUseCase();
+        const { id, nome, telefone } = req.body;
+        const criaAcademiaUseCase = new CriaAcademiaUseCase();
         
-        const result = await criaUserUseCase.execute({ cpf, email, senha, nome, sobrenome, dataNascimento, username, telefone, celular }) as any;
+        const result = await criaAcademiaUseCase.execute({ id, nome, telefone }) as any;
+        result.status= "success";
+        result.mensagem = "Academia cadastrada com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class CriaUsuarioController {
+    async handle(req: Request, res: Response) {
+        
+        const { login, nome, senha, id_academia } = req.body;
+        const criaUserUseCase = new CriaUsuarioUseCase();
+        
+        const result = await criaUserUseCase.execute({ login, nome, senha, id_academia }) as any;
         result.status= "success";
         result.mensagem = "Usuário cadastrado com sucesso";
 
@@ -60,24 +75,11 @@ export class CriaUserController {
 
 
 
-export class ListUserController {
+export class AtualizaSenhaController {
     async handle(req: Request, res: Response) {
-        
-        const listUserUseCase = new ListUserUseCase();
-        
-        const result = await listUserUseCase.execute();
-        return res.status(201).json(result);
-    }
-}
-
-
-
-export class AtualizaUserController {
-    async handle(req: Request, res: Response) {
-        
         
         var cpf = '';
-        const { email, novoEmail, username, telefone, celular } = req.body;
+        const { login, novaSenha } = req.body;
         const token = req.headers['x-access-token']
 
         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
@@ -85,33 +87,9 @@ export class AtualizaUserController {
         });
 
 
-        const atualizaUserUseCase = new AtualizaUserUseCase();
+        const atualizaUserUseCase = new AtualizaSenhaUseCase();
         
-        const result = await atualizaUserUseCase.execute({ cpf, email, novoEmail, username, telefone, celular }) as any;
-        result.status= "success";
-        result.mensagem = "Dados atualizados com sucesso";
-
-        return res.status(201).json(result);
-    }
-}
-
-
-
-export class AtualizaPasswordController {
-    async handle(req: Request, res: Response) {
-        
-        var cpf = '';
-        const { email, senha, novaSenha } = req.body;
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-            cpf = decoded.cpf;
-        });
-
-
-        const atualizaUserUseCase = new AtualizaPasswordUseCase();
-        
-        const result = await atualizaUserUseCase.execute({ cpf, email, senha, novaSenha }) as any;
+        const result = await atualizaUserUseCase.execute({ login, novaSenha }) as any;
         result.status= "success";
         result.mensagem = "Senha atualizada com sucesso";
 

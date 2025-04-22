@@ -1,37 +1,26 @@
 
-export interface CriaUserDTO {
-    cpf: string;
-    email: string;
-    senha: string;
+export interface CriaAcademiaDTO {
+    id: string;
     nome: string;
-    sobrenome: string;
-    dataNascimento: Date;
-
-    // Opicional
-    username?: string;
-    telefone?: string;
-    celular?: string;
+    telefone: string;
 }
+
+export interface CriaUsuarioDTO {
+    login: string;
+    nome: string;
+    senha: string;
+    id_academia: string;
+}
+
+
+export interface AtualizaSenhaDTO {
+    login: string;
+    novaSenha: string;
+}
+
 
 export interface LoginUserDTO {
     login: string;
     senha: string;
 }
 
-
-export interface AtualizaUserDTO {
-    cpf: string;
-    email: string;
-    novoEmail: string;
-    username: string | null;
-    telefone: string;
-    celular: string;
-}
-
-
-export interface AtualizaPasswordDTO {
-    cpf: string;
-    email: string;
-    senha: string;
-    novaSenha: string;
-}
