@@ -8,9 +8,6 @@ import { CriaTorneioDTO } from "../../interface/TorneiosDTO";
 export class CriaCampeonatoUseCase{
     async execute({ id_academia, id_ranking, nome, descricao = "", local = "", sets, modalidade, pontuacao, classes, dataInicio, dataFim}: CriaTorneioDTO): Promise<User>{
 
-        console.log("CriaCampeonatoUseCase");
-        console.log({ id_academia, id_ranking, nome, descricao, local, sets, modalidade, pontuacao, classes, dataInicio, dataFim});
-
 
         console.log("\nResposta: ");
 

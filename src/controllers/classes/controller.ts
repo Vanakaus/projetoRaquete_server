@@ -35,7 +35,7 @@ export class CriarClasseController {
         
         const criaClasseUseCase = new CriarClasseUseCase();
 
-        const { sigla, nome, masculino, misto, dupla } = req.body;
+        const { sigla, nome, masculino, misto, dupla, id_ranking } = req.body;
         const token = req.headers['x-access-token']
         
         var id_academia = '';
@@ -43,7 +43,7 @@ export class CriarClasseController {
             id_academia = decoded.id_academia;
         });
 
-        const result = await criaClasseUseCase.execute({ id_academia, sigla, nome, masculino, misto, dupla }) as any;
+        const result = await criaClasseUseCase.execute({ id_academia, id_ranking, sigla, nome, masculino, misto, dupla }) as any;
         result.status= "success";
         result.mensagem = "Classe cadastrada com sucesso";
 
@@ -59,8 +59,14 @@ export class AtualizarClasseController {
         const atualizarClasseUseCase = new AtualizarClasseUseCase();
 
         const { id, sigla, nome, masculino, misto, dupla } = req.body;
+        const token = req.headers['x-access-token']
+        
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
 
-        const result = await atualizarClasseUseCase.execute({ id, sigla, nome, masculino, misto, dupla }) as any;
+        const result = await atualizarClasseUseCase.execute({ id_academia, id, sigla, nome, masculino, misto, dupla }) as any;
         result.status= "success";
         result.mensagem = "Classe atualizada com sucesso";
 

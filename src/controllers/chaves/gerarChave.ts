@@ -101,21 +101,21 @@ export class GerarChaveUseCase{
 
         if(numInscritos < 3){
             roundInt = 1;
-            roundStr = '01:';
+            roundStr = '02:';
         }else if(numInscritos < 5){
             roundInt = 2;
-            roundStr = '02:';
+            roundStr = '04:';
         }else if(numInscritos < 9){
             roundInt = 4;
-            roundStr = '04:';
+            roundStr = '08:';
         }else if(numInscritos < 17){
             roundInt = 8;
-            roundStr = '08:';
+            roundStr = '16:';
         }else if(numInscritos < 33){
             roundInt = 16;
-            roundStr = '16:';
+            roundStr = '32:';
         }else if(numInscritos < 65){
-            roundInt = 32;
+            roundInt = 64;
             roundStr = '32:';
         }
 
@@ -245,7 +245,7 @@ export class GerarChaveUseCase{
 
 
         // Verifica se há e adiciona as partidas resultantes de confrontos com BYEs
-        roundStr = formataNumero(roundInt / 2) + ":";
+        roundStr = formataNumero(roundInt) + ":";
         const partidasLength = partidas.length;
 
         for(let i = 0; i < partidasLength; i++){

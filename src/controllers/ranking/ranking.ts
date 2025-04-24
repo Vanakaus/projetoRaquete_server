@@ -53,11 +53,14 @@ export class RankingUseCase{
                                         pontuacao: true,
                                         data: true
                                     },
+                                    where: { data: { gte: inicioAno, lte: fimAno } }
                                 }
                             }
                         }
                     },
-                    where: { inscricao: { pontuacaoRanking: { data: { gte: inicioAno, lte: fimAno } } } }
+                    where: {
+                        inscricao: { classeTorneio: { id_classeRanking } },
+                    },
                 }
             }
         }) as any;
@@ -68,10 +71,11 @@ export class RankingUseCase{
         for(const pessoa of ranking){
 
             // Calcula a pontuação de cada tenista
-            pessoa.pontuacao = pessoa.tenistasInscricao.reduce((acc: number, inscricao: any) => acc + inscricao.inscricao.pontuacaoRanking.pontuacao, 0);
+            pessoa.pontuacao = pessoa.tenistasInscricao.reduce((acc: number, inscricao: any) => acc + ( inscricao.inscricao.pontuacaoRanking?.pontuacao || 0), 0);
             
             // Deleta os campos TenistasInscricoes para não poluir o JSON de resposta
             delete pessoa.tenistasInscricao;
+            console.log(`Check`);
         }
 
 

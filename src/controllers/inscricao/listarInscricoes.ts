@@ -27,6 +27,7 @@ export class ListarInscricoesUseCase{
             select: {
                 classeRanking: { 
                     select: {
+                        id: true,
                         classe: { select: { sigla: true } }
                     }
                 },

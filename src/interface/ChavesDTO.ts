@@ -51,14 +51,8 @@ export interface partidaPlacarDTO {
 
 export interface partidaPlacarRespostaDTO extends partidaPlacarDTO {
     id_vencedor: number;
-    classe: string;
-    inscricao1: IInscricao | null;
-    inscricao2: IInscricao | null;
-}
-export interface novaPartidaPlacarRespostaDTO extends partidaPlacarDTO {
     chave: string;
     classe: string;
-    id_vencedor: number;
     inscricao1: IInscricao | null;
     inscricao2: IInscricao | null;
 }

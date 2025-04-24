@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { AppError } from "../../errors/AppErrors";
-import { AtualizarPlacarDTO, novaPartidaPlacarRespostaDTO, partidaPlacarDTO, partidaPlacarRespostaDTO } from "../../interface/ChavesDTO";
+import { AtualizarPlacarDTO, partidaPlacarDTO, partidaPlacarRespostaDTO } from "../../interface/ChavesDTO";
 import formataNumero from "../../functions/formatarNumero";
 
 
@@ -24,7 +24,7 @@ export class AtualizarPlacarUseCase{
         // Variaveis para armazenar as partidas atualizadas e não atualizadas na resposta
         const partidasAtualizadas = [] as partidaPlacarRespostaDTO[];
         const partidasNaoAtualizadas = [] as partidaPlacarDTO[];
-        const novasPartidas = [] as novaPartidaPlacarRespostaDTO[];
+        const novasPartidas = [] as partidaPlacarRespostaDTO[];
 
         // Percorre todas as partidas
         for(const novoPlacar of novosPlacares){
@@ -152,11 +152,11 @@ export class AtualizarPlacarUseCase{
                         continue;
                     }
                     
-                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, classe: partida.inscricaoPartida[0].inscricao.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
+                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, chave: partida.chave, classe: partida.inscricaoPartida[0].inscricao.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
 
 
                     // Verifica se a partida é a final, ou tera uma próxima partida
-                    if(partida.chave === "01:01")
+                    if(partida.chave === "02:01")
                         break;
 
 
@@ -269,6 +269,7 @@ export class AtualizarPlacarUseCase{
 
                         // Adiciona a partida atualizada na resposta
                         partidasAtualizadas.push({ id: novaPartida.id, sets: [], id_vencedor: novaPartida.id_vencedor,
+                            chave: novaPartida.chave,
                             classe: novaPartida?.inscricaoPartida[0]?.inscricao.classeTorneio.classeRanking.classe.sigla || "",
                             inscricao1: novaPartida?.inscricaoPartida[0]?.ordem === 1 ? {
                                 id: novaPartida.inscricaoPartida[0].inscricao.id,
@@ -363,12 +364,11 @@ export class AtualizarPlacarUseCase{
                 id_torneio: id_torneio
             },
             select: {
-                id: true,
                 inscricao: {
-                    where: { inscricaoPartida: { some: { partida: { chave: "01:01" } } } },
+                    where: { inscricaoPartida: { some: { partida: { chave: "02:01" } } } },
                     select: {
-                        id: true,
                         inscricaoPartida: {
+                            where: { partida: { chave: "02:01" } },
                             select: {
                                 partida: {
                                     select: { id_vencedor: true }

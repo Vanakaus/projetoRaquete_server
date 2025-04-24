@@ -20,7 +20,7 @@ export class LoginUserUseCase{
 
         if(!user){
             console.log("Usuário não encontrado");
-            throw new AppError('Email incorreto');
+            throw new AppError('Login incorreto');
         }
 
         const userSenha = await prisma.user.findFirst({

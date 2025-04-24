@@ -47,8 +47,8 @@ model Academias {
 model Classes {
   id                Int               @id @default(autoincrement())
   id_academia       String
-  sigla             String            @unique
-  nome              String            @unique
+  sigla             String
+  nome              String
   masculino         Boolean           @default(false)
   misto             Boolean           @default(false)
   dupla             Boolean           @default(false)
@@ -126,15 +126,14 @@ model Status {
 
 model PontuacoesTorneio {
   id                Int               @id @default(autoincrement())
-  vencedor          Int               @default(100)
-  r1                Int               @default(70)
-  r2                Int               @default(60)
-  r4                Int               @default(50)
-  r8                Int               @default(30)
-  r16               Int               @default(20)
-  r32               Int               @default(10)
-  r64               Int               @default(05)
-  participacao      Int               @default(05)
+  vencedor          Int
+  r2                Int
+  r4                Int
+  r8                Int
+  r16               Int
+  r32               Int
+  r64               Int
+  participacao      Int
 
   torneios          Torneios?         @relation("torneio")
 

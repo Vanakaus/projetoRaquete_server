@@ -6,6 +6,7 @@ export interface listarClassesDTO {
 
 export interface CriaClasseDTO {
     id_academia: string;
+    id_ranking: number;
     sigla: string;
     nome: string;
     masculino: boolean;
@@ -15,6 +16,7 @@ export interface CriaClasseDTO {
 
 
 export interface AtualizarClasseDTO {
+    id_academia: string;
     id: number;
     sigla: string;
     nome: string;
