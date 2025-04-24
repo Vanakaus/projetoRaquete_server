@@ -44,6 +44,6 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "cors": "^2.8.5",
-    "prisma": "^5..5.0-dev.78"
+    "prisma": "^5.5.0-dev.78"
   }
 }
