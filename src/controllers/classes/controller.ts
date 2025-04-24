@@ -59,8 +59,14 @@ export class AtualizarClasseController {
         const atualizarClasseUseCase = new AtualizarClasseUseCase();
 
         const { id, sigla, nome, masculino, misto, dupla } = req.body;
+        const token = req.headers['x-access-token']
+        
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
 
-        const result = await atualizarClasseUseCase.execute({ id, sigla, nome, masculino, misto, dupla }) as any;
+        const result = await atualizarClasseUseCase.execute({ id_academia, id, sigla, nome, masculino, misto, dupla }) as any;
         result.status= "success";
         result.mensagem = "Classe atualizada com sucesso";
 

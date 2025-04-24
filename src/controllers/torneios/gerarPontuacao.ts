@@ -71,10 +71,7 @@ export class GerarPontuacaoUseCase{
                 let posicao = '';
 
                 // Verifica a posição alcançada
-                if (partida.chave.includes("01:")){
-                    pontuacao = pontuacoes?.r1;
-                    posicao = 'R1';
-                }else if (partida.chave.includes("02:")){
+                if (partida.chave.includes("02:")){
                     pontuacao = pontuacoes?.r2;
                     posicao = 'R2';
                 }else if (partida.chave.includes("04:")){
@@ -89,6 +86,9 @@ export class GerarPontuacaoUseCase{
                 }else if (partida.chave.includes("32:")){
                     pontuacao = pontuacoes?.r32;
                     posicao = 'R32';
+                }else if (partida.chave.includes("64:")){
+                    pontuacao = pontuacoes?.r64;
+                    posicao = 'R64';
                 }
 
                 // Verifica se é a chave do round externo
@@ -99,7 +99,7 @@ export class GerarPontuacaoUseCase{
                 
 
                 // Verifica se é a chave da final do torneio
-                if(partida.chave.includes("01:")){
+                if(partida.chave.includes("02:")){
                     if(partida.inscricaoPartida[0].inscricao.id === partida.id_vencedor){
                         classe.pontuacao.push({
                             posicao,

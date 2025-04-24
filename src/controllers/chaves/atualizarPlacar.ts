@@ -156,7 +156,7 @@ export class AtualizarPlacarUseCase{
 
 
                     // Verifica se a partida é a final, ou tera uma próxima partida
-                    if(partida.chave === "01:01")
+                    if(partida.chave === "02:01")
                         break;
 
 
@@ -363,12 +363,11 @@ export class AtualizarPlacarUseCase{
                 id_torneio: id_torneio
             },
             select: {
-                id: true,
                 inscricao: {
-                    where: { inscricaoPartida: { some: { partida: { chave: "01:01" } } } },
+                    where: { inscricaoPartida: { some: { partida: { chave: "02:01" } } } },
                     select: {
-                        id: true,
                         inscricaoPartida: {
+                            where: { partida: { chave: "02:01" } },
                             select: {
                                 partida: {
                                     select: { id_vencedor: true }

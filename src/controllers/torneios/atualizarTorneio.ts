@@ -132,12 +132,12 @@ export class AtualizarTorneioUseCase{
                 },
                 data: {
                     participacao: pontuacao.participacao,
+                    r64: pontuacao.r64,
                     r32: pontuacao.r32,
                     r16: pontuacao.r16,
                     r8: pontuacao.r8,
                     r4: pontuacao.r4,
                     r2: pontuacao.r2,
-                    r1: pontuacao.r1,
                     vencedor: pontuacao.vencedor
                 }
             }) as any;

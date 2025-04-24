@@ -34,12 +34,12 @@ export class ListarTorneiosAcademiaUseCase{
                         id: true,
                         participacao: true,
                         vencedor: true,
+                        r64: true,
                         r32: true,
                         r16: true,
                         r8: true,
                         r4: true,
-                        r2: true,
-                        r1: true
+                        r2: true
                     }
                 },
                 classeTorneio: {

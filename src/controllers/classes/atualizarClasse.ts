@@ -5,7 +5,7 @@ import { AtualizarClasseDTO } from "../../interface/ClasseDTO";
 
 
 export class AtualizarClasseUseCase{
-    async execute({ id, sigla, nome, masculino, misto, dupla}: AtualizarClasseDTO): Promise<any>{
+    async execute({ id_academia, id, sigla, nome, masculino, misto, dupla}: AtualizarClasseDTO): Promise<any>{
         console.log("Atualizando classe");
         console.log({ id, sigla, nome, masculino, dupla});
         
@@ -27,6 +27,7 @@ export class AtualizarClasseUseCase{
             where: {
                 AND: [
                     {sigla},
+                    {id_academia},
                     {NOT: {id}}
                 ]
             }

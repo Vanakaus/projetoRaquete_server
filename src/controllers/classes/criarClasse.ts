@@ -20,9 +20,10 @@ export class CriarClasseUseCase{
             }
         });
 
+        
+        console.log("\nResposta: ");
 
         if(classeExiste){
-            console.log("\nResposta: ");
 
             if(classeExiste.sigla === sigla){
                 console.log("Sigla Já cadastrada");
