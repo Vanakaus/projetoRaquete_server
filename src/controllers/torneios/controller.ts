@@ -9,10 +9,11 @@ import { AtualizarTorneioUseCase } from "./atualizarTorneio";
 import { AbreFechaInscricoesUseCase } from "./abrirIscricoes.ts";
 import { FinalizarTorneioUseCase } from "./finalizarTorneio";
 import { ReabrirCampeonatoUseCase } from "./reabrirCampeonato";
-import { ListaProximosCampeonatosUseCase } from "./listaProximosCampeonatos";
+import { ListaTorneiosPrincipaisUseCase } from "./listaTorneiosPrincipais";
 import { ListarStatusUseCase } from "./listarStatus";
 import { GerarPontuacaoUseCase } from "./gerarPontuacao";
 import { ListarResultadoUseCase } from "./listarResultado";
+import { ListarTorneiosStatusAcademiaUseCase } from "./listarTorneiosStatusAcademia";
 
 const jwt = require('jsonwebtoken');
 
@@ -74,6 +75,29 @@ export class ListarTorneiosAcademiaController {
 
         result.status= "success";
         result.mensagem = "Torneios listados com sucesso";
+        
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class ContarTorneiosStatusAcademiaController {
+    async handle(req: Request, res: Response) {
+        
+        const listarTorneiosStatusUseCase = new ListarTorneiosStatusAcademiaUseCase();
+
+        const token = req.headers['x-access-token']
+
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
+
+        const result = await listarTorneiosStatusUseCase.execute({ id_academia });
+
+        result.status= "success";
+        result.mensagem = "Torneios contatos por status com sucesso";
         
         return res.status(201).json(result);
     }
@@ -183,123 +207,21 @@ export class ListarResultadoController {
 }
 
 
-
-
-
-
-
-// export class ListaCampeonatosCriadosController {
-//     async handle(req: Request, res: Response) {
+export class ListaTorneiosPrincipaisController {
+    async handle(req: Request, res: Response) {
         
-//         var cpfToken = '';
-//         const { cpf } = req.query;
-//         const token = req.headers['x-access-token']
-
-
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpfToken = decoded.cpf;
-//         });
-
-//         const listaCampeonatosCriadosUseCase = new ListaCampeonatosCriadosUseCase();
+        const token = req.headers['x-access-token']
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
         
-//         const result = await listaCampeonatosCriadosUseCase.execute({cpf: cpfToken, id_criador: cpf?.toString() ?? ''});
-//         return res.status(201).json(result);
-//     }
-// }
-
-
-// export class LeCampeonatoController {
-//     async handle(req: Request, res: Response) {
+        const listaTorneiosPrincipaisUseCase = new ListaTorneiosPrincipaisUseCase();
         
-//         const { id, cpf } = req.query;
-//         const leCampeonatoUseCase = new LeCampeonatoUseCase();
-        
-//         const result = await leCampeonatoUseCase.execute({id: id?.toString() ?? '', cpf: cpf?.toString() ?? ''});
-//         return res.status(201).json(result);
-//     }
-// }
+        const result = await listaTorneiosPrincipaisUseCase.execute({ id_academia });
+        result.status= "success";
+        result.mensagem = "Torneios listados com sucesso";
 
-
-// export class LeCampeonatoCriadoController {
-//     async handle(req: Request, res: Response) {
-        
-//         var cpf = '';
-//         const token = req.headers['x-access-token']
-//         const { id, id_criador } = req.query;
-        
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpf = decoded.cpf;
-//         });
-
-//         const leCampeonatoCriadoUseCase = new LeCampeonatoCriadoUseCase();
-        
-//         const result = await leCampeonatoCriadoUseCase.execute({id: id?.toString() ?? '', cpf, id_criador: id_criador?.toString() ?? ''});
-//         return res.status(201).json(result);
-//     }
-// }
-
-
-
-// export class AbreFechaInscricoesController {
-//     async handle(req: Request, res: Response) {
-        
-//         var cpf = '';
-//         const token = req.headers['x-access-token']
-//         const { id, id_criador, abreFecha } = req.body;
-        
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpf = decoded.cpf;
-//         });
-
-//         const AbrirFecharUseCase = new AbreFechaInscricoesUseCase();
-        
-//         const result = await AbrirFecharUseCase.execute({id, cpf, id_criador, abreFecha});
-//         result.status= "success";
-//         result.mensagem = `Inscrições ${abreFecha ? 'abertas' : 'fechadas'} com sucesso`;
-
-//         return res.status(201).json(result);
-//     }
-// }
-
-
-
-
-// export class ReabrirCampeonatoController {
-//     async handle(req: Request, res: Response) {
-        
-//         var cpf = '';
-//         const token = req.headers['x-access-token']
-//         const { id, id_criador } = req.body;
-        
-//         jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { cpf: string; }) => {
-//             cpf = decoded.cpf;
-//         });
-
-//         const reabrirCampeonatoUseCase = new ReabrirCampeonatoUseCase();
-        
-//         const result = await reabrirCampeonatoUseCase.execute({id, cpf, id_criador});
-//         result.status= "success";
-//         result.mensagem = "Campeonato reaberto com sucesso";
-
-//         return res.status(201).json(result);
-//     }
-// }
-
-
-
-
-
-// export class ListaProximosCampeonatosController {
-//     async handle(req: Request, res: Response) {
-        
-//         const { id_jogador } = req.query as any;
-        
-//         const listaProximosCampeonatosUseCase = new ListaProximosCampeonatosUseCase();
-        
-//         const result = await listaProximosCampeonatosUseCase.execute(id_jogador) as any;
-//         result.status= "success";
-//         result.mensagem = "Campeonatos listados com sucesso";
-
-//         return res.status(201).json(result);
-//     }
-// }
+        return res.status(201).json(result);
+    }
+}

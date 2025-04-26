@@ -31,7 +31,6 @@ model User {
 model Academias {
   id                  String                  @id @default(uuid())
   nome                String
-  telefone            String
 
   classes             Classes[]               @relation("classe")
   ranking             Ranking[]               @relation("ranking")
