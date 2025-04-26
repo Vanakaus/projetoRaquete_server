@@ -31,3 +31,8 @@ export interface AdicionarClasseRankingDTO {
     idClasse: number;
     idRanking: number;
 }
+
+
+export interface ContarJogadoresClasseDTO {
+    id_academia: string;
+}

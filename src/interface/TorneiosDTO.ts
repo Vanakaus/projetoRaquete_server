@@ -3,6 +3,14 @@ export interface ListaTorneiosAcademiaDTO {
     id_academia: string;
 }
 
+export interface ListaTorneiosPrincipaisAcademiaDTO {
+    id_academia: string;
+}
+
+export interface ListaTorneiosStatusAcademiaDTO {
+    id_academia: string;
+}
+
 
 export interface LeTorneioDTO {
     id: string;
@@ -62,39 +70,4 @@ export interface FinalizarTorneioDTO {
 
 export interface ListarResultadoDTO {
     id_torneio: string;
-}
-
-
-
-
-
-
-
-
-
-export interface ListaCampeonatosCriadosDTO {
-    cpf: string;
-    id_criador: string;
-}
-
-
-export interface LeCampeonatoCriadoDTO {
-    cpf: string;
-    id: string;
-    id_criador: string;    
-}
-
-
-export interface AbrirFecharInscricoesDTO {
-    cpf: string;
-    id: string;
-    id_criador: string;
-    abreFecha: boolean;
-}
-
-
-export interface ReabrirCampeonatoDTO {
-    cpf: string;
-    id: string;
-    id_criador: string;
 }

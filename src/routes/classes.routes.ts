@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
 import { verificaJWT } from "../middlewares/verificaJWT";
-import { AdicionarClasseRankingController, AtualizarClasseController, CriarClasseController, ListarClassesController } from "../controllers/classes/controller";
+import { AdicionarClasseRankingController, AtualizarClasseController, ContarJogadoresClasseController, CriarClasseController, ListarClassesController } from "../controllers/classes/controller";
 
 
 
@@ -11,6 +11,7 @@ const listarClasseController  = new ListarClassesController();
 const criarClasseController  = new CriarClasseController();
 const atualizaClasseController  = new AtualizarClasseController();
 const adicionarClasseRankingController  = new AdicionarClasseRankingController();
+const contarJogadoresClasseController  = new ContarJogadoresClasseController();
 
 
 classesRoutes.get('/listar', informativo, verificaJWT, listarClasseController.handle);
@@ -18,8 +19,7 @@ classesRoutes.post('/criar', informativo, verificaJWT, criarClasseController.han
 classesRoutes.patch('/atualizar', informativo, verificaJWT, atualizaClasseController.handle);
 classesRoutes.post('/adicionarClasseRanking', informativo, verificaJWT, adicionarClasseRankingController.handle);
 
-// userRoutes.get('/verificaJWT', informativo, verificaJWT, verificaJWTController.handle);
-// userRoutes.patch('/atualizaSenha', informativo, verificaJWT, atualizaPasswordController.handle);
+classesRoutes.get('/contarJogadoresClasse', informativo, verificaJWT, contarJogadoresClasseController.handle);
 
 
 export { classesRoutes };

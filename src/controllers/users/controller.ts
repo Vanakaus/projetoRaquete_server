@@ -3,6 +3,7 @@ import { LoginUserUseCase } from "./loginUser";
 import { AtualizaSenhaUseCase } from "./atualizaSenha";
 import { CriaAcademiaUseCase } from "./criaAcademia";
 import { CriaUsuarioUseCase } from "./criaUsuario";
+import { LeAcademiaUseCase } from "./leAcademia";
 
 const jwt = require('jsonwebtoken');
 
@@ -52,6 +53,27 @@ export class CriaAcademiaController {
         const result = await criaAcademiaUseCase.execute({ id, nome, telefone }) as any;
         result.status= "success";
         result.mensagem = "Academia cadastrada com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class LeAcademiaController {
+    async handle(req: Request, res: Response) {
+        
+        const token = req.headers['x-access-token']
+        var id = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { id_academia: string; }) => {
+            id = decoded.id_academia;
+        });
+
+        const leAcademiaUseCase = new LeAcademiaUseCase();
+        
+        const result = await leAcademiaUseCase.execute({ id });
+        result.status= "success";
+        result.mensagem = "Academia encontrada com sucesso";
 
         return res.status(201).json(result);
     }

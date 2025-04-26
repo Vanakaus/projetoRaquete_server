@@ -5,6 +5,10 @@ export interface CriaAcademiaDTO {
     telefone: string;
 }
 
+export interface LeAcademiaDTO {
+    id: string;
+}
+
 export interface CriaUsuarioDTO {
     login: string;
     nome: string;

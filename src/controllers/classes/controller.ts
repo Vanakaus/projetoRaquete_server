@@ -3,6 +3,7 @@ import { CriarClasseUseCase } from "./criarClasse";
 import { ListarClassesUseCase } from "./listarClasses";
 import { AtualizarClasseUseCase } from "./atualizarClasse";
 import { AdicionarClasseRankingUseCase } from "./adicionarClasseRanking";
+import { ContarJogadoresClasseUseCase } from "./contarJogadoresClasse";
 
 const jwt = require('jsonwebtoken');
 
@@ -90,6 +91,28 @@ export class AdicionarClasseRankingController {
         });
 
         const result = await atualizarClasseUseCase.execute({ id_academia, idClasse, idRanking }) as any;
+        result.status= "success";
+        result.mensagem = "Classe adicionada ao ranking com sucesso";
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class ContarJogadoresClasseController {
+    async handle(req: Request, res: Response) {
+        
+        const contarJogadoresClasseUseCase = new ContarJogadoresClasseUseCase();
+
+        const token = req.headers['x-access-token']
+        
+        var id_academia = '';
+        jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: { login: string, id_academia: string }) => {
+            id_academia = decoded.id_academia;
+        });
+
+        const result = await contarJogadoresClasseUseCase.execute({ id_academia });
         result.status= "success";
         result.mensagem = "Classe adicionada ao ranking com sucesso";
 
