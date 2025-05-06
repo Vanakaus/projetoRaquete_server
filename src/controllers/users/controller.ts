@@ -47,10 +47,10 @@ export class LoginUserController {
 export class CriaAcademiaController {
     async handle(req: Request, res: Response) {
         
-        const { id, nome, telefone } = req.body;
+        const { id, nome } = req.body;
         const criaAcademiaUseCase = new CriaAcademiaUseCase();
         
-        const result = await criaAcademiaUseCase.execute({ id, nome, telefone }) as any;
+        const result = await criaAcademiaUseCase.execute({ id, nome }) as any;
         result.status= "success";
         result.mensagem = "Academia cadastrada com sucesso";
 

@@ -2,7 +2,6 @@
 export interface CriaAcademiaDTO {
     id: string;
     nome: string;
-    telefone: string;
 }
 
 export interface LeAcademiaDTO {

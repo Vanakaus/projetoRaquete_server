@@ -332,6 +332,44 @@ Todas as rotas possuem campos padrões no JSON de reposta, que são `status`, `m
 
 ### Usuários - `/users`
 
+- `/cadastrarAcademia`: Rota para cadastrar uma nova academia no sistema.
+    - **Método**: POST
+    - **Headers**: Nenhum
+    - **Parâmetros**: Nenhum
+    - **Entrada**: JSON com os campos `id` e `nome`, onde os dados são os dados da academia que deseja cadastrar.
+    - **Resultado**: JSON com `academia`, onde a academia é o objeto criado, com os campos `id` e `nome`.
+
+<br/>
+
+- `/cadastrarUsuario`: Rota para cadastrar um novo usuário no sistema.
+    - **Método**: POST
+    - **Headers**: Nenhum
+    - **Parâmetros**: Nenhum
+    - **Entrada**: JSON com os campos `login`, `nome`, `senha` `id_academia`, onde os dados são os dados do usuário que deseja cadastrar. A senha será criptografada, dentro da API, com a criptografia AES-256-CBC, utilizando a chave e o vetor de inicialização definidos nas variáveis de ambiente.
+    - **Resultado**: JSON com `usuario`, onde o usuario é o objeto criado, com os campos `id`, `login`, `nome`, e `id_academia`.
+
+<br/>
+
+- `/atualizarSenha`: Rota para atualizar a senha de um usuário no sistema.
+    - **Método**: PATCH
+    - **Headers**: `x-accass-token` com o token de autenticação.
+    - **Parâmetros**: Nenhum
+    - **Entrada**: JSON com os campos `login` e `senha`, com a senha criptografada com a criptografia AES-256-CBC, utilizando a chave e o vetor de inicialização definidos nas variáveis de ambiente.
+    - **Resultado**: JSON com o token de autenticação(`JWT`) e as informações do usuário, que tem prazo de validade de 1 hora. O token deve ser enviado em todas as requisições que exigem autenticação, no cabeçalho da requisição, no campo `x-accass-token`.
+
+<br/>
+
+
+- `/leAcademia`: Realiza o login do usuário no sistema, retornando um token de autenticação.
+    - **Método**: POST
+    - **Headers**: Nenhum
+    - **Parâmetros**: Nenhum
+    - **Entrada**: JSON com os campos `login` e `novaSenha`, onde o login é o login do usuário que deseja alterar a senha e a novaSenha é a nova senha que deseja cadastrar. A senha será criptografada, dentro da API, com a criptografia AES-256-CBC, utilizando a chave e o vetor de inicialização definidos nas variáveis de ambiente.
+    - **Resultado**: JSON com o token de autenticação(`JWT`) e as informações do usuário, que tem prazo de validade de 1 hora. O token deve ser enviado em todas as requisições que exigem autenticação, no cabeçalho da requisição, no campo `x-accass-token`.
+
+<br/>
+
+
 - `/login`: Realiza o login do usuário no sistema, retornando um token de autenticação.
     - **Método**: POST
     - **Headers**: Nenhum
@@ -386,6 +424,13 @@ Todas as rotas possuem campos padrões no JSON de reposta, que são `status`, `m
     - **Parâmetros**: Nenhum
     - **Entrada**: JSON com os campos `iClasse`, `idRanking`.
     - **Resultado**: JSON com `classeRanking`, onde a classe é o objeto criado para linkar uma classe ao ranking, com os campos `id`, `id_classe` e `id_Ranking`.
+
+- `contarJogadoresClasse`: Conta o número de jogadores cadastrados em uma classe.
+    - **Método**: GET
+    - **Headers**: `x-accass-token` com o token de autenticação.
+    - **Parâmetros**: Nenhum
+    - **Entrada**: Nenhum
+    - **Resultado**: JSON com `jogadoresClasse`, onde o jogadoresClasse é o objeto criado, com os campos `sigla`, `jogadores` - com o número de jogadores cadastrados na classe.
 
 <br/>
 <br/>
@@ -466,6 +511,24 @@ Todas as rotas possuem campos padrões no JSON de reposta, que são `status`, `m
     - **Parâmetros**: Nenhum
     - **Entrada**: Nenhum
     - **Resultado**: JSON com um array `torneios` contendo a lista de torneios cadastrados no sistema, onde cada torneio possui os campos `id`, `nome`, `descricao`, `local`, `sets`, `simples`, `duplas`, `dataInicio` e `dataFim`, `status`: com os campos `id` e `nome` - `pontuacoes`: com os campos `participacao`, `r32`, `r16`, `r8`, `r4`, `r2`, `r1` e `vencedor` - e `ClasseTorneio`: com os campos `id`, `cabecasChave`, `classeRanking`: com os campos `id`, `nome`, `sigla`, `masculino`, `misto` e `dupla` - e `_count`: com a quantidade de jogadores inscritos na classe.
+
+<br/>
+
+- `/listarPrincipais`: Lista os principais torneios associados a uma academia que estão cadastrados no sistema. Sendo eles 10 torneios recém finalizados, 10 torneios que estão em andamento e 10 torneios que estão com as inscrições abertas.
+    - **Método**: GET
+    - **Headers**: `x-accass-token` com o token de autenticação.
+    - **Parâmetros**: Nenhum
+    - **Entrada**: Nenhum
+    - **Resultado**: JSON com 3 arrays: `torneiosEmAndamento`, `proximosTorneios` e `ultimosTorneios` contendo a lista de torneios cadastrados no sistema, onde cada torneio possui os campos `id`, `nome`, `local`, `simples`, `duplas`, `dataInicio` e `dataFim`, `ClasseTorneio`: com os campos `_count`: com a quantidade de jogadores inscritos na classe - e `classeRanking`: com o campo `classe`: com o campo `sigla`.
+
+<br/>
+
+- `/contar`: Conta o número de torneios cadastrados no sistema, agrupados por status.
+    - **Método**: GET
+    - **Headers**: `x-accass-token` com o token de autenticação.
+    - **Parâmetros**: Nenhum
+    - **Entrada**: Nenhum
+    - **Resultado**: JSON com um array `torneiosStatus` contendo a lista de status cadastrados no sistema, onde cada sataus possui os campos `id`, `nome` e `torneios`, sendo o campo `torneios` a quantidade de torneios cadastrados no sistema com aquele status.
 
 <br/>
 

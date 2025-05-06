@@ -6,14 +6,13 @@ import { AppError } from "../../errors/AppErrors";
 
 
 export class CriaAcademiaUseCase{
-    async execute({ id, nome, telefone }: CriaAcademiaDTO): Promise<Academias>{
+    async execute({ id, nome }: CriaAcademiaDTO): Promise<Academias>{
         
         const academiaExiste = await prisma.academias.findFirst({
             where: {
                 OR: [
                     {id},
-                    {nome},
-                    {telefone}
+                    {nome}
                 ]
             }
         });
@@ -31,9 +30,6 @@ export class CriaAcademiaUseCase{
                 console.log("Nome Já cadastrado");
                 throw new AppError('Nome Já cadastrado');
             
-            }if(academiaExiste.telefone === telefone && telefone.length > 2){
-                console.log("Telefone Indisponível");
-                throw new AppError('Telefone Indisponível');
             }
         }
 
@@ -41,8 +37,7 @@ export class CriaAcademiaUseCase{
         const academia = await prisma.academias.create({
             data: {
                 id,
-                nome,
-                telefone
+                nome
             }
         });
 
