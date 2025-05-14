@@ -6,7 +6,7 @@ import { CriaClasseDTO } from "../../interface/ClasseDTO";
 
 
 export class CriarClasseUseCase{
-    async execute({ id_academia, id_ranking, sigla, nome, masculino, misto, dupla }: CriaClasseDTO): Promise<User>{
+    async execute({ id_academia, id_ranking, sigla, nome, masculino, misto, dupla }: CriaClasseDTO): Promise<any> {
         
         const classeExiste = await prisma.classes.findFirst({
             where: {
@@ -44,11 +44,9 @@ export class CriarClasseUseCase{
                 masculino,
                 misto,
                 dupla,
-                academia: {
-                    connect: { id: id_academia }
-                }
+                id_academia
             }
-        }) as any;
+        });
 
         if(!classe){
             console.log("Erro ao cadastrar classe");
@@ -62,13 +60,13 @@ export class CriarClasseUseCase{
                     id_classe: classe.id,
                     id_ranking: id_ranking 
                 }
-            }) as any;
+            });
         }
 
         console.log("Classe cadastrada com sucesso");
         console.log(classe);
         
 
-        return {classe} as any;
+        return {classe};
     }
 }
