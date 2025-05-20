@@ -69,7 +69,8 @@ export class GerarChaveUseCase{
 
 
         // Verifica se o número de cabeças de chave é um valor válido
-        if(numCabecas !== 0 && numCabecas !== 2 && numCabecas !==   4){
+        const cabecasChaveValidos = [0, 2, 4, 8, 16];
+        if(!cabecasChaveValidos.includes(numCabecas)){
             console.log("Número de cabeças de chave inválido");
             throw new AppError('Número de cabeças de chave inválido');
         }
@@ -115,14 +116,14 @@ export class GerarChaveUseCase{
             roundInt = 16;
             roundStr = '32:';
         }else if(numInscritos < 65){
-            roundInt = 64;
-            roundStr = '32:';
+            roundInt = 32;
+            roundStr = '64:';
         }
 
 
 
         // Verifica se o número de cabeças de chave é compatível com o número de inscritos (numCabecas <= roundInt)
-        if(numCabecas > roundInt){
+        if(numCabecas > roundInt/2){
             console.log("Número de cabeças de chave maior que o número de inscritos");
             throw new AppError('Número de cabeças é incompatível com a quantidade de inscritos');
         }
@@ -222,6 +223,18 @@ export class GerarChaveUseCase{
                 case 1: chaves.push(roundInt); break;
                 case 2: chaves.push(roundInt/2); break;
                 case 3: chaves.push((roundInt/2)+1); break;
+                case 4: chaves.push(roundInt/4); break;
+                case 5: chaves.push((roundInt/4)+1); break;
+                case 6: chaves.push(((roundInt/4)*3)); break;
+                case 7: chaves.push(((roundInt/4)*3)+1); break;
+                case 8: chaves.push(roundInt/8); break;
+                case 9: chaves.push((roundInt/8)+1); break;
+                case 10: chaves.push(((roundInt/8)*3)); break;
+                case 11: chaves.push(((roundInt/8)*3)+1); break;
+                case 12: chaves.push(((roundInt/8)*5)); break;
+                case 13: chaves.push(((roundInt/8)*5)+1); break;
+                case 14: chaves.push(((roundInt/8)*7)); break;
+                case 15: chaves.push(((roundInt/8)*7)+1); break;
             }
 
             partidas.push({ id: -1, chave: roundStr + formataNumero(chaves[i]), inscricoes: [{...inscricoes[i], ordem: 1}] });
@@ -271,29 +284,57 @@ export class GerarChaveUseCase{
 
 
 
-        // Cria as partidas no banco de dados
-        for( const jogo of partidas){
+        // Cria todas as partidas no banco de dados, e adiciona as inscrições nas partidas inciais
+        let chave = "";
+        const novasPartidas = [];
+        for(let i = roundInt; i >= 1; i=i/2){
+            roundStr = formataNumero(i*2) + ":";
+            for(let j = 1; j <= i; j++){
 
-            // Cria a partida
-            const partida = await prisma.partidas.create({
-                data: {
-                    chave: jogo.chave
-                }
-            });
+                chave = roundStr + formataNumero(j);
 
-            jogo.id = partida.id;
-
-            // Cria a conexão entre a partida e as inscrições
-            for(const inscricao of jogo.inscricoes){
-                if(!inscricao) continue;
-                
-                await prisma.inscricaoPartida.create({
+                // Cria a partida
+                const partida = await prisma.partidas.create({
                     data: {
-                        id_partida: partida.id,
-                        id_inscricao: inscricao.id,
-                        ordem: inscricao.ordem,
+                        chave,
+                        id_classeTorneio,
                     }
                 });
+
+
+                // Verificação de otimização, inscrições são adicionadas apenas nas partidas iniciais (2 primeiras rodadas)
+                if(i < roundInt/4) {
+                    novasPartidas.push({ id: partida.id, chave: partida.chave, inscricoes: [] });
+                    continue;
+                }
+                
+                const index = partidas.findIndex(jogo => jogo.chave === chave);
+
+                if(index === -1){
+                    novasPartidas.push({ id: partida.id, chave: partida.chave, inscricoes: [] });
+                    continue;
+                }
+
+                partidas[index].id = partida.id;
+                novasPartidas.push({ id: partida.id, chave: partida.chave, inscricoes: partidas[index].inscricoes });
+
+
+
+                // Cria a conexão entre a partida e as inscrições
+                for(const inscricao of partidas[index].inscricoes){
+                    if(!inscricao) continue;
+                    
+                    await prisma.inscricaoPartida.create({
+                        data: {
+                            id_partida: partida.id,
+                            id_inscricao: inscricao.id,
+                            ordem: inscricao.ordem,
+                        }
+                    });
+                }
+
+
+
             }
         }
 
@@ -310,7 +351,7 @@ export class GerarChaveUseCase{
         });
         
         
-        console.log("\n\nPartidas geradas com sucesso: ", partidas.length);
+        console.log("\n\nPartidas geradas com sucesso: ", novasPartidas.length);
 
 
 
@@ -344,6 +385,6 @@ export class GerarChaveUseCase{
             });
         }
 
-        return { torneio, partidas };
+        return { torneio, partidas: novasPartidas };
     }
 }

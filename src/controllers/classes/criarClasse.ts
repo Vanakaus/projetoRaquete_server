@@ -58,7 +58,7 @@ export class CriarClasseUseCase{
             await prisma.classeRanking.create({
                 data: {
                     id_classe: classe.id,
-                    id_ranking: id_ranking 
+                    id_ranking 
                 }
             });
         }

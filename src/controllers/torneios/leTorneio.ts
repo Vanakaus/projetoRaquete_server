@@ -71,6 +71,7 @@ export class LerTorneioUseCase{
                             }
                         }
                     },
+                    orderBy: { classeRanking: { classe: { nome: 'asc' } } },
                 },
                 
             }

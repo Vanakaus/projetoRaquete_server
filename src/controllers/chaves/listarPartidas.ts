@@ -29,14 +29,8 @@ export class ListarPartidasUseCase{
 
         const partidas = await prisma.partidas.findMany({
             where: {
-                inscricaoPartida: {
-                    some: {
-                        inscricao: {
-                            classeTorneio: {
-                                id_torneio: id_torneio
-                            }
-                        }
-                    }
+                classeTorneio: {
+                    id_torneio
                 }
             },                
             orderBy: {
@@ -57,6 +51,7 @@ export class ListarPartidasUseCase{
                         pontTen2: true
                     }
                 },
+                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                 inscricaoPartida: {
                     select: {
                         ordem: true,
@@ -64,32 +59,9 @@ export class ListarPartidasUseCase{
                             select: {
                                 id: true,
                                 tenistasInscricao: {
-                                    select: {
-                                        tenistaAcademia: {        
-                                            select: {
-                                                tenista: {
-                                                    select: {
-                                                        nome: true
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
+                                    select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } },
                                     orderBy: { ordem: 'asc' }
-                                },
-                                classeTorneio: {
-                                    select: {
-                                        classeRanking: {
-                                            select: {
-                                                classe: {
-                                                    select: {
-                                                        sigla: true
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
+                                }
                             }
                         }
                     },
