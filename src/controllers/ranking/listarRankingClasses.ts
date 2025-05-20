@@ -23,8 +23,10 @@ export class ListarRankingClassesUseCase{
             },
             where: {
                 id_ranking
+            },
+            orderBy: {
+                classe: { nome: 'asc' }
             }
-
         });
 
         console.log("Resposta: ");

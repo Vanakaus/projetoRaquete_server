@@ -75,14 +75,8 @@ export class LimparChaveUseCase{
 
 
         const chave = await prisma.partidas.deleteMany({
-            where: {
-                inscricaoPartida: {
-                    some: {
-                        inscricao: {
-                            id_classeTorneio: id_classeTorneio
-                        }
-                    }
-                }
+            where: { 
+                id_classeTorneio
             }
         });
 

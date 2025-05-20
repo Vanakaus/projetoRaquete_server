@@ -36,22 +36,13 @@ export class AtualizarPlacarUseCase{
                 },
                 select: {
                     chave: true,
-                    inscricaoPartida: {
+                    classeTorneio: {
                         select: {
-                            inscricao: {
-                                select: {
-                                    id: true,
-                                    classeTorneio: {
-                                        select: {
-                                            id: true,
-                                            classeRanking: { select: { classe: { select: { sigla: true } } } }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        orderBy: { ordem: "asc" }
-                    }
+                            id: true,
+                            classeRanking: { select: { classe: { select: { sigla: true } } } }
+                        }
+                    },
+                    inscricaoPartida: { select: { inscricao: { select: { id: true } } }, orderBy: { ordem: "asc" } }
                 }
             });
 
@@ -152,7 +143,7 @@ export class AtualizarPlacarUseCase{
                         continue;
                     }
                     
-                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, chave: partida.chave, classe: partida.inscricaoPartida[0].inscricao.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
+                    partidasAtualizadas.push({ ...novoPlacar, id_vencedor, chave: partida.chave, classe: partida.classeTorneio.classeRanking.classe.sigla || "", inscricao1: null, inscricao2: null });
 
 
                     // Verifica se a partida é a final, ou tera uma próxima partida
@@ -169,13 +160,7 @@ export class AtualizarPlacarUseCase{
                     // Verifica se a próxima partida já existe
                     const novaPartidaExiste = await prisma.partidas.findFirst({
                         where: {
-                            inscricaoPartida: {
-                                some: {
-                                    inscricao: {
-                                        id_classeTorneio: partida.inscricaoPartida[0].inscricao.classeTorneio.id
-                                    }
-                                }
-                            },
+                            classeTorneio: { id: partida.classeTorneio.id },
                             chave: novaChave
                         },
                         select: { id: true }
@@ -242,13 +227,13 @@ export class AtualizarPlacarUseCase{
                                 id: true,
                                 chave: true,
                                 id_vencedor: true,
+                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                 inscricaoPartida: {
                                     select: {
                                         ordem: true,
                                         inscricao: {
                                             select: {
                                                 id: true,
-                                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                                 tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } }
                                             }
                                         }
@@ -270,7 +255,7 @@ export class AtualizarPlacarUseCase{
                         // Adiciona a partida atualizada na resposta
                         partidasAtualizadas.push({ id: novaPartida.id, sets: [], id_vencedor: novaPartida.id_vencedor,
                             chave: novaPartida.chave,
-                            classe: novaPartida?.inscricaoPartida[0]?.inscricao.classeTorneio.classeRanking.classe.sigla || "",
+                            classe: novaPartida?.classeTorneio.classeRanking.classe.sigla || "",
                             inscricao1: novaPartida?.inscricaoPartida[0]?.ordem === 1 ? {
                                 id: novaPartida.inscricaoPartida[0].inscricao.id,
                                 tenista1: novaPartida.inscricaoPartida[0].inscricao.tenistasInscricao[0].tenistaAcademia.tenista.nome || "",
@@ -300,6 +285,7 @@ export class AtualizarPlacarUseCase{
                         novaPartida = await prisma.partidas.create({
                             data: {
                                 chave: novaChave,
+                                id_classeTorneio: partida.classeTorneio.id,
                                 inscricaoPartida: {
                                     create: {
                                         ordem: jogador,
@@ -311,13 +297,13 @@ export class AtualizarPlacarUseCase{
                                 id: true,
                                 chave: true,
                                 id_vencedor: true,
+                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                 inscricaoPartida: {
                                     select: {
                                         ordem: true,
                                         inscricao: {
                                             select: {
                                                 id: true,
-                                                classeTorneio: { select: { classeRanking: { select: { classe: { select: { sigla: true } } } } } },
                                                 tenistasInscricao: { select: { tenistaAcademia: { select: { tenista: { select: { nome: true } } } } } }
                                             }
                                         }
@@ -331,7 +317,7 @@ export class AtualizarPlacarUseCase{
                             novasPartidas.push({
                                 id: novaPartida.id,
                                 chave: novaPartida.chave,
-                                classe: novaPartida.inscricaoPartida[0]?.inscricao.classeTorneio.classeRanking.classe.sigla || "",
+                                classe: novaPartida.classeTorneio.classeRanking.classe.sigla || "",
                                 id_vencedor: novaPartida.id_vencedor || -1,
                                 inscricao1: novaPartida.inscricaoPartida[0].ordem === 1 ? {
                                     id: novaPartida.inscricaoPartida[0].inscricao.id,
