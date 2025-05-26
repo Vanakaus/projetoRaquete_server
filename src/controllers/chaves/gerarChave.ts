@@ -209,36 +209,71 @@ export class GerarChaveUseCase{
 
 
 
-        // Cria e alimenta o array de partidas com a estrutura { chave, inscricoes }
-        // Utiliza 3 loops para alimentar o array de partidas, um para os cabecas de chave, um para os mandantes e um para os oponentes
-        const partidas = [];
+        // Calcula e enfileira as posições dos cabecas de chaves
         const chaves = [];
-        let j=numCabecas;
+        
+        // Adiciona os 2 primeiros cabeças de chave na chave
+        if(numCabecas > 0){
+            chaves.push(1);
+            chaves.push(roundInt);
+        }
 
+        // Ordena os demais cabeças de chave na chave, n cabecas por vez, duplicando as vagas a cada iteração
+        // (cabeças 3/4, cabeças 5/6/7/8, cabeças 9/10/11/12/13/14/15/16, etc)
+        // Mantendo sempre duplas de cabecas(3-4, 5-6, 7-8, etc) em lados opostos da chave, de modo aleatório
+        for(let vagas = 2; numCabecas > vagas; vagas *= 2){
+            const vagasHalf = vagas/2;
+            const posicoes = [] as number[];
 
-        // Loop para os cabeças de chave
-        for(let i = 0; i < numCabecas; i++){
-            switch (i){
-                case 0: chaves.push(1); break;
-                case 1: chaves.push(roundInt); break;
-                case 2: chaves.push(roundInt/2); break;
-                case 3: chaves.push((roundInt/2)+1); break;
-                case 4: chaves.push(roundInt/4); break;
-                case 5: chaves.push((roundInt/4)+1); break;
-                case 6: chaves.push(((roundInt/4)*3)); break;
-                case 7: chaves.push(((roundInt/4)*3)+1); break;
-                case 8: chaves.push(roundInt/8); break;
-                case 9: chaves.push((roundInt/8)+1); break;
-                case 10: chaves.push(((roundInt/8)*3)); break;
-                case 11: chaves.push(((roundInt/8)*3)+1); break;
-                case 12: chaves.push(((roundInt/8)*5)); break;
-                case 13: chaves.push(((roundInt/8)*5)+1); break;
-                case 14: chaves.push(((roundInt/8)*7)); break;
-                case 15: chaves.push(((roundInt/8)*7)+1); break;
+            // Loop que adiciona duplas de cabeças de chave aleatoriamente, por iteração
+            for(let i = 0; i < vagasHalf; i++){
+
+                // Gera uma vaga aleatória, e verifica se já foi utilizada
+                let rng = Math.floor(Math.random() * vagas) + 1;
+                while(posicoes.includes(rng))
+                    rng === vagas ? rng = 1 : rng++;
+                posicoes.push(rng);
+
+                // Gera uma segunda vaga aleatória, no laod oposto da chave, e verifica se já foi utilizada
+                let rng2 = rng > vagasHalf ? Math.floor(Math.random() * vagasHalf) + 1 : Math.floor(Math.random() * vagasHalf) + vagasHalf+1;
+                while(posicoes.includes(rng2))
+                    rng > vagasHalf ? rng2 === vagasHalf ? rng2 = 1 : rng2++ : rng2 === vagas ? rng2 = vagasHalf+1 : rng2++;
+                posicoes.push(rng2);
             }
 
-            partidas.push({ id: -1, chave: roundStr + formataNumero(chaves[i]), inscricoes: [{...inscricoes[i], ordem: 1}] });
+
+            // Adiciona as posições na chave
+            for(let posicao of posicoes)
+                switch (posicao) {
+                    case 1: chaves.push(roundInt/vagas); break;
+                    case 2: chaves.push((roundInt/vagas)+1); break;
+                    case 3: chaves.push(((roundInt/vagas)*3)); break;
+                    case 4: chaves.push(((roundInt/vagas)*3)+1); break;
+                    case 5: chaves.push(((roundInt/vagas)*5)); break;
+                    case 6: chaves.push(((roundInt/vagas)*5)+1); break;
+                    case 7: chaves.push(((roundInt/vagas)*7)); break;
+                    case 8: chaves.push(((roundInt/vagas)*7)+1); break;
+                    case 9: chaves.push(((roundInt/vagas)*9)); break;
+                    case 10: chaves.push(((roundInt/vagas)*9)+1); break;
+                    case 11: chaves.push(((roundInt/vagas)*11)); break;
+                    case 12: chaves.push(((roundInt/vagas)*11)+1); break;
+                    case 13: chaves.push(((roundInt/vagas)*13)); break;
+                    case 14: chaves.push(((roundInt/vagas)*13)+1); break;
+                    case 15: chaves.push(((roundInt/vagas)*15)); break;
+                    case 16: chaves.push(((roundInt/vagas)*15)+1); break;
+                }
+
         }
+
+
+
+        // Cria e alimenta o array de partidas com a estrutura { chave, inscricoes }
+         // Utiliza 3 loops para alimentar o array de partidas, um para os cabecas de chave, um para os mandantes e um para os oponentes
+        const partidas = [];
+        let j=numCabecas;
+        // Loop para os cabeças de chave
+        for(let i = 0; i < numCabecas; i++)
+            partidas.push({ id: -1, chave: roundStr + formataNumero(chaves[i]), inscricoes: [{...inscricoes[i], ordem: 1}] });
 
 
         // Loop para os demais mandantes
