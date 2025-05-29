@@ -14,6 +14,7 @@ import { ListarStatusUseCase } from "./listarStatus";
 import { GerarPontuacaoUseCase } from "./gerarPontuacao";
 import { ListarResultadoUseCase } from "./listarResultado";
 import { ListarTorneiosStatusAcademiaUseCase } from "./listarTorneiosStatusAcademia";
+import { ReabrirTorneioUseCase } from "./reabrirTorneio";
 
 const jwt = require('jsonwebtoken');
 
@@ -179,6 +180,23 @@ export class FinalizaTorneioController {
         const FinalizarUseCase = new FinalizarTorneioUseCase();
         
         const result = await FinalizarUseCase.execute({ id_torneio, resultados });
+        result.status= "success";
+        result.mensagem = 'Torneio finalizado com sucesso';
+
+        return res.status(201).json(result);
+    }
+}
+
+
+
+export class ReabrirTorneioController {
+    async handle(req: Request, res: Response) {
+        
+        const { id_torneio } = req.body;
+        
+        const FinalizarUseCase = new ReabrirTorneioUseCase();
+        
+        const result = await FinalizarUseCase.execute({ id_torneio });
         result.status= "success";
         result.mensagem = 'Torneio finalizado com sucesso';
 

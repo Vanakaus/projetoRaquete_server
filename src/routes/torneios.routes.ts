@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { informativo } from "../middlewares";
-import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarResultadoController, ListarStatusController, ListarTorneiosAcademiaController, ContarTorneiosStatusAcademiaController, ListaTorneiosPrincipaisController } from "../controllers/torneios/controller";
+import { AtualizarTorneioController, CriarTorneioController, FinalizaTorneioController, GerarPontuacaoController, LerTorneioController, ListarResultadoController, ListarStatusController, ListarTorneiosAcademiaController, ContarTorneiosStatusAcademiaController, ListaTorneiosPrincipaisController, ReabrirTorneioController } from "../controllers/torneios/controller";
 import { verificaJWT } from "../middlewares/verificaJWT";
 
 
@@ -15,6 +15,7 @@ const lerTorneioController = new LerTorneioController();
 const atualizarTorneioController = new AtualizarTorneioController();
 const gerarPontuacaoController = new GerarPontuacaoController();
 const finalizaTorneio = new FinalizaTorneioController();
+const reabrirTorneio = new ReabrirTorneioController();
 const listarResultadoTorneio = new ListarResultadoController();
 const listaCampeonatoPrincipaisController = new ListaTorneiosPrincipaisController();
 
@@ -32,6 +33,7 @@ torneioRoutes.get('/listarResultado', informativo, listarResultadoTorneio.handle
 
 torneioRoutes.get('/gerarResultados', informativo, verificaJWT, gerarPontuacaoController.handle);
 torneioRoutes.post('/finalizarTorneio', informativo, verificaJWT, finalizaTorneio.handle);
+torneioRoutes.post('/reabrirTorneio', informativo, verificaJWT, reabrirTorneio.handle);
 
 
 
