@@ -66,6 +66,10 @@ export interface FinalizarTorneioDTO {
     }[];
 }
 
+export interface ReabrirTorneioDTO {
+    id_torneio: string;
+}
+
 
 
 export interface ListarResultadoDTO {
